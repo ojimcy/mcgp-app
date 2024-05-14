@@ -1,12 +1,26 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-
+//import { StatusBar } from 'expo-status-bar';
+import { StyleSheet } from 'react-native';
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import { createStackNavigator } from "@react-navigation/stack";
+import { NavigationContainer } from "@react-navigation/native";
+import Home from './screens/Intro';
+import Dashboard from './screens/Dashboard';
+const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator();
+function Main() {
+  return (
+    <Drawer.Navigator screenOptions={{ headerShown: false }}>
+      <Drawer.Screen name="Booking" component={Dashboard} />
+    </Drawer.Navigator>
+  );
+}
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Home" component={Home}/>
+        </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
