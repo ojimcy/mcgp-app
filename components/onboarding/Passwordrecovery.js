@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { COLORS } from '../../constants/theme';
 
-export default function PasswordRecovery() {
+export default function PasswordRecovery({navigation}) {
   const [emailOrPhone, setEmailOrPhone] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');

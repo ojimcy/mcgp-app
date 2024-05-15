@@ -1,10 +1,10 @@
 import { View, StyleSheet, Text } from "react-native";
 import Products from "../components/onboarding/products";
 
-export default function Home() {
+export default function Home({navigation}) {
   return (
     <View style={styles.container}>
-     <Products/>
+     <Products navigation={navigation}/>
     </View>
   );
 }

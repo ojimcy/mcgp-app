@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
-import { COLORS } from '../../constants/theme';
+import { COLORS, SIZES } from '../../constants/theme';
 
-export default function Login() {
+export default function Login({navigation}) {
   return (
     <View style={styles.container}>
       <Text style={styles.loginText}>Login</Text>
@@ -24,11 +24,13 @@ export default function Login() {
         <Text style={styles.buttonText}>Continue</Text>
       </TouchableOpacity>
       <Text style={styles.orText}>Or</Text>
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Continue With Email</Text>
+      <TouchableOpacity style={styles.emailButton}>
+        <Text style={styles.emailButtonText}>Continue With Email</Text>
       </TouchableOpacity>
       <TouchableOpacity>
-        <Text style={styles.signUpText}>New To TS? Signup</Text>
+        <Text style={styles.question}>New To Tsa? {" "}
+      <Text style={styles.signUpText}>Signup</Text>  
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -46,36 +48,63 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    left:'5%',
+    position:'absolute',
+    top:113,
+    color:COLORS.primary
   },
   input: {
-    width: '100%',
-    height: 40,
+    width: SIZES.width*(0.9),
+    height: (6.2/100)*SIZES.height,
     borderColor: 'gray',
     borderWidth: 1,
     marginTop: 10,
     padding: 10,
+    borderRadius:10
   },
   button: {
     backgroundColor: COLORS.primary,
-    width: '100%',
+    width: SIZES.width*(0.9),
     padding: 10,
     alignItems: 'center',
     marginTop: 10,
+    height:(0.0687)*SIZES.height,
+    borderRadius:10,
+    borderWidth:1,
+    borderColor:COLORS.primary
+  },
+  emailButton: {
+    backgroundColor: COLORS.white,
+    width: SIZES.width*(0.9),
+    padding: 10,
+    alignItems: 'center',
+    marginTop: 10,
+    height:(0.0687)*SIZES.height,
+    borderRadius:10,
+    borderWidth:1
+  },
+  emailButtonText:{
+    color:COLORS.primary
   },
   buttonText: {
     color: '#fff',
     fontSize: 16,
   },
   forgotPassword: {
-    alignSelf: 'flex-end',
+    alignSelf: 'flex-start',
     marginTop: 5,
     marginBottom: 10,
-    color: '#007aff',
+    position:'relative',
+    color: COLORS.primary,
   },
   orText: {
     marginVertical: 10,
   },
   signUpText: {
+    marginTop: 10,
+    color:COLORS.primary
+  },
+  question:{
     marginTop: 10,
   }
 });

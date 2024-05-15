@@ -1,17 +1,27 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View,Image } from 'react-native'
 import React from 'react'
-import { COLORS } from '../../constants/theme'
+import { COLORS, SIZES } from '../../constants/theme'
+import { SkipNextButton } from '../buttons/NextSkip'
 
-const Order = () => {
+const Order = ({navigation}) => {
+    function handleNext(){
+        navigation.navigate('Login')
+      }
+      function handleSkip(){
+        navigation.navigate('Login')
+      }
   return (
     <View style={styles.container}>
-    <Text style={{color:COLORS.primary,fontWeight:'bold',fontSize:18}}>Order for Service,
+    <Text style={{color:COLORS.primary,fontWeight:'bold',fontSize:25,top:133,position:'absolute'}}>Order for Service,
     Anytime anywhere
     </Text>
-    <View style={{ flexDirection: "row" }}>
+    <View style={{ width:SIZES.width,position:'relative' }}>
     <Image source={require("../../assets/images/onboarding3.png")} 
-     style={{ marginHorizontal: "5%",width: "90%" }}
+     style={{ marginHorizontal: "2%",width: "96%" }}
     />
+    </View>
+    <View style={styles.back}>
+    <SkipNextButton handleNext={handleNext} handleSkip={handleSkip}/>
     </View>
   </View>
   )
@@ -28,4 +38,8 @@ const styles = StyleSheet.create({
         marginBottom: 0,
       //  paddingTop: StatusBar.currentHeight || 0,
       },
+      back:{
+        position:'absolute',
+        bottom:10
+      }
 })
