@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
-import { COLORS } from '../../constants/theme';
+import { COLORS, SIZES } from '../../constants/theme';
 
 export default function PasswordRecovery({navigation}) {
   const [emailOrPhone, setEmailOrPhone] = useState('');
@@ -14,11 +14,13 @@ export default function PasswordRecovery({navigation}) {
     }
     // Implement password recovery logic here
     Alert.alert('Success', 'Password recovery successful!');
+navigation.navigate('OTP');
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Recover Your Password</Text>
+       <View style={styles.cover}>
+       <Text style={styles.title}>Recover Your Password</Text>
       <TextInput
         style={styles.input}
         placeholder="Enter Email/Phone"
@@ -40,11 +42,18 @@ export default function PasswordRecovery({navigation}) {
         value={confirmPassword}
         onChangeText={setConfirmPassword}
       />
-      <TouchableOpacity style={styles.button} onPress={handlePasswordRecovery}>
+     
+       </View>
+       <TouchableOpacity style={styles.button} onPress={handlePasswordRecovery}>
         <Text style={styles.buttonText}>Continue</Text>
       </TouchableOpacity>
       <TouchableOpacity>
-        <Text style={styles.signupText}>New To TSA? Signup</Text>
+        <View style={{marginTop:15}}>
+        <Text >New To TSA?
+        <Text style={styles.signupText}> Signup</Text>  
+           </Text>
+        </View>
+        
       </TouchableOpacity>
     </View>
   );
@@ -53,36 +62,74 @@ export default function PasswordRecovery({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   title: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 24,
+    fontWeight: "medium",
     marginBottom: 20,
+    left: "5%",
+    color: COLORS.primary,
   },
   input: {
-    width: '100%',
-    height: 40,
-    borderColor: 'gray',
+    width: SIZES.width * 0.9,
+    height: (6.2 / 100) * SIZES.height,
+    borderColor: "gray",
     borderWidth: 1,
     marginTop: 10,
     padding: 10,
+    borderRadius: 10,
+    marginHorizontal:SIZES.width * 0.05,
   },
   button: {
     backgroundColor: COLORS.primary,
-    width: '100%',
+    width: SIZES.width * 0.9,
     padding: 10,
-    alignItems: 'center',
-    marginTop: 20,
+    alignItems: "center",
+    marginTop: 10,
+    height: 0.0687 * SIZES.height,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: COLORS.primary,
+  },
+  emailButton: {
+    backgroundColor: COLORS.white,
+    width: SIZES.width * 0.9,
+    padding: 10,
+    alignItems: "center",
+    marginTop: 10,
+    height: 0.0687 * SIZES.height,
+    borderRadius: 10,
+    borderWidth: 1,
+  },
+  emailButtonText: {
+    fontWeight:'semibold'
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
   },
+  forgotPassword: {
+    marginTop: 5,
+    marginBottom: 10,
+    position: "relative",
+    color: COLORS.primary,
+    paddingLeft: -25,
+  },
+  orText: {
+    marginVertical: 10,
+  },
   signupText: {
-    marginTop: 20,
+    marginTop: 10,
+    color: COLORS.primary,
+  },
+  question: {
+    marginTop: 10,
+  },
+  cover:{
+    position:'absolute',
+    top: SIZES.height*(0.1212),
   }
 });

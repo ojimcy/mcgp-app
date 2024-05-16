@@ -12,14 +12,19 @@ const Payments = ({navigation}) => {
       }
   return (
     <View style={styles.container}>
-    <Text style={{color:COLORS.primary,fontWeight:'bold',fontSize:25,top:71,position:'absolute'}}>Make Payments across, the borders</Text>
-    <View style={{width:SIZES.width,position:'relative',justifyContent:'center',alignItems:'center',marginTop:20}}>
+    <View style={{top:SIZES.height*(0.07618),position:'absolute',alignContent:'center',alignItems:'center'}}>
+      <Text style={{color:COLORS.primary,fontWeight:600,fontSize:24}}>Make payments across </Text>
+     <Text style={{color:COLORS.primary,fontWeight:600,fontSize:24}}>the borders</Text>  
+     <Text style={{color:COLORS.primary,fontSize:15,fontWeight:400}}>Buy & sell bitcoin, mcgp, & other crypto and</Text>
+     <Text style={{color:COLORS.primary,fontSize:15,fontWeight:400}}>digital assets. Easy assets swap on dex and more</Text>
+      </View>
+    <View style={{position:'absolute', alignContent:'center',width:SIZES.width,height:SIZES.height*(0.504),alignItems:'center',top:SIZES.height*(0.236)}}>
     <Image source={require("../../assets/images/onboarding2.png")} 
-     style={{ marginHorizontal: "1%",width: "98%" }}
+     style={{ width: "99%",height:'105%' }}
     />
     </View>
     <View style={styles.back}>
-    <SkipNextButton handleNext={handleNext} handleSkip={handleSkip}/>
+    <SkipNextButton handleNext={handleNext} handleSkip={handleSkip} index={2}/>
     </View>
    
   </View>
@@ -39,6 +44,6 @@ const styles = StyleSheet.create({
       },
       back:{
         position:'absolute',
-        bottom:10
+        top:SIZES.height*(0.8079)
       }
 })

@@ -9,6 +9,9 @@ import PaymentScreen from "./screens/PaymentScreen";
 import OrderScreen from "./screens/OrderScreen";
 import LoginScreen from "./screens/LoginScreen";
 import RecoveryScreen from "./screens/RecoveryScreen";
+import RecoveryOTP from "./components/onboarding/RecoveryOTP";
+import Signup from "./components/onboarding/Signup";
+import Verify from "./components/onboarding/Verify";
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 function Main() {
@@ -27,6 +30,9 @@ export default function App() {
         <Stack.Screen name="Order" component={OrderScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Recovery" component={RecoveryScreen} />
+        <Stack.Screen name="OTP" component={RecoveryOTP} />
+        <Stack.Screen name="Signup" component={Signup} />
+        <Stack.Screen name="Verify" component={Verify} />
         <Stack.Screen name="Dashboard" component={Main} />
       </Stack.Navigator>
     </NavigationContainer>

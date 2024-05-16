@@ -41,16 +41,17 @@ export const NextBackFour = ({handleNext,handleSkip}) => {
   )
 }
 
-export function SkipNextButton({handleNext,handleSkip}){
+export function SkipNextButton({handleNext,handleSkip,index}){
     return(
     <View style={styles.container}>
-        <ProgressOne/>
+        <ProgressOne index={index}/>
       <TouchableOpacity onPress={handleNext} style={styles.nextButton}>
         <Text style={styles.nextButtonText}>Next</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={handleSkip}  style={styles.skipButton}>
+      {index!=3 && <TouchableOpacity onPress={handleSkip}  style={styles.skipButton}>
         <Text style={styles.skipButtonText}>Skip</Text>
-      </TouchableOpacity>
+      </TouchableOpacity>}
+      
     </View>
     )
 }
@@ -68,27 +69,25 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        borderWidth: 1,
         width: '90%',
-        margin: 10,
-        height:60,
+        marginVertical: SIZES.height*(0.026824),
+        height:SIZES.height*(0.068),
+        borderBlockColor:COLORS.primary
       },
       skipButton:{
       },
       nextButtonText: {
         color: COLORS.white,
-        fontSize: 16,
-        fontWeight: 'bold',
-        marginLeft: 10,
+        fontSize: 15,
+        fontWeight:'medium',
         justifyContent: 'center',
         alignItems:'center',
       
     },
    skipButtonText: {
         color: COLORS.primary,
-        fontSize: 16,
-        fontWeight: 'bold',
-        marginLeft: 10,
+        fontSize: 15,
+        fontWeight: 'medium',
         justifyContent: 'center',
         alignItems:'center'
     }

@@ -13,14 +13,20 @@ const Products = ({navigation}) => {
     console.log(SIZES.height,SIZES.width)
   return (
     <View style={styles.container}>
-      <Text style={{color:COLORS.primary,fontWeight:'bold',fontSize:25,top:122,position:'absolute'}}>Buy and Sell Your Product</Text>
-      <View style={{ flexDirection: "row",width:SIZES.width }}>
+      <View style={{top:SIZES.height*(0.1309),position:'absolute',alignContent:'center',alignItems:'center'}}>
+      <Text style={{color:COLORS.primary,fontWeight:600,fontSize:30}}>Buy and sell your </Text>
+     <Text style={{color:COLORS.primary,fontWeight:600,fontSize:30}}>Product</Text>  
+      </View>
+      
+       
+     
+      <View style={{position:'absolute', alignContent:'center',height:SIZES.height*(0.448),width:SIZES.width*(0.972),top:SIZES.height*(0.298)}}>
       <Image source={require("../../assets/images/onboarding1.png")} 
-       style={{ marginHorizontal: "5%",width: "95%" }}
+       style={{ width: "100%",height:'100%' }}
       />
       </View>
       <View style={styles.back}>
-    <SkipNextButton handleNext={handleNext} handleSkip={handleSkip}/>
+    <SkipNextButton handleNext={handleNext} handleSkip={handleSkip} index={1}/>
     </View>
     </View>
   )
@@ -39,6 +45,6 @@ const styles = StyleSheet.create({
       },
       back:{
         position:'absolute',
-        bottom:10
+        top:SIZES.height*(0.76)
       }
 })

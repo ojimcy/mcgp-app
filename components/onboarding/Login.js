@@ -1,10 +1,24 @@
-import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
-import { COLORS, SIZES } from '../../constants/theme';
+import React from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
+import { COLORS, SIZES } from "../../constants/theme";
 
-export default function Login({navigation}) {
+export default function Login({ navigation }) {
+  function handlePasswordRecovery(){
+navigation.navigate('Recovery')
+  }
+  function Signup(){
+    navigation.navigate('Signup')
+  }
   return (
     <View style={styles.container}>
+     
+      <View style={styles.cover}>
       <Text style={styles.loginText}>Login</Text>
       <TextInput
         style={styles.input}
@@ -17,19 +31,28 @@ export default function Login({navigation}) {
         placeholder="Password"
         secureTextEntry={true}
       />
-      <TouchableOpacity>
+      </View>
+      
+      
+      <TouchableOpacity onPress={handlePasswordRecovery}>
         <Text style={styles.forgotPassword}>Forgot Password</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText}>Continue</Text>
       </TouchableOpacity>
-      <Text style={styles.orText}>Or</Text>
+      <View style={{ alignContent: "center", alignItems: "center" }}>
+        <Text style={styles.orText}>Or</Text>
+      </View>
+
       <TouchableOpacity style={styles.emailButton}>
         <Text style={styles.emailButtonText}>Continue With Email</Text>
       </TouchableOpacity>
-      <TouchableOpacity>
-        <Text style={styles.question}>New To Tsa? {" "}
-      <Text style={styles.signUpText}>Signup</Text>  
+      <TouchableOpacity
+      onPress={Signup}
+        style={{ alignContent: "center", alignItems: "center" }}
+      >
+        <Text style={styles.question}>
+          New To Tsa? <Text style={styles.signUpText}>Signup</Text>
         </Text>
       </TouchableOpacity>
     </View>
@@ -39,72 +62,74 @@ export default function Login({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   loginText: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
-    left:'5%',
-    position:'absolute',
-    top:113,
-    color:COLORS.primary
+    left: "5%",
+    color: COLORS.primary,
   },
   input: {
-    width: SIZES.width*(0.9),
-    height: (6.2/100)*SIZES.height,
-    borderColor: 'gray',
+    width: SIZES.width * 0.9,
+    height: (6.2 / 100) * SIZES.height,
+    borderColor: "gray",
     borderWidth: 1,
     marginTop: 10,
     padding: 10,
-    borderRadius:10
+    borderRadius: 10,
+    marginHorizontal:SIZES.width * 0.05,
   },
   button: {
     backgroundColor: COLORS.primary,
-    width: SIZES.width*(0.9),
-    padding: 10,
-    alignItems: 'center',
+    width: SIZES.width * 0.9,
+    alignItems: "center",
+    justifyContent:'center',
     marginTop: 10,
-    height:(0.0687)*SIZES.height,
-    borderRadius:10,
-    borderWidth:1,
-    borderColor:COLORS.primary
+    height: 0.0687 * SIZES.height,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: COLORS.primary,
   },
   emailButton: {
     backgroundColor: COLORS.white,
-    width: SIZES.width*(0.9),
+    width: SIZES.width * 0.9,
     padding: 10,
-    alignItems: 'center',
+    alignItems: "center",
+    justifyContent:'center',
     marginTop: 10,
-    height:(0.0687)*SIZES.height,
-    borderRadius:10,
-    borderWidth:1
+    height: 0.0687 * SIZES.height,
+    borderRadius: 10,
+    borderWidth: 1,
   },
-  emailButtonText:{
-    color:COLORS.primary
+  emailButtonText: {
+    fontWeight:'semibold'
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
   },
   forgotPassword: {
-    alignSelf: 'flex-start',
-    marginTop: 5,
-    marginBottom: 10,
-    position:'relative',
+   marginBottom:15,
+    position: "relative",
     color: COLORS.primary,
+    paddingLeft:"1%",
   },
   orText: {
     marginVertical: 10,
   },
   signUpText: {
     marginTop: 10,
-    color:COLORS.primary
+    color: COLORS.primary,
   },
-  question:{
+  question: {
     marginTop: 10,
+  },
+  cover:{
+    position:'absolute',
+    top: SIZES.height*(0.1212),
   }
 });

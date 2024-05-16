@@ -12,16 +12,18 @@ const Order = ({navigation}) => {
       }
   return (
     <View style={styles.container}>
-    <Text style={{color:COLORS.primary,fontWeight:'bold',fontSize:25,top:133,position:'absolute'}}>Order for Service,
-    Anytime anywhere
-    </Text>
-    <View style={{ width:SIZES.width,position:'relative' }}>
+   
+    <View style={{top:SIZES.height*(0.143),position:'absolute',alignContent:'center',alignItems:'center'}}>
+      <Text style={{color:COLORS.primary,fontWeight:'bold',fontSize:25}}>Order for services </Text>
+     <Text style={{color:COLORS.primary,fontWeight:'bold',fontSize:25}}>anytime, anywhere</Text>  
+      </View>
+    <View style={{ width:SIZES.width*(0.81),position:'absolute',alignContent:'center',height:SIZES.height*(0.5644) }}>
     <Image source={require("../../assets/images/onboarding3.png")} 
-     style={{ marginHorizontal: "2%",width: "96%" }}
+     style={{ width: '100%',height:'100%',marginTop:'4%'}}
     />
     </View>
     <View style={styles.back}>
-    <SkipNextButton handleNext={handleNext} handleSkip={handleSkip}/>
+    <SkipNextButton handleNext={handleNext} handleSkip={handleSkip} index={3}/>
     </View>
   </View>
   )
@@ -40,6 +42,6 @@ const styles = StyleSheet.create({
       },
       back:{
         position:'absolute',
-        bottom:10
+        top:SIZES.height*(0.84656)
       }
 })
