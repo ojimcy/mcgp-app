@@ -8,7 +8,7 @@ const Signup = ({navigation}) => {
     <View style={styles.container}>
      
       <View style={styles.cover}>
-      <Text style={styles.loginText}>Login</Text>
+      <Text style={styles.loginText}>Sign up</Text>
       <TextInput
         style={styles.input}
         placeholder="Name"

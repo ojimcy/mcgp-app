@@ -12,12 +12,13 @@ import RecoveryScreen from "./screens/RecoveryScreen";
 import RecoveryOTP from "./components/onboarding/RecoveryOTP";
 import Signup from "./components/onboarding/Signup";
 import Verify from "./components/onboarding/Verify";
+import HomeScreen from "./screens/Home";
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 function Main() {
   return (
     <Drawer.Navigator screenOptions={{ headerShown: false }}>
-      <Drawer.Screen name="Booking" component={Dashboard} />
+      <Drawer.Screen name="Home" component={HomeScreen} />
     </Drawer.Navigator>
   );
 }

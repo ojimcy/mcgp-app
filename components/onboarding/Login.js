@@ -15,6 +15,9 @@ navigation.navigate('Recovery')
   function Signup(){
     navigation.navigate('Signup')
   }
+  function login(){
+    navigation.navigate('Dashboard');
+  }
   return (
     <View style={styles.container}>
      
@@ -37,8 +40,8 @@ navigation.navigate('Recovery')
       <TouchableOpacity onPress={handlePasswordRecovery}>
         <Text style={styles.forgotPassword}>Forgot Password</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Continue</Text>
+      <TouchableOpacity onPress={login} style={styles.button}>
+        <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
       <View style={{ alignContent: "center", alignItems: "center" }}>
         <Text style={styles.orText}>Or</Text>

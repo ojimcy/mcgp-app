@@ -16,7 +16,11 @@ export const SIZES = {
     padding: 8,
     padding2: 12,
     padding3: 16,
-
+    small: 12,
+    font: 14,
+    medium: 16,
+    large: 18,
+    extraLarge: 24,
     // FONTS Sizes
     largeTitle: 50,
     h1: 30,
