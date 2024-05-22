@@ -5,12 +5,15 @@ import { assets, COLORS, SIZES } from '../constants'
 import NavTab from '../components/buttons/NavTab'
 import Features from '../components/features/Features'
 import Card from '../components/features/Card'
+import Products from '../components/products/Products'
+import Services from '../components/services/Services'
 
 
 const HomeScreen = ({navigation}) => {
   return (
+    <>
+      <HomeHeader navigation={navigation}/>
     <ScrollView style={styles.content}>
-     <HomeHeader navigation={navigation}/>
 <View style={{flexDirection:'row',height:SIZES.height*(0.05901),justifyContent:'space-between',marginHorizontal:'4%',width:'92%',marginTop:10}}>
 <NavTab title={"Deposit"}/>
 <NavTab title={"Withdrawal"}/>
@@ -53,9 +56,12 @@ product and service." buttonTitle="Register / Trade"/>
     buttonTitle="Stake here"/>
     
     </View> 
-   
      </View>
+     <Products/>
+     <Services/>
     </ScrollView>
+   {/*  <HomeHeader navigation={navigation}/> */}
+    </>
   )
 }
 
