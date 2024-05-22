@@ -1,6 +1,7 @@
 import { ImageBackground, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import DigitalList from './digitalList'
+import { SIZES } from '../../constants'
 
 const Digital = () => {
   return (
@@ -14,7 +15,7 @@ const Digital = () => {
         <Text style={styles.text}>Digital</Text>
       </ImageBackground>
     </View>
-    {/*   <ServiceList/> */}
+  
     <DigitalList/>
   </View>
   )

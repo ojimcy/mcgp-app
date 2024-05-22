@@ -7,6 +7,7 @@ import Features from '../components/features/Features'
 import Card from '../components/features/Card'
 import Products from '../components/products/Products'
 import Services from '../components/services/Services'
+import Digital from '../components/digital/digital'
 
 
 const HomeScreen = ({navigation}) => {
@@ -59,6 +60,7 @@ product and service." buttonTitle="Register / Trade"/>
      </View>
      <Products/>
      <Services/>
+     <Digital/>
     </ScrollView>
    {/*  <HomeHeader navigation={navigation}/> */}
     </>

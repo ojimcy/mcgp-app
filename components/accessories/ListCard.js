@@ -1,28 +1,17 @@
 import React from 'react';
 import { ScrollView, View, Text, Image, StyleSheet } from 'react-native';
 import { COLORS, SIZES } from '../../constants';
-import ListCard from '../accessories/ListCard';
 
 // Example Data
-const categories = [
- 
-      { title: 'MCGP', icon: require('../../assets/digital/mcgp.png') },
-      { title: 'Deficonnect', icon: require('../../assets/digital/dfc.png') },
-      { title: 'Binance', icon: require('../../assets/digital/binance.png') },
-      { title: 'Solana', icon: require('../../assets/digital/solane.png') },
-      { title: 'Dogecoin', icon: require('../../assets/digital/dodge.png') },
-    ];
-
-const DigitalList = () => {
+const ListCard = ({itemList}) => {
   return (
     <ScrollView style={styles.container}>
-          {categories.map((item, itemIndex) => (
+          {itemList.map((item, itemIndex) => (
             <View key={itemIndex} style={styles.itemContainer}>
               <Image source={item.icon} style={styles.iconStyle} resizeMode='contain'/>
               <Text style={styles.itemText}>{item.title}</Text>
             </View>
           ))}
-
     </ScrollView>
   );
 };
@@ -39,7 +28,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     borderColor:COLORS.gray,
     borderBottomWidth:0.5,
-    height:SIZES.height*(0.07081545)
+    height:SIZES.height*(0.07081545),
+    backgroundColor: '#FFF4E8',
   },
   iconStyle: {
     width: 50,
@@ -51,4 +41,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default DigitalList;
+export default ListCard;
