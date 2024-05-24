@@ -21,7 +21,7 @@ const Card = ({iconName,title,buttonTitle,imageUrl}) => {
         )}
       
       {buttonTitle && <View style={styles.innerButton}>
-        <Text style={{fontWeight:500,fontSize:12}}>{buttonTitle}</Text>
+        <Text style={{fontWeight:500,fontSize:12,padding:3}}>{buttonTitle}</Text>
         </View>}
      
       </TouchableOpacity>

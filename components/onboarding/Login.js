@@ -7,16 +7,17 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { COLORS, SIZES } from "../../constants/theme";
+import { router } from "expo-router";
 
 export default function Login({ navigation }) {
   function handlePasswordRecovery(){
-navigation.navigate('Recovery')
+    router.push('/recovery')
   }
   function Signup(){
-    navigation.navigate('Signup')
+    router.push('/signup')
   }
   function login(){
-    navigation.navigate('Dashboard');
+    router.push('/home')
   }
   return (
     <View style={styles.container}>

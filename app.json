@@ -6,6 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "scheme": "mcgp-tsa",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -34,6 +35,9 @@
     },
     "updates": {
       "url": "https://u.expo.dev/b073c316-bed7-4552-bdde-fe3ddebec310"
-    }
+    },
+    "plugins": [
+      "expo-router"
+    ]
   }
 }

@@ -6,7 +6,8 @@ export const COLORS = {
     white: "#FFFFFF",
     background: "#253334",
     gray: "#BEC2C2",
-    lightButton:'#E8A14A'
+    lightButton:'#E8A14A',
+    black:'#000000'
 }
 
 export const SIZES = {

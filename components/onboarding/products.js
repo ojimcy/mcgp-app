@@ -2,13 +2,14 @@ import { Image, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { COLORS, SIZES } from '../../constants/theme'
 import { NextBackOne, NextButton, SkipNextButton } from '../buttons/NextSkip'
+import { router } from 'expo-router'
 
-const Products = ({navigation}) => {
+const Products = () => {
     function handleNext(){
-        navigation.navigate('Payment')
+        router.push('/payments')
       }
       function handleSkip(){
-        navigation.navigate('Login')
+      router.push('/login')
       }
     console.log(SIZES.height,SIZES.width)
   return (

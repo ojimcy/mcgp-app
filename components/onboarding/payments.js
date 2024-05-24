@@ -2,13 +2,14 @@ import { Image, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { COLORS, SIZES } from '../../constants/theme'
 import { SkipNextButton } from '../buttons/NextSkip'
+import { router } from 'expo-router'
 
-const Payments = ({navigation}) => {
+const Payments = () => {
     function handleNext(){
-        navigation.navigate('Order')
+        router.push('/order')
       }
       function handleSkip(){
-        navigation.navigate('Login')
+     router.push('/login')
       }
   return (
     <View style={styles.container}>

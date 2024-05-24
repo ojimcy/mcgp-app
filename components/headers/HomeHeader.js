@@ -1,22 +1,22 @@
-import { View, Text, TextInput, Image } from "react-native";
+import { View, Text, TouchableOpacity, Image } from "react-native";
 import { FONTS, COLORS, assets } from "../../constants";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import {SIZES}  from "../../constants/theme";
-const HomeHeader = ({ onSearch,navigation }) => {
+const HomeHeader = () => {
 
     const openNavBar=()=>{
-        navigation.openDrawer()
+        //navigation.openDrawer()
     }
   return (
   
       <View
         style={{
             flexDirection:'row',
-            height:SIZES.height*(0.05901),
+            height:SIZES.height*(0.06901),
             justifyContent:'space-between',
             marginHorizontal:'4%',
             width:'92%',
-            marginTop:SIZES.height*(0.050429)
+            marginTop:SIZES.height*(0.050429),
+          /*   backgroundColor:COLORS.white */
         }}
       >
         <TouchableOpacity onPress={openNavBar}>

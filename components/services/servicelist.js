@@ -4,44 +4,25 @@ import { COLORS } from '../../constants';
 
 // Example Data
 const categories = [
-  {
-    title: '',
-    items: [
-      { name: 'home cleaning services', icon: require('../../assets/services/homeservice.png') },
-      { name: 'laundry services', icon: require('../../assets/services/laundry.png') },
-      { name: 'event services', icon: require('../../assets/services/event.png') }
-    ],
-  },
-  {
-    title: '',
-    items: [
-      { name: 'catering services', icon: require('../../assets/services/catering.png') },
-      { name: 'spar services', icon: require('../../assets/services/spar.png') },
-      { name: 'hair stylist', icon: require('../../assets/services/hair.png') }
-    ],
-  },
-  {
-    title: '',
-    items: [
-      { name: 'transport system services', icon: require('../../assets/services/truck.png') }
-    ],
-  }
-];
+ 
+      { title: 'Home cleaning services', icon: require('../../assets/services/homeservice.png') },
+      { title: 'Laundry services', icon: require('../../assets/services/laundry.png') },
+      { title: 'Event services', icon: require('../../assets/services/event.png') },
+      { title: 'Catering services', icon: require('../../assets/services/catering.png') },
+      { title: 'Spar services', icon: require('../../assets/services/spar.png') },
+      { title: 'Hair stylist', icon: require('../../assets/services/hair.png') },
+      { title: 'Transport system services', icon: require('../../assets/services/truck.png') }
+    ];
 
 const ServiceList = () => {
   return (
     <ScrollView style={styles.container}>
-      {categories.map((category, index) => (
-        <View key={index} style={styles.categoryContainer}>
-         {category.title &&  <Text style={styles.categoryTitle}>{category.title}</Text>}   
-          {category.items.map((item, itemIndex) => (
+         {categories.map((item, itemIndex) => (
             <View key={itemIndex} style={styles.itemContainer}>
               <Image source={item.icon} style={styles.iconStyle} resizeMode='contain'/>
-              <Text style={styles.itemText}>{item.name}</Text>
+              <Text style={styles.itemText}>{item.title}</Text>
             </View>
           ))}
-        </View>
-      ))}
     </ScrollView>
   );
 };

@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { COLORS, SIZES } from '../../constants/theme'
-import Country from './Country'
+//import Country from './Country'
 
 const Signup = ({navigation}) => {
   return (
@@ -20,7 +20,7 @@ const Signup = ({navigation}) => {
         keyboardType="phone-pad"
         autoCapitalize="none"
       />
-      <Country/>
+  {/*     <Country/> */}
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -39,10 +39,6 @@ const Signup = ({navigation}) => {
       />
       </View>
       
-      
-     {/*  <TouchableOpacity onPress={handlePasswordRecovery}>
-        <Text style={styles.forgotPassword}>Forgot Password</Text>
-      </TouchableOpacity> */}
       <View>
       <TouchableOpacity onPress={()=>navigation.navigate('Verify')} style={styles.button}>
         <Text style={styles.buttonText}>Continue</Text>

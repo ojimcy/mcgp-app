@@ -10,10 +10,10 @@ import Services from '../components/services/Services'
 import Digital from '../components/digital/digital'
 
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = (/* {navigation} */) => {
   return (
     <>
-      <HomeHeader navigation={navigation}/>
+      <HomeHeader /* navigation={navigation} *//>
     <ScrollView style={styles.content}>
 <View style={{flexDirection:'row',height:SIZES.height*(0.05901),justifyContent:'space-between',marginHorizontal:'4%',width:'92%',marginTop:10}}>
 <NavTab title={"Deposit"}/>

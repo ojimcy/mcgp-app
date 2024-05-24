@@ -57,7 +57,7 @@ export function SkipNextButton({handleNext,handleSkip,index}){
 }
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#fff',
+       /*  backgroundColor: '#fff', */
         alignItems: 'center',
         justifyContent: 'center',
         width:SIZES.width,
