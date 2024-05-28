@@ -21,7 +21,8 @@ const Payments = () => {
       </View>
     <View style={{position:'absolute', alignContent:'center',width:SIZES.width,height:SIZES.height*(0.504),alignItems:'center',top:SIZES.height*(0.236)}}>
     <Image source={require("../../assets/images/onboarding2.png")} 
-     style={{ width: "99%",height:'105%' }}
+     style={{ width: "99%" }}
+     resizeMode='contain'
     />
     </View>
     <View style={styles.back}>

@@ -32,9 +32,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF4E8',
   },
   iconStyle: {
-    width: 50,
-    height: '90%',
+    width: 40,
+    height: '96%',
     marginRight: 10,
+    borderRadius:60
   },
   itemText: {
     fontSize: 16,

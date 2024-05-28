@@ -1,19 +1,18 @@
 import { StyleSheet, ScrollView, View, Text } from 'react-native'
 import React from 'react'
-import HomeHeader from '../components/headers/HomeHeader'
+//import HomeHeader from '../components/headers/HomeHeader'
 import { assets, COLORS, SIZES } from '../constants'
 import NavTab from '../components/buttons/NavTab'
-import Features from '../components/features/Features'
 import Card from '../components/features/Card'
 import Products from '../components/products/Products'
 import Services from '../components/services/Services'
 import Digital from '../components/digital/digital'
 
 
-const HomeScreen = (/* {navigation} */) => {
+const HomeScreen = () => {
   return (
     <>
-      <HomeHeader /* navigation={navigation} *//>
+     {/*  <HomeHeader/> */}
     <ScrollView style={styles.content}>
 <View style={{flexDirection:'row',height:SIZES.height*(0.05901),justifyContent:'space-between',marginHorizontal:'4%',width:'92%',marginTop:10}}>
 <NavTab title={"Deposit"}/>

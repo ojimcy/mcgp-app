@@ -1,103 +1,32 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
-import React,{useEffect} from 'react'
-import { Tabs } from 'expo-router'
-import * as NavigationBar from 'expo-navigation-bar';
-import { COLORS } from '../../constants';
-//import * as NavigationBar from 'expo-navigation-bar';
-const DashLayout = () => {
-    
-    useEffect(() => {
-        async function configureNavigationBar() {
-            // Set the navigation bar position to absolute
-            await NavigationBar.setPositionAsync('absolute');
-            await NavigationBar.setBackgroundColorAsync('#fff');
-          }
-      
-          configureNavigationBar();
-      }, []);
+import React from 'react'
+import { Drawer } from 'expo-router/drawer'
+import { COLORS } from '../../constants'
+const Layout = () => {
   return (
-    <Tabs 
-    screenOptions={{
-        tabBarActiveTintColor: COLORS.black,
-        headerShown: false,
-        tabBarLabelStyle: {
-            fontSize: 11, // Increase the font size here
-          },
-      }}
-    >
-      <Tabs.Screen
-        name="home"
+    <Drawer>
+      <Drawer.Screen
+        name="(tabs)"
         options={{
-          title: 'Tsa Connect',
-          tabBarIcon: ({ color, focused }) => (
-            <Image source={require('../../assets/icons/tsa.png')} style={{height:25,width:25,width:20,tintColor:focused ?COLORS.primary:COLORS.black}} resizeMode='contain' />
-           /*  <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} /> */
-          ),
-          headerTintColor: COLORS.primary,
-          headerShown:false
-        }}
-      />  
-      <Tabs.Screen
-        name="marketplace"
-        options={{
-          title: 'Marketplace',
-          tabBarIcon: ({ color, focused }) => (
-          /*   <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} /> */
-          <Image source={require('../../assets/icons/marketplace.png')} style={{
-            height:24,
-            width:24,
-            tintColor:focused ?COLORS.primary:COLORS.black}} resizeMode='contain'/>
-          ),
-          headerShown:false
-        }}
-      />  
-      <Tabs.Screen
-        name="services"
-        options={{
-          title: 'Services',
-          tabBarIcon: ({ color, focused }) => (
-           /*  <TabBarIcon name={focused ? 'person' : 'person'} color={color} /> */
-           <Image source={require('../../assets/icons/service.png')} 
-           style={{height:24,width:24,tintColor:focused ?COLORS.primary:COLORS.black}}
-           resizeMode='contain'
-           />
-          ),
-          headerShown:false
-        }}
-      />  
-      <Tabs.Screen
-        name="easyswap"
-        options={{
-          title: 'Easyswap',
-          tabBarIcon: ({ color, focused }) => (
-           /*  <TabBarIcon name={focused ? 'person' : 'person'} color={color} /> */
-           <Image 
-           source={require('../../assets/icons/swap.png')}
-            style={{height:24,width:24,tintColor:focused ?COLORS.primary:COLORS.black}}
-            resizeMode='contain'
+            headerRight: () => (
+              <Image
+              source={require("../../assets/images/person01.png")}
+              style={{ width: 30, height: 30, resizeMode:"contain",marginRight:10 }}
             />
-          ),
-          headerShown:false
-        }}
-      />  
-      <Tabs.Screen
-        name="tokenization"
-        options={{
-          title: 'Tokenization',
-          tabBarIcon: ({ color, focused }) => (
-           /*  <TabBarIcon name={focused ? 'person' : 'person'} color={color} /> */
-           <Image source={require('../../assets/icons/token.png')} 
-           style={{  height:24,width:24, tintColor:focused ?COLORS.primary:COLORS.black}}
-           resizeMode='contain'
-           />
-          ),
-          headerShown:false
-        }}
-      />  
-    </Tabs>
+            ), 
+            headerTitle:'TSA CONNECT',
+            title: 'Main Menu',
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+                fontSize: 16, // Reduce font size
+                color: COLORS.primary, // Change font color
+              },
+          }}
+      />
+      </Drawer>
   )
 }
 
-export default DashLayout
+export default Layout
 
 const styles = StyleSheet.create({})

@@ -21,6 +21,7 @@ const Order = () => {
     <View style={{ width:SIZES.width*(0.81),position:'absolute',alignContent:'center',height:SIZES.height*(0.5644) }}>
     <Image source={require("../../assets/images/onboarding3.png")} 
      style={{ width: '100%',height:'100%',marginTop:'4%'}}
+     resizeMode='contain'
     />
     </View>
     <View style={styles.back}>
