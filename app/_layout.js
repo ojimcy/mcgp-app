@@ -1,7 +1,10 @@
-import { Image, StyleSheet, Text, View } from "react-native";
-import React, { useEffect, useState } from "react";
+
+import { Image, StatusBar, StyleSheet, Text, View } from "react-native";
+import React, { useEffect } from "react";
 import { Stack } from "expo-router";
 import * as NavigationBar from "expo-navigation-bar";
+import { AppProvider } from "../AuthContext/AuthContext";
+
 const RootLayout = () => {
   useEffect(() => {
     async function configureNavigationBar() {
@@ -15,6 +18,8 @@ const RootLayout = () => {
     configureNavigationBar();
   }, []);
   return (
+    <AppProvider>
+     <StatusBar barStyle="dark-content" backgroundColor="#fff" />
     <Stack screenOptions={{headerShown:false}}>
       <Stack.Screen
         name="index"
@@ -46,10 +51,18 @@ const RootLayout = () => {
           headerShown: false,
         }}
       />
+       <Stack.Screen
+        name="(servicegroup)"
+       
+      />
+       <Stack.Screen
+        name="(productgroup)"
+      />
       <Stack.Screen
         name="(dashboard)"
       />
     </Stack>
+    </AppProvider>
   );
 };
 

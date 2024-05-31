@@ -3,7 +3,6 @@ import {
 } from "@react-navigation/material-top-tabs";
 import { withLayoutContext } from "expo-router";
 import { COLORS } from "../../../../constants";
-import { SafeAreaView } from "react-native";
 
 const { Navigator } = createMaterialTopTabNavigator();
 
@@ -31,8 +30,9 @@ textTransform:'capitalize'
   }
 }>
 <MaterialTopTabs.Screen name="marketplace" options={{title:'Favorites'}} />
-<MaterialTopTabs.Screen name="products" />
-<MaterialTopTabs.Screen name="digital" />
+<MaterialTopTabs.Screen name="products" options={{title:'Products'}} />
+<MaterialTopTabs.Screen name="service" options={{title:'Services'}}/>
+<MaterialTopTabs.Screen name="digital" options={{title:'Digital'}}/>
 </MaterialTopTabs>
 
 );

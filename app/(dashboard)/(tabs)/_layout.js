@@ -3,7 +3,7 @@ import React,{useEffect} from 'react'
 import { Tabs } from 'expo-router'
 import * as NavigationBar from 'expo-navigation-bar';
 import { COLORS } from '../../../constants';
-//import * as NavigationBar from 'expo-navigation-bar';
+
 const DashLayout = () => {
     
     useEffect(() => {

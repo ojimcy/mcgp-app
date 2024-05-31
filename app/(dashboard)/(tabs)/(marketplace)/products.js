@@ -56,24 +56,8 @@ const products = () => {
       <HeaderSearch />
       </View>
       
-     {/*  <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          marginTop: SIZES.height * 0.1437768,
-        }}
-      >
-        <TabButton link="marketplace" buttonTitle="Favourites" active={false} />
-        <TabButton link="products" buttonTitle="Products" active={true} />
-        <TabButton link="service" buttonTitle="Services" active={false} />
-        <TabButton
-          link="digital"
-          buttonTitle="Digital Currencies"
-          active={false}
-        />
-      </View> */}
-      <ListCard itemList={favourites}/>
+     
+      <ListCard itemList={favourites} itemValue='categoryproducts'/>
     </View>
   );
 };

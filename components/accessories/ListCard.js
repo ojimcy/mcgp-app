@@ -1,16 +1,25 @@
-import React from 'react';
-import { ScrollView, View, Text, Image, StyleSheet } from 'react-native';
+import React, { useContext } from 'react';
+import { ScrollView, View, Text, Image, StyleSheet, Pressable } from 'react-native';
 import { COLORS, SIZES } from '../../constants';
+import { Link, router } from 'expo-router';
+import { AppContext } from '../../AuthContext/AuthContext';
 
 // Example Data
-const ListCard = ({itemList}) => {
+const ListCard = ({itemList,itemValue}) => {
+ const {setCategory}=useContext(AppContext);
   return (
     <ScrollView style={styles.container}>
           {itemList.map((item, itemIndex) => (
-            <View key={itemIndex} style={styles.itemContainer}>
+             <Pressable onPress={()=>{
+              setCategory(item.title)
+              router.push({ pathname: `/${itemValue}`, params: { value: item.title } });
+            }} key={itemIndex}>
+            <View  style={styles.itemContainer}>
+             
               <Image source={item.icon} style={styles.iconStyle} resizeMode='contain'/>
               <Text style={styles.itemText}>{item.title}</Text>
             </View>
+            </Pressable>
           ))}
     </ScrollView>
   );
