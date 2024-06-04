@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -8,16 +8,27 @@ import {
 } from "react-native";
 import { COLORS, SIZES } from "../../constants/theme";
 import { router } from "expo-router";
+import { useAuth } from "../../AuthContext/AuthContext";
 
-export default function Login({ navigation }) {
+export default function Login() {
+  const {login}=useAuth();
+const [email,setEmail]=useState();
+const [password,setPassword]=useState();
+const [isError,setIsError]=useState(false)
   function handlePasswordRecovery(){
     router.push('/recovery')
   }
   function Signup(){
     router.push('/signup')
   }
-  function login(){
-    router.push('/home')
+  async function Login(){
+    console.log(email,password)
+  const isLoggedIn=await login(email,password);
+        if(isLoggedIn){
+          router.push('/home')
+        }else{
+            setIsError(true)
+        }
   }
   return (
     <View style={styles.container}>
@@ -26,14 +37,18 @@ export default function Login({ navigation }) {
       <Text style={styles.loginText}>Login</Text>
       <TextInput
         style={styles.input}
+        value={email}
+        onChangeText={(text)=>setEmail(text)}
         placeholder="Email"
         keyboardType="email-address"
         autoCapitalize="none"
       />
       <TextInput
         style={styles.input}
+        value={password}
         placeholder="Password"
         secureTextEntry={true}
+        onChangeText={(text)=>setPassword(text)}
       />
       </View>
       
@@ -41,7 +56,7 @@ export default function Login({ navigation }) {
       <TouchableOpacity onPress={handlePasswordRecovery}>
         <Text style={styles.forgotPassword}>Forgot Password</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={login} style={styles.button}>
+      <TouchableOpacity onPress={Login} style={styles.button}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
       <View style={{ alignContent: "center", alignItems: "center" }}>

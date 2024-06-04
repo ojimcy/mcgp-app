@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { ScrollView, View, Text, Image, StyleSheet, Pressable } from 'react-native';
 import { COLORS, SIZES } from '../../constants';
 import { Link, router } from 'expo-router';
@@ -7,13 +7,23 @@ import { AppContext } from '../../AuthContext/AuthContext';
 // Example Data
 const ListCard = ({itemList,itemValue}) => {
  const {setCategory}=useContext(AppContext);
+ const [isDisabled, setIsDisabled] = useState(false);
   return (
     <ScrollView style={styles.container}>
           {itemList.map((item, itemIndex) => (
              <Pressable onPress={()=>{
-              setCategory(item.title)
-              router.push({ pathname: `/${itemValue}`, params: { value: item.title } });
-            }} key={itemIndex}>
+              if (!isDisabled) {
+                setIsDisabled(true);
+                // Your logic here when TouchableOpacity is pressed
+                setCategory(item.title)
+                router.push({ pathname: `/${itemValue}`, params: { value: item.title } });
+                // Enable TouchableOpacity after a delay (e.g., 1 second)
+                setTimeout(() => {
+                  setIsDisabled(false);
+                }, 2000); // 1000 milliseconds = 1 second
+              }
+             
+            }} key={itemIndex}  disabled={isDisabled}>
             <View  style={styles.itemContainer}>
              
               <Image source={item.icon} style={styles.iconStyle} resizeMode='contain'/>

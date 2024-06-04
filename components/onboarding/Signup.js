@@ -1,9 +1,10 @@
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { COLORS, SIZES } from '../../constants/theme'
+import { router } from 'expo-router'
 //import Country from './Country'
 
-const Signup = ({navigation}) => {
+const Signup = () => {
   return (
     <View style={styles.container}>
      
@@ -46,7 +47,7 @@ const Signup = ({navigation}) => {
 
       <TouchableOpacity
         style={{ alignContent: "center", alignItems: "center" }}
-        onPress={()=>navigation.navigate('Login')}
+        onPress={()=>router.push('/login')}
       >
         <Text style={styles.question}>
           Already have an account? <Text style={styles.signUpText}>Login</Text>

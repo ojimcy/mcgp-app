@@ -16,12 +16,15 @@ const Services = () => {
     const {value}=useLocalSearchParams();
     console.log(value)
     const filteredData = data.filter(item => item.category === value);
-   
+    
+   function viewDetail(){
+
+   }
   return (
     <ScrollView style={{backgroundColor:'#fff'}}>
        {filteredData.length > 0 ? (
         filteredData.map((item, index) => (
-          <ServiceCard key={index} title={item.title} description={item.description} image={item.image} />
+  <ServiceCard key={index} title={item.title} description={item.description} image={item.image} />
         ))
       ) : (
         <View style={styles.noResultsContainer}>

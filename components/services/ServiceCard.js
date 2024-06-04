@@ -2,10 +2,11 @@ import { Image, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { COLORS, SIZES } from '../../constants'
 import CardButton from '../buttons/CardButton'
+import { router } from 'expo-router'
 
 const ServiceCard = ({title,image,description}) => {
     function selectService(){
-
+router.push({pathname:'/servicedetail',params:{title,image,description}})
     }
   return (
     <View style={styles.cardContainer}>
