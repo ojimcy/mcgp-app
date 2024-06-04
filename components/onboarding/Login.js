@@ -9,9 +9,10 @@ import {
 import { COLORS, SIZES } from "../../constants/theme";
 import { router } from "expo-router";
 import { useAuth } from "../../AuthContext/AuthContext";
+import { LinearProgress } from "react-native-elements";
 
 export default function Login() {
-  const {login}=useAuth();
+  const {setLoading,login,loading}=useAuth();
 const [email,setEmail]=useState();
 const [password,setPassword]=useState();
 const [isError,setIsError]=useState(false)
@@ -22,12 +23,17 @@ const [isError,setIsError]=useState(false)
     router.push('/signup')
   }
   async function Login(){
-    console.log(email,password)
+    if(!email||!password){
+return alert('All Credentials must be filled')
+    }
+    setLoading(true);
   const isLoggedIn=await login(email,password);
         if(isLoggedIn){
+          setLoading(false)
           router.push('/home')
         }else{
             setIsError(true)
+            alert("Wrong Credentials")
         }
   }
   return (
@@ -56,7 +62,7 @@ const [isError,setIsError]=useState(false)
       <TouchableOpacity onPress={handlePasswordRecovery}>
         <Text style={styles.forgotPassword}>Forgot Password</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={Login} style={styles.button}>
+      <TouchableOpacity onPress={Login} style={styles.button} disabled={loading}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
       <View style={{ alignContent: "center", alignItems: "center" }}>
@@ -74,6 +80,12 @@ const [isError,setIsError]=useState(false)
           New To Tsa? <Text style={styles.signUpText}>Signup</Text>
         </Text>
       </TouchableOpacity>
+      {loading && (
+        <View style={styles.progressContainer}>
+          <LinearProgress color={COLORS.primary} />
+          <Text style={styles.loadingText}>Signing in...</Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -150,5 +162,13 @@ const styles = StyleSheet.create({
   cover:{
     position:'absolute',
     top: SIZES.height*(0.1212),
-  }
+  },
+  progressContainer: {
+    marginTop: 20,
+    alignItems: 'center'
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+  },
 });
