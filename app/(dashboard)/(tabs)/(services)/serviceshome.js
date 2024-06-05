@@ -1,6 +1,7 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import ServiceCard from '../../../../components/services/ServiceCard'
+import AppServiceList from '../../../../components/appservices/AppServices'
 
 const data=[
   {id:1,title:'Car mechanics service',description:`Auto mechanics inspect cars, maintain vehicles and fix car problems to get them back on the road for safe operation for our clients.`, 
@@ -13,12 +14,14 @@ const data=[
 ]
 const Services = () => {
   return (
+    <>
     <ScrollView>
-       {data.map((item, index) => (
+      {/*  {data.map((item, index) => (
       <ServiceCard key={index} title={item.title} description={item.description} image={item.image}/>
-       ))}
-
+       ))} */}
+<AppServiceList/>
     </ScrollView>
+    </>
   )
 }
 

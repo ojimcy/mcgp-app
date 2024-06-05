@@ -7,13 +7,14 @@ import {
     
     export const MaterialTopTabs = withLayoutContext(Navigator );
     
-
+    import { Stack } from "expo-router";
 //const MaterialTopTab = createMaterialTopTabNavigator();
 export default function Layout() {
   return (
-    <MaterialTopTabs>
-    <MaterialTopTabs.Screen name="serviceshome" />
-    <MaterialTopTabs.Screen name="servicedetails" />
-  </MaterialTopTabs>
+    <Stack>
+    <Stack.Screen name="serviceshome" options={{title:"Services",headerTitleAlign:'center'}} />
+    <Stack.Screen name="serviceaction" options={{title:"Add Product"}} />
+    
+  </Stack>
   );
 }

@@ -10,6 +10,7 @@ import React from "react";
 import { useLocalSearchParams } from "expo-router";
 import ProductCard from "../../components/accessories/ProductCard";
 import ProductListing from "../../components/accessories/ProductListing";
+import CardProduct from "../../components/rne/CardProduct";
 
 const data = [
   {
@@ -40,27 +41,30 @@ const Products = () => {
   const filteredData = data.filter((item) => item.category === value);
 
   return (
-    <ScrollView style={{backgroundColor:'white'}}>
-      <View style={styles.container}>
-        {filteredData.length > 0 ? (
-       filteredData.map((product, index) => (
-        <ProductListing key={index} title={product.title} image={product.image} />
-      ))
-    ):(
-      <View style={styles.noResultsContainer}>
-          <Text style={styles.noResultsText}>No services found for this category.</Text>
-        </View> 
-    )}
+    <View style={styles.container}>
+      {filteredData.length > 0 ? (
+        <FlatList
+          data={filteredData}
+          renderItem={({ item }) => (
+            <CardProduct title={item.title} image={item.image} />
+          )}
+          keyExtractor={(item) => item.id}
+          numColumns={2}
+        />
+      ) : (
+        <View style={styles.noResultsContainer}>
+          <Text style={styles.noResultsText}>
+            No Product found for this category.
+          </Text>
+        </View>
+      )}
     </View>
-    </ScrollView>
   );
 };
 
 export default Products;
-
 const styles = StyleSheet.create({
   noResultsContainer: {
-    flex: 1,
     justifyContent: "center",
     alignItems: "center",
     marginTop: 20,
@@ -70,9 +74,7 @@ const styles = StyleSheet.create({
     color: "#555",
   },
   container: {
-    padding: 10,
-    flexDirection:'row',
-   alignContent:'space-between'
+   flex:1,
+   alignItems:'center'
   },
 });
-
