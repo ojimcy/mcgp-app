@@ -5,6 +5,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { COLORS, SIZES } from "../../constants/theme";
 import { router } from "expo-router";
@@ -64,13 +65,14 @@ return alert('All Credentials must be filled')
       {loading && (
         <View style={styles.progressContainer}>
           <LinearProgress color={COLORS.primary} />
+          {/* <ActivityIndicator size="large" color={COLORS.primary} /> */}
           <Text style={styles.loadingText}>Signing in...</Text>
         </View>
       )}
       <TouchableOpacity onPress={handlePasswordRecovery}>
         <Text style={styles.forgotPassword}>Forgot Password</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={Login} style={styles.button} disabled={loading}>
+      <TouchableOpacity onPress={Login} style={[styles.button, loading && styles.buttonLoading]} disabled={loading}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
       <View style={{ alignContent: "center", alignItems: "center" }}>
@@ -173,5 +175,8 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 10,
     fontSize: 16,
+  },
+  buttonLoading: {
+    backgroundColor: '#d4ba92', // Change to your desired color when loading
   },
 });
