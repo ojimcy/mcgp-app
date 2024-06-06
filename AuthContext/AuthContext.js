@@ -12,6 +12,7 @@ export const AppProvider = ({ children }) => {
   const [username, setUsername] = useState("");
   const [token, setToken] = useState("");
   const [loading, setLoading] = useState(false);
+  const [appService,setAppService]=useState('')
   async function login(username, password) {
     try {
       const response = await executeJwtAuthentication(username, password);
@@ -55,6 +56,8 @@ export const AppProvider = ({ children }) => {
         token,
         loading,
         setLoading,
+        appService,
+        setAppService
       }}
     >
       {children}

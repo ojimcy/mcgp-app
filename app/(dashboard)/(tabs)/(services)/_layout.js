@@ -8,12 +8,14 @@ import {
     export const MaterialTopTabs = withLayoutContext(Navigator );
     
     import { Stack } from "expo-router";
+import { useAuth } from "../../../../AuthContext/AuthContext";
 //const MaterialTopTab = createMaterialTopTabNavigator();
 export default function Layout() {
+  const {appService}=useAuth()
   return (
     <Stack>
     <Stack.Screen name="serviceshome" options={{title:"Services",headerTitleAlign:'center'}} />
-    <Stack.Screen name="serviceaction" options={{title:"Add Product"}} />
+    <Stack.Screen name="serviceaction" options={{title:`${appService}`}} />
     
   </Stack>
   );
