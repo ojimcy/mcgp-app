@@ -5,6 +5,7 @@ import { COLORS, SIZES } from '../../constants';
 import { Image } from 'react-native';
 import { router } from 'expo-router';
 
+
 const services = [
   { name: 'Register your product', icon: require('../../assets/appservices/product.png') },
   { name: 'Register your service', icon: require('../../assets/appservices/service.png') },
@@ -45,7 +46,7 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.primary,
+    backgroundColor: "#FFF5EA",
     padding: 10,
     marginVertical:3,
     marginHorizontal: 10,

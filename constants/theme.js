@@ -5,7 +5,7 @@ export const COLORS = {
     primary: '#9D6B38',
     white: "#FFFFFF",
     background: "#253334",
-    gray: "#BEC2C2",
+    gray: "#ebedf0",
     lightButton:'#E8A14A',
     black:'#000000'
 }

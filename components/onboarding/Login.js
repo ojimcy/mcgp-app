@@ -36,6 +36,8 @@ return alert('All Credentials must be filled')
             alert("Wrong Credentials")
         }
   }
+
+ 
   return (
     <View style={styles.container}>
      
@@ -52,13 +54,19 @@ return alert('All Credentials must be filled')
       <TextInput
         style={styles.input}
         value={password}
-        placeholder="Password"
+        placeholder="password"
         secureTextEntry={true}
+        autoCapitalize="none"
         onChangeText={(text)=>setPassword(text)}
       />
       </View>
       
-      
+      {loading && (
+        <View style={styles.progressContainer}>
+          <LinearProgress color={COLORS.primary} />
+          <Text style={styles.loadingText}>Signing in...</Text>
+        </View>
+      )}
       <TouchableOpacity onPress={handlePasswordRecovery}>
         <Text style={styles.forgotPassword}>Forgot Password</Text>
       </TouchableOpacity>
@@ -80,12 +88,7 @@ return alert('All Credentials must be filled')
           New To Tsa? <Text style={styles.signUpText}>Signup</Text>
         </Text>
       </TouchableOpacity>
-      {loading && (
-        <View style={styles.progressContainer}>
-          <LinearProgress color={COLORS.primary} />
-          <Text style={styles.loadingText}>Signing in...</Text>
-        </View>
-      )}
+    
     </View>
   );
 }
