@@ -62,6 +62,7 @@ const AddProduct = () => {
 
   function createProduct() {
     console.log(idImage, productImages);
+    alert('You are about to create Product, few more steps and you are done!')
   }
 
   return (
