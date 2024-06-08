@@ -11,13 +11,19 @@ import {
   import { COLORS, SIZES } from "../../constants/theme";
   import Icon from "react-native-vector-icons/FontAwesome";
   import * as ImagePicker from "expo-image-picker";
+  import { registerAds } from "../../constants/api/AuthenticationService";
   
   const AddService = () => {
     const [minPrice, setMinPrice] = useState("");
     const [maxPrice, setMaxPrice] = useState("");
-    const [idImage, setIdImage] = useState(null);
     const [productImages, setProductImages] = useState([]);
-    const [description, setDescription] = useState('');
+    const [description, setDescription] = useState("");
+    const [serviceName, setServiceName] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [email, setEmail] = useState("");
+    const [location, setLocation] = useState("");
+    const [category, setCategory] = useState("");
+  
     const maxDescriptionLength = 100;
   
     const pickImageAsync = async () => {
@@ -34,13 +40,13 @@ import {
       });
   
       if (!result.canceled) {
-        setIdImage(result.assets[0].uri);
+        setProductImages([...productImages, result.assets[0].uri]);
       } else {
         alert("You did not select any image.");
       }
     };
   
-    const pickProductImages = async () => {
+    const pickServiceImages = async () => {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== "granted") {
         alert("Permission to access media library denied");
@@ -50,39 +56,86 @@ import {
       let result = await ImagePicker.launchImageLibraryAsync({
         aspect: [4, 3],
         quality: 1,
-        allowsMultipleSelection: true, // Add this option to select multiple images
+        allowsMultipleSelection: true,
       });
   
       if (!result.canceled) {
-        setProductImages(result.assets.map((asset) => asset.uri)); // Set the state with the selected images
+        setProductImages(result.assets.map((asset) => asset.uri));
       } else {
         alert("You did not select any images.");
       }
     };
   
-    function createProduct() {
-      console.log(idImage, productImages);
-      alert('You are about to create Product, few more steps and you are done!')
+    async function createService() {
+      const formData = new FormData();
+      productImages.forEach((uri, index) => {
+        formData.append('images', {
+          uri,
+          type: 'image/jpeg',
+          name: `image_${index}.jpg`,
+        });
+      });
+  
+      formData.append('name', serviceName);
+      formData.append('description', description);
+      formData.append('price', minPrice);
+      formData.append('location', location);
+      formData.append('type', "Service");
+      formData.append('email', email);
+      formData.append('phoneNumber', phoneNumber);
+      formData.append('category', category);
+      formData.append('companyName', "VS45");
+      try {
+        console.log(formData)
+        const response = await registerAds(formData);
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+        console.log(error?.response?.data?.message);
+      }
     }
   
     return (
       <ScrollView style={styles.cover}>
-        <Text style={styles.label}>Enter product name</Text>
-        <TextInput style={styles.input} autoCapitalize="none" />
+        <Text style={styles.label}>Enter service name</Text>
+        <TextInput
+          style={styles.input}
+          value={serviceName}
+          onChangeText={(e) => setServiceName(e)}
+          autoCapitalize="none"
+        />
         <Text style={styles.label}>Enter Location</Text>
-        <TextInput style={styles.input} autoCapitalize="none" />
+        <TextInput
+          style={styles.input}
+          value={location}
+          onChangeText={(e) => setLocation(e)}
+          autoCapitalize="none"
+        />
         <Text style={styles.label}>Enter Valid phone number</Text>
         <TextInput
           style={styles.input}
+          value={phoneNumber}
+          onChangeText={(e) => setPhoneNumber(e)}
           keyboardType="phone-pad"
           autoCapitalize="none"
         />
         <Text style={styles.label}>Enter Valid Email</Text>
-        <TextInput style={styles.input} keyboardType="email" />
+        <TextInput
+          style={styles.input}
+          value={email}
+          onChangeText={(e) => setEmail(e)}
+          keyboardType="email-address"
+        />
+        <Text style={styles.label}>Enter Category</Text>
+        <TextInput
+          style={styles.input}
+          value={category}
+          onChangeText={(e) => setCategory(e)}
+        />
         <View style={{ alignItems: "center", flexDirection: "row" }}>
           <TextInput
             style={[styles.input, styles.priceInput]}
-            placeholder="50,000"
+            placeholder="Minimum"
             value={minPrice}
             onChangeText={setMinPrice}
           />
@@ -94,21 +147,10 @@ import {
             onChangeText={setMaxPrice}
           />
         </View>
-        <Text style={styles.label}>Upload ID</Text>
-        <TouchableOpacity style={styles.uploadButton} onPress={pickImageAsync}>
-          {idImage ? (
-            <Image source={{ uri: idImage }} style={styles.uploadedImage} />
-          ) : (
-            <Icon name="upload" size={50} color="#aaa" />
-          )}
-        </TouchableOpacity>
   
-        <Text style={styles.label}>Upload Quality product images</Text>
+        <Text style={styles.label}>Upload Quality service images</Text>
         <View style={styles.multipleImageContainer}>
-          <TouchableOpacity
-           /*  style={styles.uploadButton} */
-            onPress={pickProductImages}
-          >
+          <TouchableOpacity onPress={pickServiceImages}>
             <Icon name="upload" size={25} color="#aaa" />
           </TouchableOpacity>
         </View>
@@ -122,7 +164,7 @@ import {
         <View style={styles.textAreaContainer}>
           <TextInput
             style={styles.textArea}
-            placeholder="Please explain your product for more detail"
+            placeholder="Please explain your service for more detail"
             placeholderTextColor="grey"
             numberOfLines={10}
             multiline={true}
@@ -130,10 +172,12 @@ import {
             value={description}
             onChangeText={setDescription}
           />
-          <Text style={styles.charCount}>{description.length}/{maxDescriptionLength}</Text>
+          <Text style={styles.charCount}>
+            {description.length}/{maxDescriptionLength}
+          </Text>
         </View>
         <View style={{ alignItems: "center" }}>
-          <TouchableOpacity style={styles.button} onPress={createProduct}>
+          <TouchableOpacity style={styles.button} onPress={createService}>
             <Text style={styles.buttonText}>Continue</Text>
           </TouchableOpacity>
         </View>
@@ -260,26 +304,26 @@ import {
       height: 0.285407725 * SIZES.height,
       marginHorizontal: SIZES.width * 0.05,
       justifyContent: "center",
-      marginBottom:20
+      marginBottom: 20,
     },
     textAreaContainer: {
       width: SIZES.width * 0.9,
-      borderColor: 'gray',
+      borderColor: "gray",
       borderWidth: 1,
       borderRadius: 5,
       padding: 10,
-      backgroundColor: '#f9f9f9',
+      backgroundColor: "#f9f9f9",
       marginHorizontal: SIZES.width * 0.05,
       marginBottom: 15,
     },
     textArea: {
       height: 150,
       justifyContent: "flex-start",
-      textAlignVertical: 'top',
+      textAlignVertical: "top",
     },
     charCount: {
-      textAlign: 'right',
-      color: 'gray',
+      textAlign: "right",
+      color: "gray",
       fontSize: 12,
     },
   });

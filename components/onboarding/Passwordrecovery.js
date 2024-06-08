@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { COLORS, SIZES } from '../../constants/theme';
+import { router } from 'expo-router';
 
 export default function PasswordRecovery({navigation}) {
   const [emailOrPhone, setEmailOrPhone] = useState('');
@@ -12,9 +13,8 @@ export default function PasswordRecovery({navigation}) {
       Alert.alert('Error', 'Passwords do not match.');
       return;
     }
-    // Implement password recovery logic here
     Alert.alert('Success', 'Password recovery successful!');
-navigation.navigate('OTP');
+router.push({pathname:'/otp'})
   };
 
   return (
@@ -47,7 +47,7 @@ navigation.navigate('OTP');
        <TouchableOpacity style={styles.button} onPress={handlePasswordRecovery}>
         <Text style={styles.buttonText}>Continue</Text>
       </TouchableOpacity>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={()=>router.push('/signup')}>
         <View style={{marginTop:15}}>
         <Text >New To TSA?
         <Text style={styles.signupText}> Signup</Text>  

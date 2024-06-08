@@ -2,8 +2,9 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { OtpInput } from "react-native-otp-entry";
 import { COLORS, SIZES } from '../../constants/theme';
-const Verify = () => {
+const Verify = ({payLoad}) => {
     const [verificationCode, setVerificationCode] = React.useState();
+    
   return (
     <View style={styles.wrapper}>
        <View>

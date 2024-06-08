@@ -14,9 +14,8 @@ export default function Layout() {
   const {appService}=useAuth()
   return (
     <Stack>
-    <Stack.Screen name="serviceshome" options={{title:"Services",headerTitleAlign:'center'}} />
-    <Stack.Screen name="serviceaction" options={{title:`${appService}`}} />
-    
+    <Stack.Screen name="serviceshome" options={{headerShown:false}} />
+    <Stack.Screen name="serviceaction" options={{title:`${appService}`,headerTitleAlign:'center'}} />
   </Stack>
   );
 }

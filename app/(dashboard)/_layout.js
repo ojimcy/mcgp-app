@@ -14,7 +14,7 @@ const Layout = () => {
               style={{ width: 30, height: 30, resizeMode:"contain",marginRight:10 }}
             />
             ), 
-            headerTitle:'TSA CONNECT',
+            headerTitle:'TSA Connect',
             title: 'Main Menu',
             headerTitleAlign: 'center',
             headerTitleStyle: {

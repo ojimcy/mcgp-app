@@ -2,10 +2,10 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import PasswordRecovery from '../components/onboarding/Passwordrecovery'
 
-const RecoveryScreen = ({navigation}) => {
+const RecoveryScreen = () => {
   return (
     <View style={styles.container}>
-      <PasswordRecovery navigation={navigation}/>
+      <PasswordRecovery />
     </View>
   )
 }

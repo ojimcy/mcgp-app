@@ -43,15 +43,26 @@ const services = [
 ];
 
 const AppServiceList = () => {
-  const {setAppService}=useAuth()
+  const { setAppService } = useAuth();
   return (
     <ScrollView style={styles.container}>
       {services.map((service, index) => (
         <TouchableOpacity
           key={index}
           onPress={() => {
-            setAppService(service.name)
-           router.push({pathname:"/serviceaction", params:{index}});
+            if (index === 0 || index === 1) {
+              setAppService(service.name);
+              router.push({ pathname: "/serviceaction", params: { index } });
+            } else {
+              if (index === 3) {
+                return router.push("/products");
+              }
+              if (index === 4) {
+                return router.push("/service");
+              } else {
+                alert("Service comming soon");
+              }
+            }
           }}
         >
           <LinearGradient
@@ -91,15 +102,14 @@ const styles = StyleSheet.create({
   icon: {
     marginRight: 10,
     color: COLORS.black,
-    height:27,
-    width:27,
-    resizeMode:'contain'
+    height: 27,
+    width: 27,
+    resizeMode: "contain",
   },
   text: {
     color: COLORS.black,
     fontSize: 14,
-    fontWeight:'400',
-   
+    fontWeight: "400",
   },
   navIcon: {
     position: "absolute",

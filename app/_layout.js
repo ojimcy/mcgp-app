@@ -51,6 +51,18 @@ const RootLayout = () => {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="recovery"
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="verify"
+        options={{
+          headerShown: false,
+        }}
+      />
        <Stack.Screen
         name="(servicegroup)"
        
@@ -60,6 +72,7 @@ const RootLayout = () => {
       />
       <Stack.Screen
         name="(dashboard)"
+
       />
     </Stack>
     </AppProvider>
