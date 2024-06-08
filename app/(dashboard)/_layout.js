@@ -2,8 +2,11 @@ import { Image, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Drawer } from 'expo-router/drawer'
 import { COLORS } from '../../constants'
+import Toast from 'react-native-toast-message';
 const Layout = () => {
   return (
+    <>
+    <Toast/>
     <Drawer>
       <Drawer.Screen
         name="(tabs)"
@@ -23,7 +26,11 @@ const Layout = () => {
               },
           }}
       />
+      <Drawer.Screen name='addcategory' options={{
+        title:'Add Category'
+      }}/>
       </Drawer>
+      </>
   )
 }
 

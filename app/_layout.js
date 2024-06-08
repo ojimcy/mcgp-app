@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import { Stack } from "expo-router";
 import * as NavigationBar from "expo-navigation-bar";
 import { AppProvider } from "../AuthContext/AuthContext";
-
+import Toast from 'react-native-toast-message';
 const RootLayout = () => {
   useEffect(() => {
     async function configureNavigationBar() {
@@ -20,6 +20,7 @@ const RootLayout = () => {
   return (
     <AppProvider>
      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+     <Toast />
     <Stack screenOptions={{headerShown:false}}>
       <Stack.Screen
         name="index"

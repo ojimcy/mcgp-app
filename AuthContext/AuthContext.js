@@ -1,5 +1,8 @@
 import React, { createContext, useContext, useState } from "react";
-import { executeJwtAuthentication, register } from "../constants/api/AuthenticationService";
+import {
+  executeJwtAuthentication,
+  register,
+} from "../constants/api/AuthenticationService";
 import { apiClient } from "../constants/api/apiClient";
 
 // Create the context
@@ -12,7 +15,7 @@ export const AppProvider = ({ children }) => {
   const [username, setUsername] = useState("");
   const [token, setToken] = useState("");
   const [loading, setLoading] = useState(false);
-  const [appService,setAppService]=useState('')
+  const [appService, setAppService] = useState("");
   async function login(username, password) {
     try {
       const response = await executeJwtAuthentication(username, password);
@@ -23,7 +26,7 @@ export const AppProvider = ({ children }) => {
         setAuthenticated(true);
         apiClient.interceptors.request.use((config) => {
           config.headers.Authorization = jwtToken;
-          config.headers["Content-Type"]="multipart/form-data"
+         config.headers["Content-Type"] = "multipart/form-data";
           return config;
         });
         return true;
@@ -33,25 +36,25 @@ export const AppProvider = ({ children }) => {
         return false;
       }
     } catch (err) {
-        console.log(err)
+      console.log(err);
       setLoading(false);
       logOut();
       return false;
     }
   }
 
-  
   async function signup(payLoad) {
-    try{
+    try {
       const response = await register(payLoad);
       if (response.status === 201) {
-        console.log(response.status)
+        console.log(response.status);
         const jwtToken = "Bearer " + response.data.tokens.access.token;
         setToken(jwtToken);
         setAuthenticated(true);
         apiClient.interceptors.request.use((config) => {
           config.headers.Authorization = jwtToken;
-          config.headers["Content-Type"]="multipart/form-data"
+          config.headers["Content-Type"] = "multipart/form-data";
+          //config.headers.Accept = "application/json";
           return config;
         });
         return true;
@@ -59,15 +62,13 @@ export const AppProvider = ({ children }) => {
         setLoading(false);
         return false;
       }
-    }catch(error){
-    alert(error.response?.data?.message)
-    console.log(error)
+    } catch (error) {
+      alert(error.response?.data?.message);
+      console.log(error);
       setLoading(false);
-    }finally{
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
-    
-   
   }
   function logOut() {
     setToken(null);
@@ -89,7 +90,7 @@ export const AppProvider = ({ children }) => {
         setLoading,
         appService,
         setAppService,
-        signup
+        signup,
       }}
     >
       {children}

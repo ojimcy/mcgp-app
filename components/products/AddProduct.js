@@ -6,40 +6,34 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Modal,
 } from "react-native";
 import React, { useState } from "react";
 import { COLORS, SIZES } from "../../constants/theme";
 import Icon from "react-native-vector-icons/FontAwesome";
 import * as ImagePicker from "expo-image-picker";
-
+import { registerAds } from "../../constants/api/AuthenticationService";
+import Toast from "react-native-toast-message";
+import toastConfig from "../../toastConfig";
+import { LinearProgress } from "react-native-elements";
+import { useAuth } from "../../AuthContext/AuthContext";
 const AddProduct = () => {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
-  const [idImage, setIdImage] = useState(null);
   const [productImages, setProductImages] = useState([]);
-  const [description, setDescription] = useState('');
+  const [description, setDescription] = useState("");
+  const [productName, setProductName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [email, setEmail] = useState("");
+  const [location, setLocation] = useState("");
+  const [category, setCategory] = useState("");
+  const { setLoading, loading } = useAuth();
+  const [isModalVisible, setIsModalVisible] = React.useState(false);
   const maxDescriptionLength = 100;
 
-  const pickImageAsync = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      alert("Permission to access media library denied");
-      return;
-    }
-
-    let result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setIdImage(result.assets[0].uri);
-    } else {
-      alert("You did not select any image.");
-    }
-  };
-
+  function delay(duration) {
+    return new Promise((resolve) => setTimeout(resolve, duration));
+  }
   const pickProductImages = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
@@ -50,39 +44,133 @@ const AddProduct = () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       aspect: [4, 3],
       quality: 1,
-      allowsMultipleSelection: true, // Add this option to select multiple images
+      allowsMultipleSelection: true,
     });
 
     if (!result.canceled) {
-      setProductImages(result.assets.map((asset) => asset.uri)); // Set the state with the selected images
+      setProductImages(result.assets.map((asset) => asset.uri));
     } else {
       alert("You did not select any images.");
     }
   };
 
-  function createProduct() {
-    console.log(idImage, productImages);
-    alert('You are about to create Product, few more steps and you are done!')
+  async function createProduct() {
+    setLoading(true);
+    const formData = new FormData();
+    productImages.forEach((uri, index) => {
+      formData.append("images", {
+        uri,
+        type: "image/jpeg",
+        name: `image_${index}.jpg`,
+      });
+    });
+
+    formData.append("name", productName);
+    formData.append("description", description);
+    formData.append("price", minPrice);
+    formData.append("location", location);
+    formData.append("type", "Product");
+    formData.append("email", email);
+    formData.append("phoneNumber", phoneNumber);
+    formData.append("category", category);
+    formData.append("companyName", "VS45");
+    try {
+      const response = await registerAds(formData);
+      if (response) {
+        setLoading(false);
+        setIsModalVisible(true);
+        Toast.show({
+          type: "success",
+          text1: "Product Created",
+          text2: "The product was created successfully.",
+        });
+      }
+      alert("Product Created");
+      await delay(2000);
+      setIsModalVisible(false);
+      setPhoneNumber("");
+      setCategory("");
+      setDescription("");
+      setEmail("");
+      setMinPrice("");
+      setLocation('')
+      setProductImages([])
+      setProductName('')
+    } catch (error) {
+      setLoading(false);
+      setIsModalVisible(true);
+      Toast.show({
+        type: "error",
+        text1: "Error Creating Product",
+        text2: error.response.data.message || "An error occurred",
+      });
+      alert(error.response.data.message);
+      await delay(4000);
+      setIsModalVisible(false);
+    }
   }
 
   return (
     <ScrollView style={styles.cover}>
+      <Modal
+        visible={isModalVisible}
+        style={{
+          justifyContent: "center",
+          alignContent: "center",
+          alignItems: "center",
+          width: "50%",
+          height: "55%",
+        }}
+      >
+        <Toast config={toastConfig} />
+        <TouchableOpacity
+          onPress={() => {
+            setIsModalVisible(false);
+          }}
+        >
+          <Text>Close</Text>
+        </TouchableOpacity>
+      </Modal>
+
       <Text style={styles.label}>Enter product name</Text>
-      <TextInput style={styles.input} autoCapitalize="none" />
+      <TextInput
+        style={styles.input}
+        value={productName}
+        onChangeText={(e) => setProductName(e)}
+        autoCapitalize="none"
+      />
       <Text style={styles.label}>Enter Location</Text>
-      <TextInput style={styles.input} autoCapitalize="none" />
+      <TextInput
+        style={styles.input}
+        value={location}
+        onChangeText={(e) => setLocation(e)}
+        autoCapitalize="none"
+      />
       <Text style={styles.label}>Enter Valid phone number</Text>
       <TextInput
         style={styles.input}
+        value={phoneNumber}
+        onChangeText={(e) => setPhoneNumber(e)}
         keyboardType="phone-pad"
         autoCapitalize="none"
       />
       <Text style={styles.label}>Enter Valid Email</Text>
-      <TextInput style={styles.input} keyboardType="email" />
+      <TextInput
+        style={styles.input}
+        value={email}
+        onChangeText={(e) => setEmail(e)}
+        keyboardType="email-address"
+      />
+      <Text style={styles.label}>Enter Category</Text>
+      <TextInput
+        style={styles.input}
+        value={category}
+        onChangeText={(e) => setCategory(e)}
+      />
       <View style={{ alignItems: "center", flexDirection: "row" }}>
         <TextInput
           style={[styles.input, styles.priceInput]}
-          placeholder="50,000"
+          placeholder="Minimum"
           value={minPrice}
           onChangeText={setMinPrice}
         />
@@ -94,21 +182,10 @@ const AddProduct = () => {
           onChangeText={setMaxPrice}
         />
       </View>
-      <Text style={styles.label}>Upload ID</Text>
-      <TouchableOpacity style={styles.uploadButton} onPress={pickImageAsync}>
-        {idImage ? (
-          <Image source={{ uri: idImage }} style={styles.uploadedImage} />
-        ) : (
-          <Icon name="upload" size={50} color="#aaa" />
-        )}
-      </TouchableOpacity>
 
       <Text style={styles.label}>Upload Quality product images</Text>
       <View style={styles.multipleImageContainer}>
-        <TouchableOpacity
-         /*  style={styles.uploadButton} */
-          onPress={pickProductImages}
-        >
+        <TouchableOpacity onPress={pickProductImages}>
           <Icon name="upload" size={25} color="#aaa" />
         </TouchableOpacity>
       </View>
@@ -130,10 +207,22 @@ const AddProduct = () => {
           value={description}
           onChangeText={setDescription}
         />
-        <Text style={styles.charCount}>{description.length}/{maxDescriptionLength}</Text>
+        <Text style={styles.charCount}>
+          {description.length}/{maxDescriptionLength}
+        </Text>
       </View>
+      {loading && (
+        <View style={styles.progressContainer}>
+          <LinearProgress color={COLORS.primary} />
+          {/* <ActivityIndicator size="large" color={COLORS.primary} /> */}
+          <Text style={styles.loadingText}>Signing in...</Text>
+        </View>
+      )}
       <View style={{ alignItems: "center" }}>
-        <TouchableOpacity style={styles.button} onPress={createProduct}>
+        <TouchableOpacity
+          style={[styles.button, loading && styles.buttonLoading]}
+          onPress={createProduct}
+        >
           <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>
       </View>
@@ -260,26 +349,37 @@ const styles = StyleSheet.create({
     height: 0.285407725 * SIZES.height,
     marginHorizontal: SIZES.width * 0.05,
     justifyContent: "center",
-    marginBottom:20
+    marginBottom: 20,
   },
   textAreaContainer: {
     width: SIZES.width * 0.9,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 1,
     borderRadius: 5,
     padding: 10,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: "#f9f9f9",
     marginHorizontal: SIZES.width * 0.05,
     marginBottom: 15,
   },
   textArea: {
     height: 150,
     justifyContent: "flex-start",
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
   },
   charCount: {
-    textAlign: 'right',
-    color: 'gray',
+    textAlign: "right",
+    color: "gray",
     fontSize: 12,
+  },
+  progressContainer: {
+    marginTop: 20,
+    alignItems: "center",
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+  },
+  buttonLoading: {
+    backgroundColor: "#d4ba92", // Change to your desired color when loading
   },
 });
