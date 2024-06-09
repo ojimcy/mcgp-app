@@ -8,15 +8,17 @@ import {
   View,
   Modal,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { COLORS, SIZES } from "../../constants/theme";
 import Icon from "react-native-vector-icons/FontAwesome";
 import * as ImagePicker from "expo-image-picker";
-import { registerAds } from "../../constants/api/AuthenticationService";
+import { getCategories, registerAds } from "../../constants/api/AuthenticationService";
 import Toast from "react-native-toast-message";
 import toastConfig from "../../toastConfig";
 import { LinearProgress } from "react-native-elements";
 import { useAuth } from "../../AuthContext/AuthContext";
+import DropDownPicker from 'react-native-dropdown-picker';
+
 const AddProduct = () => {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
@@ -28,16 +30,23 @@ const AddProduct = () => {
   const [location, setLocation] = useState("");
   const [category, setCategory] = useState("");
   const { setLoading, loading } = useAuth();
-  const [isModalVisible, setIsModalVisible] = React.useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [open, setOpen] = useState(false);
   const maxDescriptionLength = 100;
 
-  function delay(duration) {
+  const delay = useCallback((duration) => {
     return new Promise((resolve) => setTimeout(resolve, duration));
-  }
+  }, []);
+
   const pickProductImages = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
-      alert("Permission to access media library denied");
+      Toast.show({
+        type: "error",
+        text1: "Permission Denied",
+        text2: "Permission to access media library denied",
+      });
       return;
     }
 
@@ -50,11 +59,24 @@ const AddProduct = () => {
     if (!result.canceled) {
       setProductImages(result.assets.map((asset) => asset.uri));
     } else {
-      alert("You did not select any images.");
+      Toast.show({
+        type: "info",
+        text1: "No Images Selected",
+        text2: "You did not select any images.",
+      });
     }
   };
 
-  async function createProduct() {
+  const createProduct = useCallback(async () => {
+    if (!productName || !location || !phoneNumber || !email || !category || !description || !minPrice || !maxPrice || productImages.length === 0) {
+      Toast.show({
+        type: "error",
+        text1: "Missing Fields",
+        text2: "Please fill all the fields and upload images.",
+      });
+      return;
+    }
+
     setLoading(true);
     const formData = new FormData();
     productImages.forEach((uri, index) => {
@@ -74,6 +96,7 @@ const AddProduct = () => {
     formData.append("phoneNumber", phoneNumber);
     formData.append("category", category);
     formData.append("companyName", "VS45");
+
     try {
       const response = await registerAds(formData);
       if (response) {
@@ -84,51 +107,80 @@ const AddProduct = () => {
           text1: "Product Created",
           text2: "The product was created successfully.",
         });
+        await delay(2000);
+        setIsModalVisible(false);
+        resetForm();
       }
-      alert("Product Created");
-      await delay(2000);
-      setIsModalVisible(false);
-      setPhoneNumber("");
-      setCategory("");
-      setDescription("");
-      setEmail("");
-      setMinPrice("");
-      setLocation('')
-      setProductImages([])
-      setProductName('')
     } catch (error) {
       setLoading(false);
       setIsModalVisible(true);
       Toast.show({
         type: "error",
         text1: "Error Creating Product",
-        text2: error.response.data.message || "An error occurred",
+        text2: error.response?.data?.message || "An error occurred",
       });
-      alert(error.response.data.message);
       await delay(4000);
       setIsModalVisible(false);
     }
-  }
+  }, [productName, location, phoneNumber, email, category, description, minPrice, maxPrice, productImages, delay, setLoading]);
+
+  const resetForm = () => {
+    setPhoneNumber("");
+    setCategory("");
+    setDescription("");
+    setEmail("");
+    setMinPrice("");
+    setLocation('');
+    setProductImages([]);
+    setProductName('');
+    setMaxPrice('');
+  };
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await getCategories(); // Adjust the endpoint based on your API
+        console.log(response.data.results)
+        const fetchedCategories = response.data.results.map(category => ({
+          label: category.title,
+          value: category.id,
+          icon: () => (
+            category.featuredImage ? (
+              <Image
+                source={{ uri: category.featuredImage }}
+                style={styles.icon}
+              />
+            ) : (
+              <View style={styles.placeholderIcon}>
+                <Text>📷</Text>
+              </View>
+            )
+          ),
+        }));
+        setCategories(fetchedCategories);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+        console.log(error?.response?.data?.message)
+      }
+    };
+    fetchCategories();
+  }, []);
 
   return (
     <ScrollView style={styles.cover}>
       <Modal
         visible={isModalVisible}
-        style={{
-          justifyContent: "center",
-          alignContent: "center",
-          alignItems: "center",
-          width: "50%",
-          height: "55%",
-        }}
+        style={styles.modal}
+        transparent={true}
       >
         <Toast config={toastConfig} />
         <TouchableOpacity
           onPress={() => {
             setIsModalVisible(false);
           }}
+          style={styles.closeButton}
         >
-          <Text>Close</Text>
+          <Text style={styles.closeButtonText}>Close</Text>
         </TouchableOpacity>
       </Modal>
 
@@ -136,21 +188,21 @@ const AddProduct = () => {
       <TextInput
         style={styles.input}
         value={productName}
-        onChangeText={(e) => setProductName(e)}
+        onChangeText={setProductName}
         autoCapitalize="none"
       />
       <Text style={styles.label}>Enter Location</Text>
       <TextInput
         style={styles.input}
         value={location}
-        onChangeText={(e) => setLocation(e)}
+        onChangeText={setLocation}
         autoCapitalize="none"
       />
       <Text style={styles.label}>Enter Valid phone number</Text>
       <TextInput
         style={styles.input}
         value={phoneNumber}
-        onChangeText={(e) => setPhoneNumber(e)}
+        onChangeText={setPhoneNumber}
         keyboardType="phone-pad"
         autoCapitalize="none"
       />
@@ -158,16 +210,22 @@ const AddProduct = () => {
       <TextInput
         style={styles.input}
         value={email}
-        onChangeText={(e) => setEmail(e)}
+        onChangeText={setEmail}
         keyboardType="email-address"
       />
       <Text style={styles.label}>Enter Category</Text>
-      <TextInput
-        style={styles.input}
+      <DropDownPicker
+        open={open}
         value={category}
-        onChangeText={(e) => setCategory(e)}
+        items={categories}
+        setOpen={setOpen}
+        setValue={setCategory}
+        setItems={setCategories}
+        placeholder="Select a category"
+        style={styles.dropdown}
+        dropDownContainerStyle={styles.dropdownContainer}
       />
-      <View style={{ alignItems: "center", flexDirection: "row" }}>
+      <View style={styles.priceRangeContainer}>
         <TextInput
           style={[styles.input, styles.priceInput]}
           placeholder="Minimum"
@@ -214,14 +272,14 @@ const AddProduct = () => {
       {loading && (
         <View style={styles.progressContainer}>
           <LinearProgress color={COLORS.primary} />
-          {/* <ActivityIndicator size="large" color={COLORS.primary} /> */}
-          <Text style={styles.loadingText}>Signing in...</Text>
+          <Text style={styles.loadingText}>Submitting...</Text>
         </View>
       )}
       <View style={{ alignItems: "center" }}>
         <TouchableOpacity
           style={[styles.button, loading && styles.buttonLoading]}
           onPress={createProduct}
+          disabled={loading}
         >
           <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>
@@ -237,13 +295,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 20,
     backgroundColor: COLORS.white,
-  },
-  loginText: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    left: "5%",
-    color: COLORS.primary,
   },
   input: {
     width: SIZES.width * 0.9,
@@ -270,36 +321,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
   },
-  emailButton: {
-    backgroundColor: COLORS.white,
-    width: SIZES.width * 0.9,
-    padding: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 10,
-    height: 0.0687 * SIZES.height,
-    borderRadius: 10,
-    borderWidth: 1,
-  },
-  emailButtonText: {
-    fontWeight: "semibold",
-  },
-  forgotPassword: {
-    marginBottom: 15,
-    position: "relative",
-    color: COLORS.primary,
-    paddingLeft: "1%",
-  },
-  orText: {
-    marginVertical: 10,
-  },
-  signUpText: {
-    marginTop: 10,
-    color: COLORS.primary,
-  },
-  question: {
-    marginTop: 10,
-  },
   cover: {
     top: 10,
     marginBottom: 15,
@@ -319,17 +340,14 @@ const styles = StyleSheet.create({
   priceSeparator: {
     marginHorizontal: 10,
   },
-  uploadButton: {
+  multipleImageContainer: {
     alignItems: "center",
-    justifyContent: "center",
-    width: 100,
-    height: 100,
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 20,
-    backgroundColor: "#f9f9f9",
+    backgroundColor: COLORS.gray,
+    width: SIZES.width * 0.9,
+    height: 0.285407725 * SIZES.height,
     marginHorizontal: SIZES.width * 0.05,
+    justifyContent: "center",
+    marginBottom: 20,
   },
   uploadedImage: {
     width: 100,
@@ -341,15 +359,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "center",
-  },
-  multipleImageContainer: {
-    alignItems: "center",
-    backgroundColor: COLORS.gray,
-    width: SIZES.width * 0.9,
-    height: 0.285407725 * SIZES.height,
-    marginHorizontal: SIZES.width * 0.05,
-    justifyContent: "center",
-    marginBottom: 20,
   },
   textAreaContainer: {
     width: SIZES.width * 0.9,
@@ -381,5 +390,49 @@ const styles = StyleSheet.create({
   },
   buttonLoading: {
     backgroundColor: "#d4ba92", // Change to your desired color when loading
+  },
+  dropdown: {
+    width: '90%',
+    height: 50,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginHorizontal: SIZES.width * 0.05,
+    marginBottom: 15,
+  },
+  dropdownContainer: {
+    borderColor: '#ccc',
+    borderWidth: 1,
+  },
+  icon: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+  },
+  placeholderIcon: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ccc',
+  },
+  modal: {
+    justifyContent: "center",
+    alignContent: "center",
+    alignItems: "center",
+    width: "50%",
+    height: "55%",
+  },
+  closeButton: {
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
+    backgroundColor: COLORS.primary,
+    borderRadius: 5,
+  },
+  closeButtonText: {
+    color: "#fff",
+    fontSize: 16,
   },
 });
