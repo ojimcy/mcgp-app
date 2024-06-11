@@ -1,13 +1,15 @@
 import {StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import Products from '../components/onboarding/products'
-import LinearGrad from '../components/rne/LinearGrad'
+import ProductDetail from '../components/products/productdetail'
+import Delivery from '../components/orders/delivery'
 
 const Dashboard = () => {
   return (
     <View>
-      <Products/>
-     
+      {/* <Products/> */}
+    {/*  <ProductDetail/> */}
+     <Delivery/>
     </View>
   )
 }

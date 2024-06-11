@@ -5,6 +5,7 @@ import { COLORS, SIZES } from "../../../../constants";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import ListCard from "../../../../components/accessories/ListCard";
 import HeaderSearch from "../../../../components/marketplace/header";
+import { getCategories } from "../../../../constants/api/AuthenticationService";
 const favourites = [
   {
     id: 1,
@@ -52,10 +53,25 @@ const favourites = [
 
 
 const services = () => {
+  const [categories,setCategories]=useState([])
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await getCategories(); // Adjust the endpoint based on your API
+        console.log(response.data.results)
+        const fetchedCategories = response.data.results;
+        setCategories(fetchedCategories);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+        console.log(error?.response?.data?.message)
+      }
+    };
+    fetchCategories();
+  }, []);
   return (
     <View style={{ flex: 1,backgroundColor:COLORS.white }}>
        <HeaderSearch />
-     <ListCard itemList={favourites} itemValue='categoryservice'/>
+     <ListCard itemList={categories} itemValue='categoryservice'/>
     </View>
   );
 };
