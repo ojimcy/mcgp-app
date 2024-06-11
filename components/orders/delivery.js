@@ -17,6 +17,12 @@ const Delivery = () => {
   const [deliveryfee, setDeliveryFee] = useState(0);
   const [quantity,setQuantity]=useState(0)
   function Continue() {}
+  function subTract(){
+    setQuantity(quantity-1)
+  }
+  function addQuantity(){
+    setQuantity(quantity+1)
+  }
   useEffect(() => {
     const fetStates = async () => {
       const response = await fetch("https://api.facts.ng/v1/states");
@@ -92,6 +98,7 @@ const Delivery = () => {
         >
           <TouchableOpacity
             style={styles.minAdd}
+            onPress={subTract}
           >
             <Text>-</Text>
           </TouchableOpacity>
@@ -101,6 +108,7 @@ const Delivery = () => {
           
           <TouchableOpacity
            style={styles.minAdd}
+           onPress={addQuantity}
           >
             <Text>+</Text>
           </TouchableOpacity>
