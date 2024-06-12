@@ -57,15 +57,14 @@ export const AppProvider = ({ children }) => {
           //config.headers.Accept = "application/json";
           return config;
         });
-        return true;
+        return {success:true,error:false,message:'success'};
       } else {
         setLoading(false);
-        return false;
+        return {success:false,error:true,message:'could not create'};
       }
     } catch (error) {
-      alert(error.response?.data?.message);
-      console.log(error);
       setLoading(false);
+      return {success:false,error:true,message:error.response?.data?.message};
     } finally {
       setLoading(false);
     }

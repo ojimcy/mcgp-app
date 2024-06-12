@@ -10,6 +10,8 @@ import { COLORS, SIZES } from "../../constants/theme";
 import { router } from "expo-router";
 import { LinearProgress } from "react-native-elements";
 import { useAuth } from "../../AuthContext/AuthContext";
+import PhoneNumber from "../country/phoneNumber";
+import CountryComponent from "../country/countrypicker";
 //import Country from './Country'
 
 const Signup = () => {
@@ -20,26 +22,30 @@ const Signup = () => {
   const [phoneNumber, setPhoneNumber] = useState();
   const [confirmPassword, setConfirmPassword] = useState();
   const { loading, setLoading, signup } = useAuth();
-
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  function removeAllSpaces(str) {
+    return str.replace(/\s+/g, '');
+}
   async function handleSignup() {
+  console.log(`${selectedCountry?.callingCode} ${phoneNumber}`)
     setLoading(true);
-    const payLoad = { name, email:email.trim(), password, country, phoneNumber };
+    const payLoad = { name, email:email.trim(), password, country, phoneNumber:removeAllSpaces(selectedCountry?.callingCode+phoneNumber)};
     console.log(payLoad)
     if (password != confirmPassword) {
       setLoading(false);
       return alert("Password Mismatch");
     }
     try {
-      const isLoggedIn = await signup(payLoad);
-      console.log(isLoggedIn)
-      if (isLoggedIn) {
+      const result = await signup(payLoad);
+      console.log(result)
+      if (result.success) {
         setLoading(false);
         router.push("/home");
       } else {
-       alert('Something went Wrong')
+       //alert('Something went Wrong')
+       alert(result.message)
       }
     } catch (err) {
-      console.log(err);
       alert(err);
       setLoading(false);
     } finally {
@@ -57,20 +63,23 @@ const Signup = () => {
           onChangeText={(text) => setName(text)}
         />
 
-        <TextInput
+     {/*    <TextInput
           style={styles.input}
           value={phoneNumber}
           placeholder="Phone"
           keyboardType="phone-pad"
           autoCapitalize="none"
           onChangeText={(e) => setPhoneNumber(e)}
+        /> */}
+        <PhoneNumber 
+        inputValue={phoneNumber} 
+        setInputValue={setPhoneNumber}
+        selectedCountry={selectedCountry}
+        setSelectedCountry={setSelectedCountry}
         />
-        <TextInput
-          style={styles.input}
-          value={country}
-          placeholder="Country/Region"
-          onChangeText={(e) => setCountry(e)}
-          /* autoCapitalize="none" */
+        <CountryComponent
+        country={country}
+        setCountry={setCountry}
         />
         {/*     <Country/> */}
         <TextInput

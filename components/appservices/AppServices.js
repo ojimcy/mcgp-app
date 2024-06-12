@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   },
   navIcon: {
     position: "absolute",
-    right: 5,
+    right: 10,
   },
 });
 
