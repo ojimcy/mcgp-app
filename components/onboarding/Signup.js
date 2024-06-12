@@ -62,15 +62,6 @@ const Signup = () => {
           placeholder="Name"
           onChangeText={(text) => setName(text)}
         />
-
-     {/*    <TextInput
-          style={styles.input}
-          value={phoneNumber}
-          placeholder="Phone"
-          keyboardType="phone-pad"
-          autoCapitalize="none"
-          onChangeText={(e) => setPhoneNumber(e)}
-        /> */}
         <PhoneNumber 
         inputValue={phoneNumber} 
         setInputValue={setPhoneNumber}
@@ -81,7 +72,6 @@ const Signup = () => {
         country={country}
         setCountry={setCountry}
         />
-        {/*     <Country/> */}
         <TextInput
           style={styles.input}
           value={email}
