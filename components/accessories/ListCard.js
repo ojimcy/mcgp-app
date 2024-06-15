@@ -11,12 +11,14 @@ const ListCard = ({itemList,itemValue}) => {
   return (
     <ScrollView style={styles.container}>
           {itemList.map((item, itemIndex) => (
+            
              <Pressable onPress={()=>{
               if (!isDisabled) {
+                console.log(item)
                 setIsDisabled(true);
                 // Your logic here when TouchableOpacity is pressed
                 setCategory(item.title)
-                router.push({ pathname: `/${itemValue}`, params: { value: item.title } });
+                router.push({ pathname: `/${itemValue}`, params: { value: item.id } });
                 // Enable TouchableOpacity after a delay (e.g., 1 second)
                 setTimeout(() => {
                   setIsDisabled(false);
@@ -25,8 +27,7 @@ const ListCard = ({itemList,itemValue}) => {
              
             }} key={itemIndex}  disabled={isDisabled}>
             <View  style={styles.itemContainer}>
-             
-              <Image source={item.icon} style={styles.iconStyle} resizeMode='contain'/>
+              <Image source={{uri:item.image}} style={styles.iconStyle} resizeMode='contain'/>
               <Text style={styles.itemText}>{item.title}</Text>
             </View>
             </Pressable>
@@ -53,7 +54,7 @@ const styles = StyleSheet.create({
   iconStyle: {
     width: 40,
     height: '96%',
-    marginRight: 10,
+    marginRight: 5,
     borderRadius:60
   },
   itemText: {

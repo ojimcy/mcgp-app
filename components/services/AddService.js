@@ -12,7 +12,7 @@ import {
   import Icon from "react-native-vector-icons/FontAwesome";
   import * as ImagePicker from "expo-image-picker";
   import { registerAds } from "../../constants/api/AuthenticationService";
-  
+  import {Picker} from '@react-native-picker/picker';
   const AddService = () => {
     const [minPrice, setMinPrice] = useState("");
     const [maxPrice, setMaxPrice] = useState("");
@@ -23,28 +23,9 @@ import {
     const [email, setEmail] = useState("");
     const [location, setLocation] = useState("");
     const [category, setCategory] = useState("");
-  
+  const [categories,setCategories]=useState([])
     const maxDescriptionLength = 100;
   
-    const pickImageAsync = async () => {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== "granted") {
-        alert("Permission to access media library denied");
-        return;
-      }
-  
-      let result = await ImagePicker.launchImageLibraryAsync({
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
-  
-      if (!result.canceled) {
-        setProductImages([...productImages, result.assets[0].uri]);
-      } else {
-        alert("You did not select any image.");
-      }
-    };
   
     const pickServiceImages = async () => {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -127,11 +108,22 @@ import {
           keyboardType="email-address"
         />
         <Text style={styles.label}>Enter Category</Text>
-        <TextInput
+        {/* <TextInput
           style={styles.input}
           value={category}
           onChangeText={(e) => setCategory(e)}
-        />
+        /> */}
+        <Picker
+        style={styles.input}
+  selectedValue={category}
+  onValueChange={(itemValue) =>
+    setCategory(itemValue)
+  }>
+  
+  {categories.map((item,index)=>(
+    <Picker.Item key={index} label={item.title} value={item.id} />
+  ))}
+</Picker>
         <View style={{ alignItems: "center", flexDirection: "row" }}>
           <TextInput
             style={[styles.input, styles.priceInput]}

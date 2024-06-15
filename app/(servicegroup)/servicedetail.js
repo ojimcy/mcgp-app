@@ -5,12 +5,13 @@ import { useLocalSearchParams } from 'expo-router'
 
 const ServiceDetail = () => {
     const {title,image,description}=useLocalSearchParams()
+    console.log(title,image,description)
     function handlePay(){
 console.log('Clicked!')
     }
   return (
     <View>
-      <ServiceDetailCard title={title} imageSrc={image} address={description} onPayPress={handlePay}/>
+      <ServiceDetailCard title={title} imageSrc={image[0]} address={description} onPayPress={handlePay}/>
     </View>
   )
 }

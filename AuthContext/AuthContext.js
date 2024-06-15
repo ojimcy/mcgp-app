@@ -1,9 +1,11 @@
 import React, { createContext, useContext, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   executeJwtAuthentication,
   register,
 } from "../constants/api/AuthenticationService";
 import { apiClient } from "../constants/api/apiClient";
+import { router } from "expo-router";
 
 // Create the context
 export const AppContext = createContext();
@@ -21,25 +23,29 @@ export const AppProvider = ({ children }) => {
       const response = await executeJwtAuthentication(username, password);
       if (response.status === 200) {
         const jwtToken = "Bearer " + response.data.tokens.access.token;
+        await AsyncStorage.setItem("token", jwtToken);
         setToken(jwtToken);
         setUsername(username);
         setAuthenticated(true);
         apiClient.interceptors.request.use((config) => {
           config.headers.Authorization = jwtToken;
-         config.headers["Content-Type"] = "multipart/form-data";
+          config.headers["Content-Type"] = "multipart/form-data";
           return config;
         });
-        return true;
+        return { success: true, error: false, message: "success" };
       } else {
         setLoading(false);
-        logOut();
-        return false;
+        await logOut();
+        return { success: false, error: true, message: "could not create" };
       }
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
       setLoading(false);
-      logOut();
-      return false;
+      await logOut();
+      return {
+        success: false,
+        error: true,
+        message: error.response?.data?.message,
+      };
     }
   }
 
@@ -47,7 +53,6 @@ export const AppProvider = ({ children }) => {
     try {
       const response = await register(payLoad);
       if (response.status === 201) {
-        console.log(response.status);
         const jwtToken = "Bearer " + response.data.tokens.access.token;
         setToken(jwtToken);
         setAuthenticated(true);
@@ -57,22 +62,32 @@ export const AppProvider = ({ children }) => {
           //config.headers.Accept = "application/json";
           return config;
         });
-        return {success:true,error:false,message:'success'};
+        return { success: true, error: false, message: "success" };
       } else {
         setLoading(false);
-        return {success:false,error:true,message:'could not create'};
+        return { success: false, error: true, message: "could not create" };
       }
     } catch (error) {
       setLoading(false);
-      return {success:false,error:true,message:error.response?.data?.message};
+      return {
+        success: false,
+        error: true,
+        message: error.response?.data?.message,
+      };
     } finally {
       setLoading(false);
     }
   }
-  function logOut() {
+  async function logOut() {
     setToken(null);
     setAuthenticated(false);
     setUsername(null);
+    apiClient.interceptors.request.use((config) => {
+      config.headers.Authorization = "";
+      return config;
+    });
+    await AsyncStorage.removeItem('token');
+    router.push('/login')
   }
   return (
     <AppContext.Provider
@@ -90,6 +105,7 @@ export const AppProvider = ({ children }) => {
         appService,
         setAppService,
         signup,
+        setToken
       }}
     >
       {children}

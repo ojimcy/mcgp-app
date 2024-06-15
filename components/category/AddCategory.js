@@ -21,8 +21,9 @@ import toastConfig from "../../toastConfig";
 const AddCategory = () => {
   const [description, setDescription] = useState("");
   const [title, setTitle] = useState("");
+  const [type, setType] = useState("");
   const [featuredImage, setFeaturedImage] = useState(null);
-  const { token } = useAuth();
+  const { token,logOut } = useAuth();
   const pickImageAsync = async () => {
     try {
       const { status } =
@@ -53,13 +54,26 @@ const AddCategory = () => {
       alert("Please fill all fields and upload an image.");
       return;
     }
-
+    const formData = new FormData();
+    formData.append('image', {
+      uri: featuredImage,
+      type: 'image/jpeg',
+      name: 'cat-file',
+    });
+    formData.append('title',title)
+    formData.append('description',description)
+    formData.append('type',type)
+    
     try {
-      const response = await axios.post(`${baseUrl}/category`, {title,description,featuredImage:null}, {
+      const response = await registerCategory(formData);
+      console.log(response)
+      /* const response = await axios.post(`${baseUrl}/category`, formData, {
         headers: {
           Authorization: token,
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
         },
-      });
+      }); */
       if (response.status === 201) {
         Toast.show({
             type: 'success',
@@ -68,7 +82,6 @@ const AddCategory = () => {
           });
       }
     } catch (error) {
-    //  console.log("Error:", error);
       if (error.response) {
             Toast.show({
               type: 'error',
@@ -100,8 +113,14 @@ const AddCategory = () => {
         onChangeText={(e) => setDescription(e)}
         autoCapitalize="none"
       />
+       <Text style={styles.label}>Enter Category Type</Text>
+      <TextInput
+        style={styles.input}
+        value={type}
+        onChangeText={(e) => setType(e)}
+      />
          <Toast config={toastConfig}/>
-      {/* <Text style={styles.label}>Upload Featured Image</Text>
+      <Text style={styles.label}>Upload Featured Image</Text>
       <View style={styles.uploadContainer}>
         <TouchableOpacity onPress={pickImageAsync}>
           <Icon name="upload" size={25} color="#aaa" />
@@ -113,12 +132,13 @@ const AddCategory = () => {
           <Image source={{ uri: featuredImage }} style={styles.uploadedImage} />
         </View>
       )}
- */}
+
       <View style={{ alignItems: "center" }}>
         <TouchableOpacity style={styles.button} onPress={createCategory}>
           <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>
       </View>
+      
     </ScrollView>
   );
 };

@@ -1,44 +1,32 @@
 import {
   FlatList,
-  ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
-import ProductCard from "../../components/accessories/ProductCard";
-import ProductListing from "../../components/accessories/ProductListing";
 import CardProduct from "../../components/rne/CardProduct";
+import { getAdverts } from "../../constants/api/AuthenticationService";
 
-const data = [
-  {
-    id: 1,
-    title: "Car mechanics service",
-    description: `Auto mechanics inspect cars, maintain vehicles and fix car problems to get them back on the road for safe operation for our clients.`,
-    category: "Mechanics",
-    image: require("../../assets/services/mechanic.jpg"),
-  },
-  {
-    id: 2,
-    title: "Catering service",
-    description: `Our catering service is about preparing food and providing food services for clients at remote locations,such as hotels, restaurants, offices, concerts, and events.`,
-    category: "Mechanics",
-    image: require("../../assets/services/caterings.png"),
-  },
-  {
-    id: 2,
-    title: "Catering service",
-    description: `Our catering service is about preparing food and providing food services for clients at remote locations,such as hotels, restaurants, offices, concerts, and events.`,
-    category: "Mechanics",
-    image: require("../../assets/services/caterings.png"),
-  },
-];
 const Products = () => {
   const { value } = useLocalSearchParams();
   console.log(value);
-  const filteredData = data.filter((item) => item.category === value);
+  const [products, setProducts] = useState([]);
+  const filteredData = products.filter((item) => item.category === value);
+  useEffect(() => {
+    const fetchedProducts = async () => {
+      try {
+        const response = await getAdverts("Product"); 
+        const fetchProducts = response.data.results;
+        setProducts(fetchProducts);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        console.log(error?.response?.data?.message);
+      }
+    };
+    fetchedProducts();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -46,7 +34,7 @@ const Products = () => {
         <FlatList
           data={filteredData}
           renderItem={({ item }) => (
-            <CardProduct title={item.title} image={item.image} />
+            <CardProduct item={item} />
           )}
           keyExtractor={(item) => item.id}
           numColumns={2}
@@ -74,7 +62,7 @@ const styles = StyleSheet.create({
     color: "#555",
   },
   container: {
-   flex:1,
-   alignItems:'center'
+    flex: 1,
+    alignItems: "center",
   },
 });

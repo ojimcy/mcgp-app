@@ -1,8 +1,17 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+
+import React, { useEffect } from 'react'
 import RecoveryOTP from '../components/onboarding/RecoveryOTP'
+import { router } from 'expo-router';
+import { useAuth } from '../AuthContext/AuthContext';
 
 const PassWordRecovery = () => {
+  const {isAuthenticated}=useAuth();
+
+  useEffect(()=>{
+    if(isAuthenticated){
+      router.push('/home')
+        }
+  },[])
   return (
     <RecoveryOTP/>
   )

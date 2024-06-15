@@ -1,13 +1,20 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import Order from '../components/onboarding/order'
+import { StyleSheet, Text, View } from "react-native";
+import React, { useEffect } from "react";
+import Order from "../components/onboarding/order";
+import { router } from "expo-router";
+import { useAuth } from "../AuthContext/AuthContext";
 
 const Orders = () => {
-  return (
-    <Order/>
-  )
-}
+  const { isAuthenticated } = useAuth();
 
-export default Orders
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push("/home");
+    }
+  }, []);
+  return <Order />;
+};
 
-const styles = StyleSheet.create({})
+export default Orders;
+
+const styles = StyleSheet.create({});

@@ -1,6 +1,7 @@
 import { ImageBackground, StyleSheet, Text, View } from "react-native";
 import { SIZES } from "../../constants";
 import ProductList from "./productlist";
+import {Picker} from '@react-native-picker/picker';
 const Products = () => {
   return (
     <View style={styles.container}>

@@ -8,7 +8,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { COLORS, SIZES } from "../../constants";
 import { Picker } from "@react-native-picker/picker";
-
+import { RadioButton } from 'react-native-paper';
 const Delivery = () => {
   const [state, setState] = useState("benue");
   const [stateList, setStateList] = useState([]);
@@ -16,6 +16,7 @@ const Delivery = () => {
   const [city, setCity] = useState();
   const [deliveryfee, setDeliveryFee] = useState(0);
   const [quantity,setQuantity]=useState(0)
+  const [homeDelivery, setHomeDelivery] = useState('yes');
   function Continue() {}
   function subTract(){
     setQuantity(quantity-1)
@@ -113,7 +114,21 @@ const Delivery = () => {
             <Text>+</Text>
           </TouchableOpacity>
         </View>
-
+        <Text style={styles.header}>Home delivery</Text>
+      <View style={styles.radioContainer}>
+        <RadioButton
+          value="yes"
+          status={homeDelivery === 'yes' ? 'checked' : 'unchecked'}
+          onPress={() => setHomeDelivery('yes')}
+        />
+        <Text style={styles.radioText}>Yes</Text>
+        <RadioButton
+          value="no"
+          status={homeDelivery === 'no' ? 'checked' : 'unchecked'}
+          onPress={() => setHomeDelivery('no')}
+        />
+        <Text style={styles.radioText}>No</Text>
+      </View>
         <TouchableOpacity
           style={[styles.button]}
           onPress={Continue}
@@ -291,5 +306,45 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     justifyContent: "center",
     alignItems: "center",
+  },
+  header: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  radioContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  radioText: {
+    marginRight: 20,
+  },
+  deliveryFeeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 20,
+  },
+  currencyIcon: {
+    fontSize: 18,
+    marginRight: 10,
+  },
+  currencyText: {
+    fontSize: 16,
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
+    backgroundColor: '#F5F5F5',
+    padding: 10,
+    borderRadius: 5,
+    fontSize: 16,
+  },
+  usdtText: {
+    marginTop: 10,
+    color: '#888',
   },
 });

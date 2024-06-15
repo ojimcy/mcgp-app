@@ -12,12 +12,15 @@ import React, { useState, useEffect, useCallback } from "react";
 import { COLORS, SIZES } from "../../constants/theme";
 import Icon from "react-native-vector-icons/FontAwesome";
 import * as ImagePicker from "expo-image-picker";
-import { getCategories, registerAds } from "../../constants/api/AuthenticationService";
+import {
+  getCategories,
+  registerAds,
+} from "../../constants/api/AuthenticationService";
 import Toast from "react-native-toast-message";
 import toastConfig from "../../toastConfig";
 import { LinearProgress } from "react-native-elements";
 import { useAuth } from "../../AuthContext/AuthContext";
-import DropDownPicker from 'react-native-dropdown-picker';
+import { Picker } from "@react-native-picker/picker";
 
 const AddProduct = () => {
   const [minPrice, setMinPrice] = useState("");
@@ -32,7 +35,6 @@ const AddProduct = () => {
   const { setLoading, loading } = useAuth();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [categories, setCategories] = useState([]);
-  const [open, setOpen] = useState(false);
   const maxDescriptionLength = 100;
 
   const delay = useCallback((duration) => {
@@ -67,8 +69,22 @@ const AddProduct = () => {
     }
   };
 
-  const createProduct = useCallback(async () => {
-    if (!productName || !location || !phoneNumber || !email || !category || !description || !minPrice || !maxPrice || productImages.length === 0) {
+  const createProduct = async () => {
+    
+    console.log(productName,location,email,description,category,phoneNumber,minPrice,maxPrice,  productImages.length)
+    if (
+      !productName ||
+      !location ||
+      !phoneNumber ||
+      !email ||
+      !category ||
+      !description ||
+      !minPrice ||
+      !maxPrice ||
+      productImages.length === 0
+    ) {
+      await delay()
+      setIsModalVisible(true);
       Toast.show({
         type: "error",
         text1: "Missing Fields",
@@ -76,7 +92,7 @@ const AddProduct = () => {
       });
       return;
     }
-
+    console.log(productName,location,email,description,category,phoneNumber)
     setLoading(true);
     const formData = new FormData();
     productImages.forEach((uri, index) => {
@@ -96,7 +112,7 @@ const AddProduct = () => {
     formData.append("phoneNumber", phoneNumber);
     formData.append("category", category);
     formData.append("companyName", "VS45");
-
+   // console.log(productName,location,email,description,category)
     try {
       const response = await registerAds(formData);
       if (response) {
@@ -122,7 +138,7 @@ const AddProduct = () => {
       await delay(4000);
       setIsModalVisible(false);
     }
-  }, [productName, location, phoneNumber, email, category, description, minPrice, maxPrice, productImages, delay, setLoading]);
+  };
 
   const resetForm = () => {
     setPhoneNumber("");
@@ -130,21 +146,20 @@ const AddProduct = () => {
     setDescription("");
     setEmail("");
     setMinPrice("");
-    setLocation('');
+    setLocation("");
     setProductImages([]);
-    setProductName('');
-    setMaxPrice('');
+    setProductName("");
+    setMaxPrice("");
   };
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await getCategories(); // Adjust the endpoint based on your API
-        console.log(response.data.results)
-        const fetchedCategories = response.data.results.map(category => ({
-          label: category.title,
-          value: category.id,
-          icon: () => (
+        const response = await getCategories('Products'); // Adjust the endpoint based on your API
+        const fetchedCategories = response.data.results.map((category) => ({
+          title: category.title,
+          id: category.id,
+          icon: () =>
             category.featuredImage ? (
               <Image
                 source={{ uri: category.featuredImage }}
@@ -154,13 +169,12 @@ const AddProduct = () => {
               <View style={styles.placeholderIcon}>
                 <Text>📷</Text>
               </View>
-            )
-          ),
+            ),
         }));
         setCategories(fetchedCategories);
       } catch (error) {
-        console.error('Error fetching categories:', error);
-        console.log(error?.response?.data?.message)
+        console.error("Error fetching categories:", error);
+        console.log(error?.response?.data?.message);
       }
     };
     fetchCategories();
@@ -168,11 +182,7 @@ const AddProduct = () => {
 
   return (
     <ScrollView style={styles.cover}>
-      <Modal
-        visible={isModalVisible}
-        style={styles.modal}
-        transparent={true}
-      >
+      <Modal visible={isModalVisible} style={styles.modal} transparent={true}>
         <Toast config={toastConfig} />
         <TouchableOpacity
           onPress={() => {
@@ -214,17 +224,16 @@ const AddProduct = () => {
         keyboardType="email-address"
       />
       <Text style={styles.label}>Enter Category</Text>
-      <DropDownPicker
-        open={open}
-        value={category}
-        items={categories}
-        setOpen={setOpen}
-        setValue={setCategory}
-        setItems={setCategories}
-        placeholder="Select a category"
-        style={styles.dropdown}
-        dropDownContainerStyle={styles.dropdownContainer}
-      />
+      <Picker
+        style={styles.input}
+        selectedValue={category}
+        onValueChange={(itemValue) => setCategory(itemValue)}
+      >
+        <Picker.Item  label={"Select Category"} value={""} />
+        {categories.map((item, index) => (
+          <Picker.Item key={index} label={item.title} value={item.id} />
+        ))}
+      </Picker>
       <View style={styles.priceRangeContainer}>
         <TextInput
           style={[styles.input, styles.priceInput]}
@@ -316,6 +325,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: COLORS.primary,
+    marginBottom:30
   },
   buttonText: {
     color: "#fff",
@@ -392,16 +402,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#d4ba92", // Change to your desired color when loading
   },
   dropdown: {
-    width: '90%',
+    width: "90%",
     height: 50,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
     borderRadius: 5,
     marginHorizontal: SIZES.width * 0.05,
     marginBottom: 15,
   },
   dropdownContainer: {
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
   },
   icon: {
@@ -413,9 +423,9 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#ccc',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#ccc",
   },
   modal: {
     justifyContent: "center",

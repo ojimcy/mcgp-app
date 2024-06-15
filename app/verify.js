@@ -1,11 +1,18 @@
 import { View, Text } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import Verify from '../components/onboarding/Verify'
-import { useLocalSearchParams } from 'expo-router'
+import { router, useLocalSearchParams } from 'expo-router'
+import { useAuth } from '../AuthContext/AuthContext'
 
 const VerifySignup = () => {
     const payLoad=useLocalSearchParams();
-    console.log(payLoad)
+    const {isAuthenticated}=useAuth();
+
+    useEffect(()=>{
+      if(isAuthenticated){
+        router.push('/home')
+          }
+    },[])
   return (
 <Verify payLoad={payLoad}/> 
   )

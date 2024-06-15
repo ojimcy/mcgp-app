@@ -1,25 +1,29 @@
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 import ServiceCard from '../../components/services/ServiceCard'
 import { useLocalSearchParams } from 'expo-router'
+import { getAdverts } from '../../constants/api/AuthenticationService'
 
-const data=[
-  {id:1,title:'Car mechanics service',description:`Auto mechanics inspect cars, maintain vehicles and fix car problems to get them back on the road for safe operation for our clients.`, 
-  category:'Mechanics',
-  image:require('../../assets/services/mechanic.jpg')},
-  {id:2,title:'Catering service',
-  description:`Our catering service is about preparing food and providing food services for clients at remote locations,such as hotels, restaurants, offices, concerts, and events.`,
-  category:'Catering',
-  image:require('../../assets/services/caterings.png')}
-]
 const Services = () => {
     const {value}=useLocalSearchParams();
-    console.log(value)
-    const filteredData = data.filter(item => item.category === value);
-    
-   function viewDetail(){
+    const [services,setServices]=useState([])
+    useEffect(() => {
+      const fetchedServices = async () => {
+        try {
+          const response = await getAdverts('Service'); // Adjust the endpoint based on your API
+console.log(response.data)
+          const fetchServices = response.data.results;
+          setServices(fetchServices);
+        } catch (error) {
+          console.log(error?.response?.data?.message)
+        }
+      };
+      fetchedServices();
+    }, []);
 
-   }
+
+    const filteredData = services.filter(item => item.category === value);
+    
   return (
     <ScrollView style={{backgroundColor:'#fff'}}>
        {filteredData.length > 0 ? (

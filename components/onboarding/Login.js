@@ -28,13 +28,13 @@ const [isError,setIsError]=useState(false)
 return alert('All Credentials must be filled')
     }
     setLoading(true);
-  const isLoggedIn=await login(email.trim(),password.trim());
-        if(isLoggedIn){
+  const result=await login(email.trim(),password.trim());
+        if(result.success){
           setLoading(false)
           router.push('/home')
         }else{
             setIsError(true)
-            alert("Wrong Credentials")
+            alert(result.message)
         }
   }
 
