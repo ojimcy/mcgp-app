@@ -17,6 +17,7 @@ import Toast from 'react-native-toast-message';
 import toastConfig from "../../toastConfig";
 import { Picker } from "@react-native-picker/picker";
 import { RadioButton } from 'react-native-paper';
+import { generateFileName } from "../../constants/api/filename";
 const AddCategory = () => {
   const [description, setDescription] = useState("");
   const [title, setTitle] = useState("");
@@ -36,7 +37,7 @@ const AddCategory = () => {
       }
 
       let result = await ImagePicker.launchImageLibraryAsync({
-        allowsEditing: true,
+        allowsEditing: false,
         aspect: [4, 3],
         quality: 1,
       });
@@ -64,24 +65,15 @@ const AddCategory = () => {
     formData.append('image', {
       uri: featuredImage,
       type: 'image/jpeg',
-      name: 'cat-file',
+      name: `image_${generateFileName}.jpg`,
     });
     formData.append('title',title)
     formData.append('description',description)
     formData.append('type',type)
     formData.append('parentCategory',parentCategory)
     formData.append('isFeatured',isFeatured)
-    
     try {
       const response = await registerCategory(formData);
-    //  console.log(response)
-      /* const response = await axios.post(`${baseUrl}/category`, formData, {
-        headers: {
-          Authorization: token,
-          Accept: 'application/json',
-          'Content-Type': 'multipart/form-data',
-        },
-      }); */
       if (response.status === 201) {
         Toast.show({
             type: 'success',
@@ -206,12 +198,11 @@ const AddCategory = () => {
         />
         <Text style={styles.radioText}>No</Text>
       </View>
-      <View style={{ alignItems: "center" }}>
+      <View style={{ alignItems: "center",marginBottom:35 }}>
         <TouchableOpacity style={styles.button} onPress={createCategory}>
           <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>
       </View>
-      
     </ScrollView>
     </View>
   );
