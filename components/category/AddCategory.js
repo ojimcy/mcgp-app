@@ -7,23 +7,23 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { COLORS, SIZES } from "../../constants/theme";
 import Icon from "react-native-vector-icons/FontAwesome";
 import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from "expo-file-system";
-import { registerCategory } from "../../constants/api/AuthenticationService";
-import { baseUrl } from "../../constants/api/apiClient";
-import axios from "axios";
+import { getCategories, registerCategory } from "../../constants/api/AuthenticationService";
 import { useAuth } from "../../AuthContext/AuthContext";
 import Toast from 'react-native-toast-message';
 import toastConfig from "../../toastConfig";
+import { Picker } from "@react-native-picker/picker";
 const AddCategory = () => {
   const [description, setDescription] = useState("");
   const [title, setTitle] = useState("");
   const [type, setType] = useState("");
   const [featuredImage, setFeaturedImage] = useState(null);
-  const { token,logOut } = useAuth();
+  const [parentCategory,setParentCategory]=useState()
+  const [categories,setCategories]=useState([])
+  const {logOut } = useAuth();
   const pickImageAsync = async () => {
     try {
       const { status } =
@@ -50,7 +50,7 @@ const AddCategory = () => {
   };
 
   async function createCategory() {
-    if (!title || !description ) {
+    if (!title || !description || !type) {
       alert("Please fill all fields and upload an image.");
       return;
     }
@@ -63,6 +63,7 @@ const AddCategory = () => {
     formData.append('title',title)
     formData.append('description',description)
     formData.append('type',type)
+    formData.append('parentCategory',parentCategory)
     
     try {
       const response = await registerCategory(formData);
@@ -97,8 +98,40 @@ const AddCategory = () => {
       }
     }
   }
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await getCategories('Products'); // Adjust the endpoint based on your API
+        if(response.status===401){
+          await logOut()
+          return
+        }
+        const fetchedCategories = response.data.results.map((category) => ({
+          title: category.title,
+          id: category.id,
+          icon: () =>
+            category.featuredImage ? (
+              <Image
+                source={{ uri: category.featuredImage }}
+                style={styles.icon}
+              />
+            ) : (
+              <View style={styles.placeholderIcon}>
+                <Text>📷</Text>
+              </View>
+            ),
+        }));
+        setCategories(fetchedCategories);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        console.log(error?.response?.data?.message);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   return (
+    <View style={{backgroundColor:'#fff',flex:1}}>
     <ScrollView style={styles.cover}>
       <Text style={styles.label}>Enter Category</Text>
       <TextInput
@@ -114,11 +147,15 @@ const AddCategory = () => {
         autoCapitalize="none"
       />
        <Text style={styles.label}>Enter Category Type</Text>
-      <TextInput
+       <Picker
         style={styles.input}
-        value={type}
-        onChangeText={(e) => setType(e)}
-      />
+        selectedValue={type}
+        onValueChange={(itemValue) => setType(itemValue)}
+      >
+        <Picker.Item  label={"Select Type"} value={""} />
+        <Picker.Item  label={"Product"} value={"Product"} />
+        <Picker.Item  label={"Service"} value={"Service"} />
+      </Picker>
          <Toast config={toastConfig}/>
       <Text style={styles.label}>Upload Featured Image</Text>
       <View style={styles.uploadContainer}>
@@ -133,6 +170,17 @@ const AddCategory = () => {
         </View>
       )}
 
+<Text style={styles.label}>Enter Category</Text>
+      <Picker
+        style={styles.input}
+        selectedValue={parentCategory}
+        onValueChange={(itemValue) => setParentCategory(itemValue)}
+      >
+        <Picker.Item  label={"Select Parent Category"} value={""} />
+        {categories.map((item, index) => (
+          <Picker.Item key={index} label={item.title} value={item.id} />
+        ))}
+      </Picker>
       <View style={{ alignItems: "center" }}>
         <TouchableOpacity style={styles.button} onPress={createCategory}>
           <Text style={styles.buttonText}>Continue</Text>
@@ -140,6 +188,7 @@ const AddCategory = () => {
       </View>
       
     </ScrollView>
+    </View>
   );
 };
 
@@ -171,6 +220,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: COLORS.primary,
+    marginBottom:20
   },
   buttonText: {
     color: "#fff",
