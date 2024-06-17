@@ -198,7 +198,7 @@ const AddCategory = () => {
         />
         <Text style={styles.radioText}>No</Text>
       </View>
-      <View style={{ alignItems: "center",marginBottom:35 }}>
+      <View style={{ alignItems: "center",marginBottom:55 }}>
         <TouchableOpacity style={styles.button} onPress={createCategory}>
           <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>

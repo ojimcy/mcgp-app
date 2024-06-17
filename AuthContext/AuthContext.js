@@ -10,7 +10,6 @@ import { router } from "expo-router";
 // Create the context
 export const AppContext = createContext();
 export const useAuth = () => useContext(AppContext);
-// Create a provider component
 export const AppProvider = ({ children }) => {
   const [category, setCategory] = useState("");
   const [isAuthenticated, setAuthenticated] = useState(false);

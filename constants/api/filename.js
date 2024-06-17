@@ -27,8 +27,4 @@ function generateFileName() {
     return fileName;
 }
 
-// Generate the filename
-let uniqueFileName = generateFileName();
-console.log("Generated File Name: " + uniqueFileName);
-
 module.exports={generateFileName}

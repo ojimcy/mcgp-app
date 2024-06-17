@@ -8,6 +8,7 @@ import React, { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import CardProduct from "../../components/rne/CardProduct";
 import { getAdverts } from "../../constants/api/AuthenticationService";
+import { NFTCard } from "../../components/designs";
 
 const Products = () => {
   const { value } = useLocalSearchParams();
@@ -39,10 +40,11 @@ const Products = () => {
         <FlatList
           data={filteredData}
           renderItem={({ item }) => (
-            <CardProduct item={item} />
+           /*  <CardProduct item={item} /> */
+           <NFTCard data={item}/>
           )}
           keyExtractor={(item) => item.id}
-          numColumns={2}
+        /*   numColumns={2} */
         />
       ) : (
         <View style={styles.noResultsContainer}>

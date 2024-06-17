@@ -4,28 +4,16 @@ import HomeScreen from '../../../../screens/Home'
 import { useAuth } from '../../../../AuthContext/AuthContext';
 import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import HomePage from '../../../../nft/Home';
 
 
 const Home = () => {
-  /* const {setToken,token}=useAuth();
-  const getData = async () => {
-    try {
-      const value = await AsyncStorage.getItem('token');
-      if (value !== null) {
-        setToken(value);
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
-  useEffect(()=>{
-   getData()
-    if(token){
-      router.push('/home')
-        }
-  },[]) */
+  
   return (
+    <>
 <HomeScreen/>
+{/* <HomePage/> */}
+</>
   )
 }
 
