@@ -132,6 +132,7 @@ const AddCategory = () => {
 
   return (
     <View style={{backgroundColor:'#fff',flex:1}}>
+ <Toast config={toastConfig}/>
     <ScrollView style={styles.cover}>
       <Text style={styles.label}>Enter Category</Text>
       <TextInput
@@ -156,7 +157,7 @@ const AddCategory = () => {
         <Picker.Item  label={"Product"} value={"Product"} />
         <Picker.Item  label={"Service"} value={"Service"} />
       </Picker>
-         <Toast config={toastConfig}/>
+        
       <Text style={styles.label}>Upload Featured Image</Text>
       <View style={styles.uploadContainer}>
         <TouchableOpacity onPress={pickImageAsync}>
