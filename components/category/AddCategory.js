@@ -51,7 +51,11 @@ const AddCategory = () => {
 
   async function createCategory() {
     if (!title || !description || !type) {
-      alert("Please fill all fields and upload an image.");
+    //  alert("Please fill all fields and upload an image.");
+      Toast.show({
+        type: 'error',
+        text1: 'Please fill all fields and upload an image'
+      });
       return;
     }
     const formData = new FormData();
@@ -132,8 +136,9 @@ const AddCategory = () => {
 
   return (
     <View style={{backgroundColor:'#fff',flex:1}}>
- <Toast config={toastConfig}/>
+
     <ScrollView style={styles.cover}>
+    <Toast config={toastConfig}/>
       <Text style={styles.label}>Enter Category</Text>
       <TextInput
         style={styles.input}
