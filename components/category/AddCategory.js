@@ -16,6 +16,7 @@ import { useAuth } from "../../AuthContext/AuthContext";
 import Toast from 'react-native-toast-message';
 import toastConfig from "../../toastConfig";
 import { Picker } from "@react-native-picker/picker";
+import { RadioButton } from 'react-native-paper';
 const AddCategory = () => {
   const [description, setDescription] = useState("");
   const [title, setTitle] = useState("");
@@ -23,6 +24,7 @@ const AddCategory = () => {
   const [featuredImage, setFeaturedImage] = useState(null);
   const [parentCategory,setParentCategory]=useState()
   const [categories,setCategories]=useState([])
+  const [isFeatured, setIsFeatured] = useState(true);
   const {logOut } = useAuth();
   const pickImageAsync = async () => {
     try {
@@ -68,6 +70,7 @@ const AddCategory = () => {
     formData.append('description',description)
     formData.append('type',type)
     formData.append('parentCategory',parentCategory)
+    formData.append('isFeatured',isFeatured)
     
     try {
       const response = await registerCategory(formData);
@@ -129,6 +132,7 @@ const AddCategory = () => {
       } catch (error) {
         console.error("Error fetching categories:", error);
         console.log(error?.response?.data?.message);
+        await logOut()
       }
     };
     fetchCategories();
@@ -187,6 +191,21 @@ const AddCategory = () => {
           <Picker.Item key={index} label={item.title} value={item.id} />
         ))}
       </Picker>
+      <Text style={styles.label}>Featured?</Text>
+      <View style={styles.radioContainer}>
+        <RadioButton
+          value={isFeatured}
+          status={isFeatured ? 'checked' : 'unchecked'}
+          onPress={() => setIsFeatured(true)}
+        />
+        <Text style={styles.radioText}>Yes</Text>
+        <RadioButton
+          value={isFeatured}
+          status={!isFeatured ? 'checked' : 'unchecked'}
+          onPress={() => setIsFeatured(false)}
+        />
+        <Text style={styles.radioText}>No</Text>
+      </View>
       <View style={{ alignItems: "center" }}>
         <TouchableOpacity style={styles.button} onPress={createCategory}>
           <Text style={styles.buttonText}>Continue</Text>
@@ -259,5 +278,14 @@ const styles = StyleSheet.create({
   },
   cover: {
     backgroundColor: COLORS.white,
+  },
+  radioContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+    marginHorizontal: SIZES.width * 0.05,
+  },
+  radioText: {
+    marginRight: 20,
   },
 });
