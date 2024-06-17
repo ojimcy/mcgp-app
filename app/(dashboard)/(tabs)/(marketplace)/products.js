@@ -5,17 +5,24 @@ import { COLORS, SIZES } from "../../../../constants";
 import ListCard from "../../../../components/accessories/ListCard";
 import HeaderSearch from "../../../../components/marketplace/header";
 import { getCategories } from "../../../../constants/api/AuthenticationService";
+import { router } from "expo-router";
+import { useAuth } from "../../../../AuthContext/AuthContext";
 const products = () => {
   const [categories,setCategories]=useState([])
+  const {logOut}=useAuth()
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await getCategories('Products'); // Adjust the endpoint based on your API
+        if(response.status===401){
+         await logOut()
+          } 
         const fetchedCategories = response.data.results;
         setCategories(fetchedCategories);
       } catch (error) {
         console.error('Error fetching categories:', error);
         console.log(error?.response?.data?.message)
+        await logOut()
       }
     };
     fetchCategories();

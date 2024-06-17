@@ -10,7 +10,7 @@ const login = () => {
   const getData = async () => {
     try {
       const value = await AsyncStorage.getItem('token');
-      if (value !== null) {
+      if (value !== null || value!=="") {
         setToken(value);
       }
     } catch (e) {
