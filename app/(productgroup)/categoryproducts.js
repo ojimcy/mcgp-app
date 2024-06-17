@@ -6,9 +6,9 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
-import CardProduct from "../../components/rne/CardProduct";
 import { getAdverts } from "../../constants/api/AuthenticationService";
-import { NFTCard } from "../../components/designs";
+import ProductCard from "../../components/designs/productcard";
+
 
 const Products = () => {
   const { value } = useLocalSearchParams();
@@ -26,8 +26,6 @@ const Products = () => {
         setProducts(fetchProducts);
        
       } catch (error) {
-        console.error("Error fetching categories:", error);
-        console.log(error?.response?.data?.message);
         return router.push('/login')
       }
     };
@@ -40,8 +38,8 @@ const Products = () => {
         <FlatList
           data={filteredData}
           renderItem={({ item }) => (
-           /*  <CardProduct item={item} /> */
-           <NFTCard data={item}/>
+           
+           <ProductCard data={item}/>
           )}
           keyExtractor={(item) => item.id}
         /*   numColumns={2} */

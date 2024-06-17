@@ -38,6 +38,7 @@ const RootLayout = () => {
         name="order"
         options={{
           headerShown: false,
+          title:'Order'
         }}
       />
       <Stack.Screen

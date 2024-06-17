@@ -12,6 +12,12 @@ const Layout = () => {
           headerTitle: `${category} Products`,
         }}
       />
+      <Stack.Screen
+        name="orderproduct"
+        options={{
+          headerTitle: `Order Product`,
+        }}
+      />
       </Stack>
   )
 }

@@ -1,12 +1,11 @@
 import { View, Image, Text } from "react-native";
 import React from "react";
-import { useNavigation } from "@react-navigation/native";
 import { COLORS, SIZES, SHADOWS, assets } from "../constants";
 import { CircleButton, RatingButton, RectButton, SellerButton } from "./Button";
-import { SubInfo, EthPrice, NFTTitle, Catalogue } from "./SubInfo";
+import { SubInfo,   Catalogue, ProductTitle } from "./SubInfo";
+import { router } from "expo-router";
 
-const NFTCard = ({ data }) => {
-
+const ProductCard = ({ data }) => {
   return (
     <View
       style={{
@@ -37,6 +36,9 @@ const NFTCard = ({ data }) => {
         <CircleButton imgUrl={assets.heart} right={10} bottom={25} />
         <SellerButton imgUrl={assets.heart} left={10} top={10} />
       </View>
+      <View style={{zIndex:2,justifyContent:'center',position:'absolute',bottom:60,left:15}}>
+        <Text>{data.location}</Text>
+      </View>
       <SubInfo price={data.price} />
       <View
         style={{
@@ -44,8 +46,8 @@ const NFTCard = ({ data }) => {
           padding: SIZES.font,
         }}
       >
-        <NFTTitle
-          title={data.title}
+        <ProductTitle
+          title={data.name}
           subTitle={data.creator}
           titleSize={SIZES.large}
           subTitleSize={SIZES.small}
@@ -64,7 +66,9 @@ const NFTCard = ({ data }) => {
           <RectButton
             minWidth={70}
             fontSize={SIZES.font}
-            handlePress={() => {}}
+            handlePress={() => {
+              router.push({pathname:'/orderproduct',params:{value:data}})
+            }}
           />
         </View>
       </View>
@@ -72,4 +76,4 @@ const NFTCard = ({ data }) => {
   );
 };
 
-export default NFTCard;
+export default ProductCard;

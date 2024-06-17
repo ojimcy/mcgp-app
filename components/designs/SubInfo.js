@@ -3,13 +3,13 @@ import React from "react";
 import { SIZES, SHADOWS, assets} from "../constants";
 import {COLORS } from "../../constants";
 
-export const NFTTitle = ({ title, titleSize, subTitle, subTitleSize }) => {
+export const ProductTitle = ({ title, titleSize, subTitle, subTitleSize }) => {
   return (
     <View>
       <Text
         style={{
           fontSize: titleSize,
-          color: COLORS.primary,
+          color: COLORS.black,
         }}
       >
         {title}
@@ -92,15 +92,16 @@ export const Price = ({price}) => {
       <Text
         style={{
           fontSize: SIZES.small,
-          color: COLORS.primary,
+          color: COLORS.black,
         }}
       >
         Amount in NGN
       </Text>
       <Text
         style={{
-          fontSize: SIZES.medium,
-          color: COLORS.primary,
+          fontSize: SIZES.l,
+          color: COLORS.black,
+          fontWeight:'600'
         }}
       >
          ₦{price}

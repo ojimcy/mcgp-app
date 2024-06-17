@@ -1,4 +1,6 @@
 import {
+  Image,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -6,138 +8,200 @@ import {
   View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { COLORS, SIZES } from "../../constants";
+import { COLORS, SIZES } from "../../constants/theme";
+import Icon from "react-native-vector-icons/FontAwesome";
+import * as ImagePicker from "expo-image-picker";
+import { getCategories, registerCategory } from "../../constants/api/AuthenticationService";
+import { useAuth } from "../../AuthContext/AuthContext";
+import Toast from 'react-native-toast-message';
+import toastConfig from "../../toastConfig";
 import { Picker } from "@react-native-picker/picker";
 import { RadioButton } from 'react-native-paper';
+import { generateFileName } from "../../constants/api/filename";
+import { useLocalSearchParams } from "expo-router";
+import ListCard from "../accessories/ListCard";
 const Delivery = () => {
-  const [state, setState] = useState("benue");
-  const [stateList, setStateList] = useState([]);
-  const [cityList, setCityList] = useState([]);
-  const [city, setCity] = useState();
-  const [deliveryfee, setDeliveryFee] = useState(0);
-  const [quantity,setQuantity]=useState(0)
-  const [homeDelivery, setHomeDelivery] = useState('yes');
-  function Continue() {}
-  function subTract(){
-    setQuantity(quantity-1)
-  }
-  function addQuantity(){
-    setQuantity(quantity+1)
+  const {data}=useLocalSearchParams()
+  const [description, setDescription] = useState("");
+  const [title, setTitle] = useState("");
+  const [type, setType] = useState("");
+  const [featuredImage, setFeaturedImage] = useState(null);
+  const [parentCategory,setParentCategory]=useState()
+  const [categories,setCategories]=useState([])
+  const [isFeatured, setIsFeatured] = useState(true);
+  const {logOut } = useAuth();
+  const pickImageAsync = async () => {
+    try {
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        alert("Permission to access media library denied");
+        return;
+      }
+
+      let result = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: false,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      if (!result.canceled) {
+        setFeaturedImage(result.assets[0].uri);
+      } else {
+        alert("You did not select any image.");
+      }
+    } catch (error) {
+      console.error("Error picking image:", error);
+    }
+  };
+
+  async function createCategory() {
+    if (!title || !description || !type) {
+    //  alert("Please fill all fields and upload an image.");
+      Toast.show({
+        type: 'error',
+        text1: 'Please fill all fields and upload an image'
+      });
+      return;
+    }
+    const formData = new FormData();
+    formData.append('image', {
+      uri: featuredImage,
+      type: 'image/jpeg',
+      name: `image_${generateFileName}.jpg`,
+    });
+    formData.append('title',title)
+    formData.append('description',description)
+    formData.append('type',type)
+    formData.append('parentCategory',parentCategory)
+    formData.append('isFeatured',isFeatured)
+    try {
+      const response = await registerCategory(formData);
+      if (response.status === 201) {
+        Toast.show({
+            type: 'success',
+            text1: 'Category Created',
+            text2: 'The category was created successfully.',
+          });
+      }
+    } catch (error) {
+      if (error.response) {
+            Toast.show({
+              type: 'error',
+              text1: 'Error Creating Category',
+              text2: error.response.data.message || 'An error occurred',
+            });
+      } else {
+        Toast.show({
+            type: 'error',
+            text1: 'Network Error',
+            text2: error.message,
+          });
+      }
+    }
   }
   useEffect(() => {
-    const fetStates = async () => {
-      const response = await fetch("https://api.facts.ng/v1/states");
-      const result = response.json();
-      result
-        .then((data) => {
-          setStateList(data);
-        })
-        .catch((err) => {
-          alert(err);
-        });
+    const fetchCategories = async () => {
+      try {
+        const response = await getCategories('Products'); // Adjust the endpoint based on your API
+        if(response.status===401){
+          await logOut()
+          return
+        }
+        const fetchedCategories = response.data.results.map((category) => ({
+          title: category.title,
+          id: category.id,
+          icon: () =>
+            category.featuredImage ? (
+              <Image
+                source={{ uri: category.featuredImage }}
+                style={styles.icon}
+              />
+            ) : (
+              <View style={styles.placeholderIcon}>
+                <Text>📷</Text>
+              </View>
+            ),
+        }));
+        setCategories(fetchedCategories);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        console.log(error?.response?.data?.message);
+        await logOut()
+      }
     };
-    const fetCities = async () => {
-      const response = await fetch(`https://api.facts.ng/v1/states/${state}`);
-      const result = response.json();
-      result
-        .then((data) => {
-          console.log(data);
-          setCityList(data.lgas);
-          setDeliveryFee(45);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    };
-    fetStates();
-    fetCities();
-  }, [state, city]);
+    fetchCategories();
+  }, []);
+
   return (
-    <View style={styles.cover}>
-      <View style={{ marginTop: 40 }}>
-        <Text style={styles.label}>Choose your state</Text>
-        <Picker
-          style={styles.input}
-          selectedValue={state}
-          onValueChange={setState}
-          autoCapitalize="none"
-        >
-          {stateList.map((state) => (
-            <Picker.Item key={state.id} label={state.name} value={state.id} />
-          ))}
-        </Picker>
-        <Text style={styles.label}>Choose your City</Text>
-        <Picker
-          style={styles.input}
-          selectedValue={city}
-          onValueChange={setCity}
-          autoCapitalize="none"
-        >
-          {cityList.length > 0 &&
-            cityList.map((name, index) => (
-              <Picker.Item key={index} label={name} value={name} />
-            ))}
-        </Picker>
-        <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
-          <Text style={styles.label}>Delivery Fee</Text>
-          <Text style={styles.label}>NGN</Text>
+    <View style={{backgroundColor:'#fff',flex:1}}>
+
+    <ScrollView style={styles.cover}>
+    <Toast config={toastConfig}/>
+    {/*  <ListCard itemValue={data}/> */}
+      <Text style={styles.label}>Enter Description</Text>
+      <TextInput
+        style={styles.input}
+        value={description}
+        onChangeText={(e) => setDescription(e)}
+        autoCapitalize="none"
+      />
+       <Text style={styles.label}>Enter Category Type</Text>
+       <Picker
+        style={styles.input}
+        selectedValue={type}
+        onValueChange={(itemValue) => setType(itemValue)}
+      >
+        <Picker.Item  label={"Select Type"} value={""} />
+        <Picker.Item  label={"Product"} value={"Product"} />
+        <Picker.Item  label={"Service"} value={"Service"} />
+      </Picker>
+        
+      <Text style={styles.label}>Upload Featured Image</Text>
+      <View style={styles.uploadContainer}>
+        <TouchableOpacity onPress={pickImageAsync}>
+          <Icon name="upload" size={25} color="#aaa" />
+        </TouchableOpacity>
+      </View>
+
+      {featuredImage && (
+        <View style={styles.imageContainer}>
+          <Image source={{ uri: featuredImage }} style={styles.uploadedImage} />
         </View>
-        <TextInput
-          style={styles.input}
-          value={String(deliveryfee)}
-          onChangeText={setDeliveryFee}
-          keyboardType="numeric"
-        />
-        <Text style={styles.label}>Number of Products</Text>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            width: SIZES.width * 0.9,
-            marginHorizontal: SIZES.width * 0.05,
-          }}
-        >
-          <TouchableOpacity
-            style={styles.minAdd}
-            onPress={subTract}
-          >
-            <Text>-</Text>
-          </TouchableOpacity>
-          <View style={styles.productsNo}>
-          <Text >{quantity}</Text>
-          </View>
-          
-          <TouchableOpacity
-           style={styles.minAdd}
-           onPress={addQuantity}
-          >
-            <Text>+</Text>
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.header}>Home delivery</Text>
+      )}
+
+<Text style={styles.label}>Enter Category</Text>
+      <Picker
+        style={styles.input}
+        selectedValue={parentCategory}
+        onValueChange={(itemValue) => setParentCategory(itemValue)}
+      >
+        <Picker.Item  label={"Select Parent Category"} value={""} />
+        {categories.map((item, index) => (
+          <Picker.Item key={index} label={item.title} value={item.id} />
+        ))}
+      </Picker>
+      <Text style={styles.label}>Featured?</Text>
       <View style={styles.radioContainer}>
         <RadioButton
-          value="yes"
-          status={homeDelivery === 'yes' ? 'checked' : 'unchecked'}
-          onPress={() => setHomeDelivery('yes')}
+          value={isFeatured}
+          status={isFeatured ? 'checked' : 'unchecked'}
+          onPress={() => setIsFeatured(true)}
         />
         <Text style={styles.radioText}>Yes</Text>
         <RadioButton
-          value="no"
-          status={homeDelivery === 'no' ? 'checked' : 'unchecked'}
-          onPress={() => setHomeDelivery('no')}
+          value={isFeatured}
+          status={!isFeatured ? 'checked' : 'unchecked'}
+          onPress={() => setIsFeatured(false)}
         />
         <Text style={styles.radioText}>No</Text>
       </View>
-        <TouchableOpacity
-          style={[styles.button]}
-          onPress={Continue}
-          /*  disabled={loading} */
-        >
-          <Text style={styles.buttonText}>Proceed</Text>
+      <View style={{ alignItems: "center",marginBottom:55 }}>
+        <TouchableOpacity style={styles.button} onPress={createCategory}>
+          <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>
       </View>
-      <View style={{ alignItems: "center" }}></View>
+    </ScrollView>
     </View>
   );
 };
@@ -149,7 +213,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 20,
     backgroundColor: COLORS.white,
-    alignItems: "center",
   },
   input: {
     width: SIZES.width * 0.9,
@@ -168,41 +231,29 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     height: 0.0687 * SIZES.height,
-    borderRadius: 20,
+    borderRadius: 10,
     borderWidth: 1,
     borderColor: COLORS.primary,
-    marginHorizontal: SIZES.width * 0.05,
+    marginBottom:20
   },
   buttonText: {
     color: "#fff",
     fontSize: 16,
   },
-  cover: {
-    backgroundColor: COLORS.white,
-    height: SIZES.height,
-  },
   label: {
     marginHorizontal: SIZES.width * 0.05,
   },
-  priceRangeContainer: {
-    flexDirection: "row",
+  uploadContainer: {
     alignItems: "center",
-    marginBottom: 15,
-  },
-  priceInput: {
-    flex: 1,
-  },
-  priceSeparator: {
-    marginHorizontal: 10,
-  },
-  multipleImageContainer: {
-    alignItems: "center",
-    backgroundColor: COLORS.gray,
-    width: SIZES.width * 0.9,
-    height: 0.285407725 * SIZES.height,
-    marginHorizontal: SIZES.width * 0.05,
     justifyContent: "center",
+    width: SIZES.width * 0.9,
+    height: 100,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 5,
     marginBottom: 20,
+    backgroundColor: "#f9f9f9",
+    marginHorizontal: SIZES.width * 0.05,
   },
   uploadedImage: {
     width: 100,
@@ -211,140 +262,19 @@ const styles = StyleSheet.create({
     marginHorizontal: SIZES.width * 0.05,
   },
   imageContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
-  },
-  textAreaContainer: {
-    width: SIZES.width * 0.9,
-    borderColor: "gray",
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 10,
-    backgroundColor: "#f9f9f9",
-    marginHorizontal: SIZES.width * 0.05,
-    marginBottom: 15,
-  },
-  textArea: {
-    height: 150,
-    justifyContent: "flex-start",
-    textAlignVertical: "top",
-  },
-  charCount: {
-    textAlign: "right",
-    color: "gray",
-    fontSize: 12,
-  },
-  progressContainer: {
-    marginTop: 20,
     alignItems: "center",
+    marginBottom: 20,
   },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-  },
-  buttonLoading: {
-    backgroundColor: "#d4ba92", // Change to your desired color when loading
-  },
-  dropdown: {
-    width: "90%",
-    height: 50,
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 5,
-    marginHorizontal: SIZES.width * 0.05,
-    marginBottom: 15,
-  },
-  dropdownContainer: {
-    borderColor: "#ccc",
-    borderWidth: 1,
-  },
-  icon: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-  },
-  placeholderIcon: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#ccc",
-  },
-  modal: {
-    justifyContent: "center",
-    alignContent: "center",
-    alignItems: "center",
-    width: "50%",
-    height: "55%",
-  },
-  closeButton: {
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 10,
-    backgroundColor: COLORS.primary,
-    borderRadius: 5,
-  },
-  closeButtonText: {
-    color: "#fff",
-    fontSize: 16,
-  },
-  minAdd: {
-    height: (6.2 / 100) * SIZES.height,
-    width: 40,
-    backgroundColor: COLORS.gray,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  productsNo: {
-    height: (6.2 / 100) * SIZES.height,
-    width: 200,
-    backgroundColor: COLORS.gray,
-   padding:10,
-    marginBottom: 10,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  header: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 10,
+  cover: {
+    backgroundColor: COLORS.white,
   },
   radioContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
+    marginHorizontal: SIZES.width * 0.05,
   },
   radioText: {
     marginRight: 20,
-  },
-  deliveryFeeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F5F5F5',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 20,
-  },
-  currencyIcon: {
-    fontSize: 18,
-    marginRight: 10,
-  },
-  currencyText: {
-    fontSize: 16,
-    marginRight: 10,
-  },
-  input: {
-    flex: 1,
-    backgroundColor: '#F5F5F5',
-    padding: 10,
-    borderRadius: 5,
-    fontSize: 16,
-  },
-  usdtText: {
-    marginTop: 10,
-    color: '#888',
   },
 });
