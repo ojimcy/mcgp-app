@@ -74,7 +74,7 @@ const AddCategory = () => {
     
     try {
       const response = await registerCategory(formData);
-      console.log(response)
+    //  console.log(response)
       /* const response = await axios.post(`${baseUrl}/category`, formData, {
         headers: {
           Authorization: token,
