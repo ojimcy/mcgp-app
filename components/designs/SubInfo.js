@@ -3,13 +3,14 @@ import React from "react";
 import { SIZES, SHADOWS, assets} from "../constants";
 import {COLORS } from "../../constants";
 
-export const ProductTitle = ({ title, titleSize, companyName, subTitleSize }) => {
+export const ProductTitle = ({ title, titleSize, companyName}) => {
   return (
     <View>
       <Text
         style={{
           fontSize: titleSize,
           color: COLORS.primary,
+              fontWeight:'500'
         }}
       >
       {companyName}'s {title}
@@ -25,7 +26,8 @@ export const Catalogue = ({ handlePress }) => {
       onPress={handlePress}
         style={{
           fontSize: SIZES.small,
-          color: COLORS.primary,
+          color: COLORS.black,
+          fontWeight:'500'
         }}
       >
         see catalogue
