@@ -27,6 +27,7 @@ const ProductCard = ({ data }) => {
         <Pressable
           onPress={() => {
             console.log("cliked!");
+            router.push({pathname:'/productdetails',params:{item:data}})
           }}
         >
           <Image
@@ -90,9 +91,10 @@ const ProductCard = ({ data }) => {
             minWidth={50}
             fontSize={SIZES.font}
             handlePress={() => {
+              console.log('checking the data:',data)
               router.push({
                 pathname: "/orderproduct",
-                params: { value: data },
+                params: { title: data.name },
               });
             }}
           />

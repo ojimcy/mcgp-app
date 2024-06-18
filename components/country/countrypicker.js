@@ -6,7 +6,7 @@ import { COLORS, SIZES } from "../../constants";
 
 export default function CountryComponent({country,setCountry}) {
   const [show, setShow] = useState(false);
-/* const [country,setCountry]=useState('') */
+
   return (
     <View style={{alignContent:'center'}}>
       <TouchableOpacity
@@ -28,7 +28,7 @@ export default function CountryComponent({country,setCountry}) {
         show={show}
         // when picker button press you will get the country object with dial code
         pickerButtonOnPress={(item) => {
-            console.log(item.name.en)
+            //console.log(item.name.en)
             setCountry(item.name.en)
           setShow(false);
         }}
