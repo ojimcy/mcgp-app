@@ -7,12 +7,12 @@ import { router } from "expo-router";
 
 const ProductCard = ({ data }) => {
   const cardWidth = (Dimensions.get("window").width / 2) - 15;
-
+console.log(data)
   return (
     <View
       style={{
         backgroundColor: COLORS.white,
-        borderRadius: SIZES.font,
+        borderTopEndRadius:SIZES.font,
         marginBottom: SIZES.base,
         marginHorizontal: 5,
         width: cardWidth,
@@ -39,8 +39,15 @@ const ProductCard = ({ data }) => {
         <CircleButton imgUrl={assets.heart} right={5} bottom={5} />
         <SellerButton  left={5} top={5} />
       </View>
-      <View style={{ zIndex: 2, justifyContent: 'center', position: 'absolute', bottom: 60, left: 15 }}>
-        <Text>{data.location}</Text>
+      <View style={{ zIndex: 2, justifyContent: 'center', position: 'absolute', bottom: 45, left: 15,flexDirection:'row' }}>
+      <Image
+          source={assets.location}
+          resizeMode="contain"
+          style={{
+          marginTop:5
+          }}
+        />
+        <Text style={{paddingLeft:5,fontSize:16}}>{data.location}</Text>
       </View>
       <View
         style={{
@@ -50,9 +57,8 @@ const ProductCard = ({ data }) => {
       >
         <ProductTitle
           title={data.name}
-          subTitle={data.creator}
-          titleSize={SIZES.large}
-          subTitleSize={SIZES.small}
+          companyName={data.companyName}
+          titleSize={SIZES.medium}
         />
         <View
           style={{

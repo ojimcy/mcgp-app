@@ -6,8 +6,8 @@ export const CircleButton = ({ imgUrl, handlePress, ...props }) => {
   return (
     <TouchableOpacity
       style={{
-        width: 40,
-        height: 40,
+        width: 30,
+        height: 30,
         backgroundColor: COLORS.white,
         position: "absolute",
         borderRadius: SIZES.extraLarge,
@@ -21,7 +21,7 @@ export const CircleButton = ({ imgUrl, handlePress, ...props }) => {
       <Image
         source={imgUrl}
         resizeMode="contain"
-        style={{ width: 24, height: 24 }}
+       /*  style={{ width: 24, height: 24 }} */
       />
     </TouchableOpacity>
   );
@@ -31,7 +31,7 @@ export const RectButton = ({ minWidth, fontSize, handlePress, ...props }) => {
     <TouchableOpacity
       style={{
         backgroundColor: COLORS.lightButton,
-        borderRadius: SIZES.base,
+        borderRadius: SIZES.medium,
         minWidth: minWidth,
         padding: SIZES.base,
         ...props,

@@ -3,24 +3,16 @@ import React from "react";
 import { SIZES, SHADOWS, assets} from "../constants";
 import {COLORS } from "../../constants";
 
-export const ProductTitle = ({ title, titleSize, subTitle, subTitleSize }) => {
+export const ProductTitle = ({ title, titleSize, companyName, subTitleSize }) => {
   return (
     <View>
       <Text
         style={{
           fontSize: titleSize,
-          color: COLORS.black,
-        }}
-      >
-        {title}
-      </Text>
-      <Text
-        style={{
-          fontSize: subTitleSize,
           color: COLORS.primary,
         }}
       >
-        {subTitle}
+      {companyName}'s {title}
       </Text>
     </View>
   );
