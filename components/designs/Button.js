@@ -45,7 +45,7 @@ export const RectButton = ({ minWidth, fontSize, handlePress, ...props }) => {
           textAlign:"center"
         }}
       >
-       Buy
+       Add to Cart
       </Text>
     </TouchableOpacity>
   );

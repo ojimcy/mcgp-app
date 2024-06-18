@@ -17,6 +17,10 @@ export const AppProvider = ({ children }) => {
   const [token, setToken] = useState("");
   const [loading, setLoading] = useState(false);
   const [appService, setAppService] = useState("");
+  const [items,setItems]=useState([]);
+  const addItem = (newItem) => {
+    setItems((prevItems) => [...prevItems, newItem]);
+  };
   async function login(username, password) {
     try {
       const response = await executeJwtAuthentication(username, password);
@@ -104,7 +108,9 @@ export const AppProvider = ({ children }) => {
         appService,
         setAppService,
         signup,
-        setToken
+        setToken,
+        items,setItems,
+        addItem
       }}
     >
       {children}

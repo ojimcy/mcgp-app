@@ -1,12 +1,15 @@
-import { View, Image, Text, Dimensions, Pressable } from "react-native";
+import { View, Image, Text, Dimensions, Pressable, Alert } from "react-native";
 import React from "react";
 import { COLORS, SIZES, SHADOWS, assets } from "../constants";
 import { CircleButton, RatingButton, RectButton, SellerButton } from "./Button";
 import { Catalogue, ProductTitle } from "./SubInfo";
 import { router } from "expo-router";
+import { useAuth } from "../../AuthContext/AuthContext";
 
 const ProductCard = ({ data }) => {
+  const {addItem,items}=useAuth()
   const cardWidth = Dimensions.get("window").width / 2 - 15;
+ 
   return (
     <View
       style={{
@@ -85,19 +88,37 @@ const ProductCard = ({ data }) => {
           <Catalogue
             handlePress={() => {
               console.log("viewing catalogue");
+              
             }}
           />
           <RectButton
             minWidth={50}
-            fontSize={SIZES.font}
+            fontSize={10}
             handlePress={() => {
-              console.log('checking the data:',data)
-              router.push({
-                pathname: "/orderproduct",
-                params: { title: data.name },
-              });
+              if (data.name && data.price && data.images[0]) {
+                const existingItem = items.find(item => item.name === data.name);
+                if (existingItem) {
+                return  Alert.alert('Item already in cart', 'You have added this item to the cart. Proceed to add the quantity from the cart if you wish.');
+                }
+                const newItem = {
+                  id:data.id, // unique id
+                  name:data.name,
+                  price: parseFloat(data.price),
+                  image:data.images[0],
+                  quantity: 1,
+                };
+
+                addItem(newItem);
+              }
             }}
           />
+        </View>
+        <View>
+          <Pressable onPress={()=>{
+          router.push('/cart')  
+          }}>
+            <Text>Proceed to cart</Text>
+          </Pressable>
         </View>
       </View>
     </View>
