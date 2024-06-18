@@ -31,9 +31,9 @@ export const RectButton = ({ minWidth, fontSize, handlePress, ...props }) => {
     <TouchableOpacity
       style={{
         backgroundColor: COLORS.lightButton,
-        borderRadius: SIZES.extraLarge,
+        borderRadius: SIZES.base,
         minWidth: minWidth,
-        padding: SIZES.small,
+        padding: SIZES.base,
         ...props,
       }}
       onPress={handlePress}
@@ -41,7 +41,7 @@ export const RectButton = ({ minWidth, fontSize, handlePress, ...props }) => {
       <Text
         style={{
           fontSize: fontSize,
-                  color: COLORS.black,
+          color: COLORS.black,
           textAlign:"center"
         }}
       >
@@ -65,7 +65,7 @@ export const SellerButton = ({ handlePress, ...props }) => {
       }}
       onPress={handlePress}
     >
-      <Text style={{padding:5,fontSize:14,fontWeight:'500'}}>Best seller</Text>
+      <Text style={{padding:5,fontSize:11,fontWeight:'500'}}>Best seller</Text>
     </TouchableOpacity>
   );
 };

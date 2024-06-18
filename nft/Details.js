@@ -14,7 +14,7 @@ import {
   FocusedStatusBar,
   DetailsDesc,
   DetailsBid,
-} from "../components";
+} from "../components/designs";
 import React from "react";
 
 const DetailsHeader = ({ data, navigation }) => (
@@ -97,7 +97,7 @@ const Details = ({ route, navigation }) => {
                     color: COLORS.primary,
                   }}
                 >
-                  Current Bid
+                 Proceed to buy
                 </Text>
               )}
             </View>

@@ -18,6 +18,12 @@ const Layout = () => {
           headerTitle: `Order Product`,
         }}
       />
+      <Stack.Screen
+        name="productdetails"
+        options={{
+          headerTitle: `Product Detail`,
+        }}
+      />
       </Stack>
   )
 }

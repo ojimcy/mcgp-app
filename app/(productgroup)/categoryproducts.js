@@ -38,11 +38,10 @@ const Products = () => {
         <FlatList
           data={filteredData}
           renderItem={({ item }) => (
-           
            <ProductCard data={item}/>
           )}
           keyExtractor={(item) => item.id}
-        /*   numColumns={2} */
+          numColumns={2}
         />
       ) : (
         <View style={styles.noResultsContainer}>

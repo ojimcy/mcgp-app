@@ -32,7 +32,7 @@ export const Catalogue = ({ handlePress }) => {
       <Text
       onPress={handlePress}
         style={{
-          fontSize: SIZES.font,
+          fontSize: SIZES.small,
           color: COLORS.primary,
         }}
       >
