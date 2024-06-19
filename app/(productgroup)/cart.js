@@ -123,7 +123,7 @@ const Cart = () => {
               await handleSubtract(item.productId, { quantity: 1 })
               await getItems()
                 }else{
-                  alert(`you can't reduce again, you are at you limit you can decide to remove the Item`)
+                  alert(`you can't reduce again, you are at your limit, you can decide to remove the Item`)
                 }
                 
                 }}
