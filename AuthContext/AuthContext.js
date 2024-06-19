@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
+  addToCart,
   executeJwtAuthentication,
   register,
 } from "../constants/api/AuthenticationService";
@@ -17,12 +18,29 @@ export const AppProvider = ({ children }) => {
   const [token, setToken] = useState("");
   const [loading, setLoading] = useState(false);
   const [appService, setAppService] = useState("");
-  const [items,setItems]=useState([]);
-  const addItem = (newItem) => {
-    setItems((prevItems) => [...prevItems, newItem]);
+  const [items, setItems] = useState([]);
+  const addItem = async (newItem) => {
+    /* setItems((prevItems) => [...prevItems, newItem]); */
+    console.log(newItem);
+    try {
+      const response = await addToCart(newItem);
+      console.log(response)
+      if (response.status === 201) {
+        return { success: true, error: false, message: "success" };
+      } else {
+        return { success: false, error: true, message: "could not create" };
+      }
+    } catch (error) {
+      console.log("checking error", error.response?.data?.message);
+      return {
+        success: false,
+        error: true,
+        message: error.response?.data?.message,
+      };
+    }
   };
   const removeItem = (id) => {
-    setItems((prevItems) => prevItems.filter(item => item.id !== id));
+    setItems((prevItems) => prevItems.filter((item) => item.id !== id));
   };
   async function login(username, password) {
     try {
@@ -54,7 +72,25 @@ export const AppProvider = ({ children }) => {
       };
     }
   }
-
+  const getItems = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      console.log(token)
+      const response = await axios.get(`${baseUrl}/cart`, {
+        headers: {
+          Authorization: token
+        },
+      });
+      console.log('checking responses',response)
+      if (response.status === 200) {
+      return {success:true,data:response.data,message:'success'};
+      }else{
+        return {success:false,data:'',message: 'failed to getItems'}
+      }
+    } catch (error) {
+      return {success:false,data:'',message: error.response?.data?.message}
+    }
+  };
   async function signup(payLoad) {
     try {
       const response = await register(payLoad);
@@ -92,8 +128,8 @@ export const AppProvider = ({ children }) => {
       config.headers.Authorization = "";
       return config;
     });
-    await AsyncStorage.removeItem('token');
-    router.push('/login')
+    await AsyncStorage.removeItem("token");
+    router.push("/login");
   }
   return (
     <AppContext.Provider
@@ -112,9 +148,11 @@ export const AppProvider = ({ children }) => {
         setAppService,
         signup,
         setToken,
-        items,setItems,
+        items,
+        setItems,
         addItem,
-        removeItem
+        removeItem,
+        getItems
       }}
     >
       {children}

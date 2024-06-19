@@ -6,3 +6,5 @@ export const registerAds=(payLoad)=>apiClient.post('/adverts',payLoad);
 export const registerCategory=(payLoad)=>apiClient.post('/category',payLoad);
 export const getCategories=(type)=>apiClient.get(`/category?type=${type}`);
 export const getAdverts=(type)=>apiClient.get(`/adverts?type=${type}`);
+export const addToCart=(payLoad)=>apiClient.post(`/cart`,payLoad)
+export const viewCart=()=>apiClient.get('/cart');
