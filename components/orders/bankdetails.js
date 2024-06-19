@@ -9,7 +9,7 @@ import React from "react";
 import { COLORS, SIZES } from "../../constants";
 import { router } from "expo-router";
 
-const BankDetails = ({ accountNumber, accountName, bankName }) => {
+const BankDetails = ({ accountNumber, accountName, bankName,id }) => {
   return (
     <SafeAreaView
       style={{
@@ -37,7 +37,7 @@ const BankDetails = ({ accountNumber, accountName, bankName }) => {
         <TouchableOpacity
           style={[styles.button]}
           onPress={() => {
-            router.push("/paymentproof");
+            router.push({pathname:"/paymentproof",params:{id}});
           }}
         >
           <Text style={styles.buttonText}>Proceed</Text>

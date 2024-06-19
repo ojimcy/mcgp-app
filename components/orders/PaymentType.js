@@ -32,7 +32,7 @@ const placeOrder=async(payLoad)=>{
     );
     console.log(response.data);
     if (response.status === 201) {
-      return {data:response.data.paymentDetails,message:'success',success:true};
+      return {data:response.data,message:'success',success:true};
     }
   } catch (error) {
     return {data:'',message:error.response?.data?.message,success:false};
@@ -101,7 +101,7 @@ const placeOrder=async(payLoad)=>{
             const result=await placeOrder({deliveryAddress:{address,state,city,country,phoneNumber,fullName},paymentMethod:'fiat'})
             console.log(result)
             if(result.success){
-              router.push({pathname:'/paymentdetail',/* params:{bankName:result.data.bankName,accountName:result.data.accountName,accountNumber:result.data.accountNumber} */})
+              router.push({pathname:'/paymentdetail',params:{bankName:result.data.paymentDetails.bankName,accountName:result.data.paymentDetails.accountName,accountNumber:result.data.paymentDetails.accountNumber,id:result.data.id}})
             }else{
               alert(result.message)
             }

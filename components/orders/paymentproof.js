@@ -8,8 +8,13 @@ import { COLORS, SIZES } from "../../constants";
 import Toast from "react-native-toast-message";
 import { router } from "expo-router";
 import { Icon } from "react-native-elements";
-const PaymentProof = () => {
+import { baseUrl } from "../../constants/api/apiClient";
+import { useAuth } from "../../AuthContext/AuthContext";
+import axios from "axios";
+const PaymentProof = ({id}) => {
+    console.log(id);
   const [image, setImage] = useState();
+  const {token}=useAuth()
   const pickImageAsync = async () => {
     try {
       const { status } =
@@ -43,7 +48,12 @@ const PaymentProof = () => {
       name: `image_${generateFileName}.jpg`,
     });
     try {
-      const response = await sendProof(id, formData);
+        const response = await axios.post(`${baseUrl}/${id}/pay`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'Authorization': `${token}`
+            }
+          });
       console.log(response)
       if (response.status === 201) {
         Toast.show({
@@ -54,6 +64,7 @@ const PaymentProof = () => {
         router.push('/categoryproducts')
       }
     } catch (error) {
+        console.log(error)
         alert(error.response.data.message)
     /*   if (error.response) {
         Toast.show({
@@ -88,7 +99,7 @@ const PaymentProof = () => {
       )}
            <View style={{ alignItems: "center",marginBottom:55 }}>
         <TouchableOpacity style={styles.button} onPress={uploadProof}>
-          <Text style={styles.buttonText}>send Proof</Text>
+          <Text style={styles.buttonText}>Send proof</Text>
         </TouchableOpacity>
         </View>
     </View>

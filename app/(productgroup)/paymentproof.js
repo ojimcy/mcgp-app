@@ -1,11 +1,13 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import PaymentProof from '../../components/orders/paymentproof'
+import { useLocalSearchParams } from 'expo-router'
 
 const paymentproof = () => {
+    const {id}=useLocalSearchParams()
   return (
     <View>
-     <PaymentProof/>
+     <PaymentProof id={id}/>
     </View>
   )
 }
