@@ -9,10 +9,10 @@ import {
 import React, { useEffect, useState } from "react";
 import { COLORS, SIZES } from "../../constants";
 
-const PaymentSelection = () => {
+const PaymentSelection = ({address}) => {
   const [selectedPaymentType, setSelectedPaymentType] = useState("Fiat");
-  const [amount, setAmount] = useState("");
-  function Continue() {}
+  const [amount, setAmount] = useState(address.totalAmount);
+ 
 
   return (
     <View style={styles.cover}>
@@ -61,6 +61,7 @@ const PaymentSelection = () => {
               value={amount}
               onChangeText={setAmount}
               keyboardType="numeric"
+              editable={false}
             />
             <View style={styles.itemContainer}>
               <Image
@@ -72,7 +73,9 @@ const PaymentSelection = () => {
             </View>
             <TouchableOpacity
               style={[styles.button]}
-              onPress={Continue}
+              onPress={()=>{
+
+              }}
               /*  disabled={loading} */
             >
               <Text style={styles.buttonText}>Buy Product</Text>
@@ -87,6 +90,7 @@ const PaymentSelection = () => {
               value={amount}
               onChangeText={setAmount}
               keyboardType="numeric"
+              editable={false}
             />
             <View style={styles.itemContainer}>
               <Image
@@ -98,7 +102,9 @@ const PaymentSelection = () => {
             </View>
             <TouchableOpacity
               style={[styles.button]}
-              onPress={Continue}
+              onPress={()=>{
+
+              }}
               /*  disabled={loading} */
             >
               <Text style={styles.buttonText}>Buy Product</Text>

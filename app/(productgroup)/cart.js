@@ -125,7 +125,6 @@ const Cart = () => {
                 }else{
                   alert(`you can't reduce again, you are at your limit, you can decide to remove the Item`)
                 }
-                
                 }}
             style={styles.button}
           >
@@ -169,7 +168,7 @@ const Cart = () => {
       <View style={styles.checkoutContainer}>
         <Button
           title="Proceed"
-          onPress={() => router.push("/orderproduct")}
+          onPress={() => router.push({pathname:"/orderproduct",params:{totalAmount:calculateTotal()}})}
           color={COLORS.primary}
         />
       </View>

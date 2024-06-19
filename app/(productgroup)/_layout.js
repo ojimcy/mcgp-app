@@ -15,13 +15,19 @@ const Layout = () => {
       <Stack.Screen
         name="orderproduct"
         options={{
-          headerTitle: `Order Product`,
+          headerTitle: `Order Product(s)`,
         }}
       />
       <Stack.Screen
         name="productdetails"
         options={{
           headerTitle: `Product Detail`,
+        }}
+      />
+      <Stack.Screen
+        name="paymenttype"
+        options={{
+          headerTitle: `Payment Method`,
         }}
       />
       </Stack>

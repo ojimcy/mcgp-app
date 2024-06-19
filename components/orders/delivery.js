@@ -15,83 +15,109 @@ import toastConfig from "../../toastConfig";
 import { Picker } from "@react-native-picker/picker";
 import { RadioButton } from "react-native-paper";
 import CountryComponent from "../country/countrypicker";
-const Delivery = ({data}) => {
- console.log(data)
+import { router } from "expo-router";
+import PhoneNumber from "../country/phoneNumber";
+import { countries } from "../../constants/api/statesConstants";
+const Delivery = ({ data }) => {
+  console.log(data);
 
-  const [description, setDescription] = useState("");
+  const [address, setAddress] = useState("");
   const [location, setLocation] = useState();
   const [states, setStates] = useState([]);
   const [state, setState] = useState();
-  const [quantity, setQuantity] = useState(0);
+  const [countryList, setCountries] = useState(countries);
   const [cities, setCities] = useState([]);
-  const [homeDelivery, setHomeDelivery] = useState(true);
-  const [country,setCountry]=useState()
-  const { logOut } = useAuth();
- 
-  const postData = async ( data) => {
+  const [phoneNumber,setPhoneNumber]=useState()
+  const [selectedCountry,setSelectedCountry]=useState();
+  //const [homeDelivery, setHomeDelivery] = useState(true);
+  const [country, setCountry] = useState();
+  function removeAllSpaces(str) {
+    return str.replace(/\s+/g, '');
+}
+  const postData = async (data) => {
     try {
-      const response = await fetch('https://countriesnow.space/api/v0.1/countries/states', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-  
+      const response = await fetch(
+        "https://countriesnow.space/api/v0.1/countries/states",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error("Network response was not ok");
       }
-  
+
       const jsonResponse = await response.json();
-      console.log(jsonResponse.data.states)
-      setStates(jsonResponse.data.states)
+      console.log(jsonResponse.data.states);
+      setStates(jsonResponse.data.states);
       return jsonResponse;
     } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
+      console.error("There was a problem with the fetch operation:", error);
       throw error;
     }
   };
   const getCity = async (data) => {
-    console.log(data)
+    console.log(data);
     try {
-      const response = await fetch('https://countriesnow.space/api/v0.1/countries/state/cities', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-  
+      const response = await fetch(
+        "https://countriesnow.space/api/v0.1/countries/state/cities",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error("Network response was not ok");
       }
       const jsonResponse = await response.json();
-      console.log("checking the response",jsonResponse.data)
-setCities(jsonResponse.data)
+      console.log("checking the response", jsonResponse.data);
+      setCities(jsonResponse.data);
       return jsonResponse;
     } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
+      console.error("There was a problem with the fetch operation:", error);
       throw error;
     }
   };
+ 
   return (
     <View style={{ backgroundColor: "#fff", flex: 1 }}>
       <ScrollView style={styles.cover}>
         <Toast config={toastConfig} />
-        {/*  <ListCard itemValue={data}/> */}
-        <Text style={[styles.input,{color:COLORS.primary,fontWeight:'600'}]}> You are about to purchase {data}</Text>
-        <CountryComponent 
-        country={country} setCountry={(e)=>{
-          postData({country:e})
-          setCountry(e)
-          }} />
+        <Text
+          style={[styles.labelHeader, { color: COLORS.primary, fontWeight: "600" }]}
+        >
+          {" "}
+          Input Your Delivery Address Information
+        </Text>
+        <Text style={styles.label}>Enter Country</Text>
+          <Picker
+          style={styles.input}
+          selectedValue={country}
+          onValueChange={(itemValue) => {
+            postData({ country: itemValue });
+            setCountry(itemValue);
+          }}
+        >
+          <Picker.Item label={"Select Country"} value={""} />
+          {countryList.map((item, index) => (
+            <Picker.Item key={index} label={item} value={item} />
+          ))}
+        </Picker>
         <Text style={styles.label}>Enter State</Text>
         <Picker
           style={styles.input}
           selectedValue={state}
-          onValueChange={(itemValue) =>{
-              getCity({country:country,state:itemValue})
-            setState(itemValue)
+          onValueChange={(itemValue) => {
+            getCity({ country: country, state: itemValue });
+            setState(itemValue);
           }}
         >
           <Picker.Item label={"Select State"} value={""} />
@@ -99,8 +125,8 @@ setCities(jsonResponse.data)
             <Picker.Item key={index} label={item.name} value={item.name} />
           ))}
         </Picker>
-        <Text style={styles.label}>Enter Location</Text>
-         <Picker
+        <Text style={styles.label}>Enter City</Text>
+        <Picker
           style={styles.input}
           selectedValue={location}
           onValueChange={(itemValue) => setLocation(itemValue)}
@@ -110,36 +136,50 @@ setCities(jsonResponse.data)
             <Picker.Item key={index} label={item} value={item} />
           ))}
         </Picker>
-        <Text style={styles.label}>Enter Quantity</Text>
-     
+        <Text style={styles.label}>Enter Delivery Address</Text>
         <TextInput
-        placeholder="Quantity"
-        style={styles.input}
-        value={quantity}
-        onChangeText={setQuantity}
-        keyboardType="numeric"
+          placeholder="Your Address"
+          style={styles.input}
+          value={address}
+          onChangeText={setAddress}
+          numberOfLines={5}
         />
-        <Text style={styles.label}>Home Delivery</Text>
+        <Text style={styles.label}>Enter Phone</Text>
+        <PhoneNumber 
+        inputValue={phoneNumber} 
+        setInputValue={setPhoneNumber}
+        selectedCountry={selectedCountry}
+        setSelectedCountry={setSelectedCountry}
+        />
+        {/* <Text style={styles.label}>Home Delivery</Text>
         <View style={styles.radioContainer}>
-          <View style={{flexDirection:'row'}}>
-          <RadioButton
-            value={homeDelivery}
-            status={homeDelivery ? "checked" : "unchecked"}
-            onPress={() => setHomeDelivery(true)}
-          />
-          <Text style={styles.radioText}>Yes</Text>
+          <View style={{ flexDirection: "row" }}>
+            <RadioButton
+              value={homeDelivery}
+              status={homeDelivery ? "checked" : "unchecked"}
+              onPress={() => setHomeDelivery(true)}
+            />
+            <Text style={styles.radioText}>Yes</Text>
           </View>
-          <View style={{flexDirection:'row'}}>
-          <RadioButton
-            value={homeDelivery}
-            status={!homeDelivery ? "checked" : "unchecked"}
-            onPress={() => setHomeDelivery(false)}
-          />
-          <Text style={styles.radioText}>No</Text>
+          <View style={{ flexDirection: "row" }}>
+            <RadioButton
+              value={homeDelivery}
+              status={!homeDelivery ? "checked" : "unchecked"}
+              onPress={() => setHomeDelivery(false)}
+            />
+            <Text style={styles.radioText}>No</Text>
           </View>
-        </View>
+        </View> */}
         <View style={{ alignItems: "center", marginBottom: 55 }}>
-          <TouchableOpacity style={styles.button} /* onPress={createCategory} */>
+          <TouchableOpacity
+            style={styles.button} /* onPress={createCategory} */
+            onPress={()=>{
+            if(!address||!state||!location||!country||!phoneNumber){
+return alert('Enter every field')
+            }
+          router.push({pathname:'/paymenttype',params:{address,state,city:location,country,phoneNumber:removeAllSpaces(selectedCountry?.callingCode+phoneNumber),totalAmount:data}})
+            }}
+          >
             <Text style={styles.buttonText}>Continue</Text>
           </TouchableOpacity>
         </View>
@@ -166,6 +206,15 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginHorizontal: SIZES.width * 0.05,
     backgroundColor: COLORS.gray,
+  },
+  labelHeader: {
+    width: SIZES.width * 0.9,
+    height: (6.2 / 100) * SIZES.height,
+    borderColor: "gray",
+    marginTop: 2,
+    marginBottom: 10,
+    padding: 10,
+    marginHorizontal: SIZES.width * 0.05,
   },
   button: {
     backgroundColor: COLORS.primary,
@@ -211,12 +260,11 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
   },
   radioContainer: {
-   
     marginBottom: 20,
     marginHorizontal: SIZES.width * 0.05,
   },
   radioText: {
     marginRight: 20,
-    paddingTop:10
+    paddingTop: 10,
   },
 });
