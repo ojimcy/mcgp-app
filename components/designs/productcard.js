@@ -9,6 +9,13 @@ import { useAuth } from "../../AuthContext/AuthContext";
 const ProductCard = ({ data }) => {
   const {addItem,items}=useAuth()
   const cardWidth = Dimensions.get("window").width / 2 - 15;
+  function checkItemExist(id){
+    const existingItem = items.find(item => item.id === id);
+    if(existingItem){
+      return true;
+    }
+    return false
+  }
  
   return (
     <View
@@ -91,9 +98,10 @@ const ProductCard = ({ data }) => {
               
             }}
           />
-          <RectButton
+          {!checkItemExist(data.id) ?<RectButton
             minWidth={50}
             fontSize={10}
+            title='Add to cart'
             handlePress={() => {
               if (data.name && data.price && data.images[0]) {
                 const existingItem = items.find(item => item.name === data.name);
@@ -111,15 +119,25 @@ const ProductCard = ({ data }) => {
                 addItem(newItem);
               }
             }}
-          />
+          />:<RectButton
+          minWidth={50}
+          fontSize={10}
+          fontWeight='700'
+          color='white'
+          title='Checkout'
+          handlePress={() => {
+            router.push('/cart')
+          }}
+        />}
+          
         </View>
-        <View>
+        {/* <View>
           <Pressable onPress={()=>{
           router.push('/cart')  
           }}>
             <Text>Proceed to cart</Text>
           </Pressable>
-        </View>
+        </View> */}
       </View>
     </View>
   );

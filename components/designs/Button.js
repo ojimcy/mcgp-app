@@ -26,7 +26,7 @@ export const CircleButton = ({ imgUrl, handlePress, ...props }) => {
     </TouchableOpacity>
   );
 };
-export const RectButton = ({ minWidth, fontSize, handlePress, ...props }) => {
+export const RectButton = ({ minWidth, fontSize, handlePress,title, ...props }) => {
   return (
     <TouchableOpacity
       style={{
@@ -41,11 +41,12 @@ export const RectButton = ({ minWidth, fontSize, handlePress, ...props }) => {
       <Text
         style={{
           fontSize: fontSize,
-          color: COLORS.black,
-          textAlign:"center"
+         /*  color: COLORS.black, */
+          textAlign:"center",
+          ...props
         }}
       >
-       Add to Cart
+       {title}
       </Text>
     </TouchableOpacity>
   );

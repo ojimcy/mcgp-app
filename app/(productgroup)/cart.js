@@ -6,31 +6,31 @@ import { router } from 'expo-router';
 //import { items } from './data';
 
 const Cart = () => {
-    const {items}=useAuth()
-  const [cartItems, setCartItems] = useState(items);
+    const {items,setItems, removeItem }=useAuth()
+ // const [cartItems, setCartItems] = useState(items);
 
   const handleAdd = (id) => {
-    const updatedItems = cartItems.map(item => {
+    const updatedItems = items.map(item => {
       if (item.id === id) {
         return { ...item, quantity: item.quantity + 1 };
       }
       return item;
     });
-    setCartItems(updatedItems);
+    setItems(updatedItems);
   };
 
   const handleSubtract = (id) => {
-    const updatedItems = cartItems.map(item => {
+    const updatedItems = items.map(item => {
       if (item.id === id && item.quantity > 1) {
         return { ...item, quantity: item.quantity - 1 };
       }
       return item;
     });
-    setCartItems(updatedItems);
+    setItems(updatedItems);
   };
 
   const calculateTotal = () => {
-    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    return items.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
   const renderItem = ({ item }) => (
@@ -49,13 +49,16 @@ const Cart = () => {
           </TouchableOpacity>
         </View>
       </View>
+      <TouchableOpacity onPress={() => removeItem(item.id)} style={styles.removeButton}>
+        <Text style={styles.removeButtonText}>Remove</Text>
+      </TouchableOpacity>
     </View>
   );
 
   return (
     <View style={styles.container}>
       <FlatList
-        data={cartItems}
+        data={items}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.list}
@@ -140,6 +143,15 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  removeButton: {
+    backgroundColor: '#ff4444',
+    padding: 5,
+    borderRadius: 5,
+  },
+  removeButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
 

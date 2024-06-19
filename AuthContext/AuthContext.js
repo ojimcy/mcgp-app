@@ -21,6 +21,9 @@ export const AppProvider = ({ children }) => {
   const addItem = (newItem) => {
     setItems((prevItems) => [...prevItems, newItem]);
   };
+  const removeItem = (id) => {
+    setItems((prevItems) => prevItems.filter(item => item.id !== id));
+  };
   async function login(username, password) {
     try {
       const response = await executeJwtAuthentication(username, password);
@@ -110,7 +113,8 @@ export const AppProvider = ({ children }) => {
         signup,
         setToken,
         items,setItems,
-        addItem
+        addItem,
+        removeItem
       }}
     >
       {children}
