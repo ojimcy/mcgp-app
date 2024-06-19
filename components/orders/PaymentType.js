@@ -8,12 +8,36 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { COLORS, SIZES } from "../../constants";
+import { baseUrl } from "../../constants/api/apiClient";
+import { useAuth } from "../../AuthContext/AuthContext";
+import { router } from "expo-router";
+import axios from "axios";
 
-const PaymentSelection = ({address}) => {
+const PaymentSelection = ({address,state,city,country,phoneNumber,totalAmount,fullName}) => {
   const [selectedPaymentType, setSelectedPaymentType] = useState("Fiat");
-  const [amount, setAmount] = useState(address.totalAmount);
+  const [amount, setAmount] = useState(totalAmount);
+  const {token}=useAuth();
  
-
+const placeOrder=async(payLoad)=>{
+  try {
+    const response = await axios.post(
+      `${baseUrl}/order`,
+      payLoad,
+      {
+        headers: {
+          Authorization: `${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log(response.data);
+    if (response.status === 201) {
+      return {data:response.data.paymentDetails,message:'success',success:true};
+    }
+  } catch (error) {
+    return {data:'',message:error.response?.data?.message,success:false};
+  }
+}
   return (
     <View style={styles.cover}>
       <View style={{ marginTop: 40 }}>
@@ -73,8 +97,15 @@ const PaymentSelection = ({address}) => {
             </View>
             <TouchableOpacity
               style={[styles.button]}
-              onPress={()=>{
-
+              onPress={async ()=>{
+            const result=await placeOrder({deliveryAddress:{address,state,city,country,phoneNumber,fullName},paymentMethod:'fiat'})
+            console.log(result)
+            if(result.success){
+              router.push({pathname:'/paymentdetail',/* params:{bankName:result.data.bankName,accountName:result.data.accountName,accountNumber:result.data.accountNumber} */})
+            }else{
+              alert(result.message)
+            }
+ 
               }}
               /*  disabled={loading} */
             >
@@ -102,8 +133,8 @@ const PaymentSelection = ({address}) => {
             </View>
             <TouchableOpacity
               style={[styles.button]}
-              onPress={()=>{
-
+              onPress={async ()=>{
+await placeOrder({deliveryAddress:address,paymentMethod:'crypto'})
               }}
               /*  disabled={loading} */
             >

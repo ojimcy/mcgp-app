@@ -29,6 +29,7 @@ const Delivery = ({ data }) => {
   const [cities, setCities] = useState([]);
   const [phoneNumber,setPhoneNumber]=useState()
   const [selectedCountry,setSelectedCountry]=useState();
+  const [fullName,setFullName]=useState()
   //const [homeDelivery, setHomeDelivery] = useState(true);
   const [country, setCountry] = useState();
   function removeAllSpaces(str) {
@@ -97,6 +98,14 @@ const Delivery = ({ data }) => {
           {" "}
           Input Your Delivery Address Information
         </Text>
+        <Text style={styles.label}>Enter your Name</Text>
+        <TextInput
+          placeholder="Your Name"
+          style={styles.input}
+          value={fullName}
+          onChangeText={setFullName}
+          numberOfLines={5}
+        />
         <Text style={styles.label}>Enter Country</Text>
           <Picker
           style={styles.input}
@@ -177,7 +186,7 @@ const Delivery = ({ data }) => {
             if(!address||!state||!location||!country||!phoneNumber){
 return alert('Enter every field')
             }
-          router.push({pathname:'/paymenttype',params:{address,state,city:location,country,phoneNumber:removeAllSpaces(selectedCountry?.callingCode+phoneNumber),totalAmount:data}})
+          router.push({pathname:'/paymenttype',params:{address,state,city:location,country,phoneNumber:removeAllSpaces(selectedCountry?.callingCode+phoneNumber),totalAmount:data,fullName:fullName}})
             }}
           >
             <Text style={styles.buttonText}>Continue</Text>

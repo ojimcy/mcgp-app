@@ -7,9 +7,9 @@ import {
 } from "react-native";
 import React from "react";
 import { COLORS, SIZES } from "../../constants";
+import { router } from "expo-router";
 
-const BankDetails = () => {
-  function Continue() {}
+const BankDetails = ({ accountNumber, accountName, bankName }) => {
   return (
     <SafeAreaView
       style={{
@@ -22,20 +22,23 @@ const BankDetails = () => {
       <View style={{ marginTop: 200 }}>
         <View style={styles.bankDetails}>
           <Text style={styles.labelText}>Bank Name</Text>
-          <Text style={styles.valueText}>Access Bank</Text>
+          <Text style={styles.valueText}>{bankName || "Access Bank"}</Text>
         </View>
         <View style={styles.bankDetails}>
           <Text style={styles.labelText}>Account Number</Text>
-          <Text style={styles.valueText}>0049005958</Text>
+          <Text style={styles.valueText}>{accountNumber || "0049005958"}</Text>
         </View>
         <View style={styles.bankDetails}>
           <Text style={styles.labelText}>Account Name</Text>
-          <Text style={styles.valueText}>Tsenongo Jacob Akar</Text>
+          <Text style={styles.valueText}>
+            {accountName || "Tsenongo Jacob"}
+          </Text>
         </View>
         <TouchableOpacity
           style={[styles.button]}
-          onPress={Continue}
-          /*  disabled={loading} */
+          onPress={() => {
+            router.push("/paymentproof");
+          }}
         >
           <Text style={styles.buttonText}>Proceed</Text>
         </TouchableOpacity>
