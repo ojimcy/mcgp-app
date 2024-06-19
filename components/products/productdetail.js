@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { COLORS, SIZES } from '../../constants';
+import { COLORS} from '../../constants';
 
 const ProductDetail = ({ image,companyName,title,description,location,price,phone }) => {
   const [isMore,setIsMore]=useState(false);
   return (
     <ScrollView style={styles.container}>
       <Image
-        source={{ uri: image }} // Replace with actual image URL
+        source={{ uri: image }} 
         style={styles.image}
       />
       <View style={styles.contentContainer}>
@@ -74,7 +74,8 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: 200,
+    height: 300,
+    resizeMode:'cover'
   },
   contentContainer: {
     padding: 20,
