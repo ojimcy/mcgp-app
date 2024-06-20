@@ -9,13 +9,10 @@ import Toast from "react-native-toast-message";
 import { router } from "expo-router";
 import { Icon } from "react-native-elements";
 import { apiClient } from "../../constants/api/apiClient";
-//import { baseUrl } from "../../constants/api/apiClient";
-//import { useAuth } from "../../AuthContext/AuthContext";
-//import axios from "axios";
+
 const PaymentProof = ({id}) => {
     console.log(id);
   const [image, setImage] = useState(null);
- // const {token}=useAuth()
   const pickImageAsync = async () => {
     try {
       const { status } =
