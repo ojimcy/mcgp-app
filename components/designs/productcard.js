@@ -42,7 +42,6 @@ const ProductCard = ({ data }) => {
           Authorization: `${token}`
         },
       });
-      console.log('checking responses',response.status)
       if (response.status === 200) {
         setItems(response.data)
       return;

@@ -20,8 +20,6 @@ const products = () => {
         const fetchedCategories = response.data.results;
         setCategories(fetchedCategories);
       } catch (error) {
-        console.error('Error fetching categories:', error);
-        console.log(error?.response?.data?.message)
         await logOut()
       }
     };

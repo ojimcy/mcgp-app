@@ -13,12 +13,9 @@ import { COLORS } from "../../constants";
 import { router } from "expo-router";
 import axios from "axios";
 import { baseUrl } from "../../constants/api/apiClient";
-//import { items } from './data';
 
 const Cart = () => {
-  const { items, setItems, removeItem, token } = useAuth();
-  // const [cartItems, setCartItems] = useState(items);
-
+  const { items, setItems, token } = useAuth();
   const handleAdd = async (id, payLoad) => {
     try {
       const response = await axios.post(
@@ -31,10 +28,9 @@ const Cart = () => {
           },
         }
       );
-      console.log(response.status);
       if (response.status === 201) {
       }
-      
+
       return response.data;
     } catch (error) {
       throw error;
@@ -44,45 +40,40 @@ const Cart = () => {
     try {
       const response = await axios.get(`${baseUrl}/cart`, {
         headers: {
-          Authorization: `${token}`
+          Authorization: `${token}`,
         },
       });
-      console.log('checking responses',response.status)
       if (response.status === 200) {
-        setItems(response.data)
-      return;
-      }else{
+        setItems(response.data);
+        return;
+      } else {
         return;
       }
     } catch (error) {
-      console.log( error.response?.data?.message)
-      return ;
+      console.log(error.response?.data?.message);
+      return;
     }
   };
-  const handleRemoveCartItem=async(id)=>{
+  const handleRemoveCartItem = async (id) => {
     try {
-      const response = await axios.post(
-        `${baseUrl}/cart/${id}`,
-        {
-          headers: {
-            Authorization: `${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      console.log(response.status);
+      const response = await axios.post(`${baseUrl}/cart/${id}`, {
+        headers: {
+          Authorization: `${token}`,
+          "Content-Type": "application/json",
+        },
+      });
       if (response.status === 201) {
       }
-      
+
       return response.data;
     } catch (error) {
       throw error;
     }
-  }
-  useEffect(()=>{
-    getItems()
-  },[])
-  const handleSubtract =async (id,payLoad) => {
+  };
+  useEffect(() => {
+    getItems();
+  }, []);
+  const handleSubtract = async (id, payLoad) => {
     try {
       const response = await axios.post(
         `${baseUrl}/cart/${id}/decrease`,
@@ -94,10 +85,6 @@ const Cart = () => {
           },
         }
       );
-      console.log(response.status);
-      if (response.status === 201) {
-      }
-      
       return response.data;
     } catch (error) {
       throw error;
@@ -116,25 +103,25 @@ const Cart = () => {
         <Text style={styles.price}>₦{item.price}</Text>
         <View style={styles.quantityContainer}>
           <TouchableOpacity
-          
-            onPress={
-             async () =>{
-                if(item.quantity>1){
-              await handleSubtract(item.productId, { quantity: 1 })
-              await getItems()
-                }else{
-                  alert(`you can't reduce again, you are at your limit, you can decide to remove the Item`)
-                }
-                }}
+            onPress={async () => {
+              if (item.quantity > 1) {
+                await handleSubtract(item.productId, { quantity: 1 });
+                await getItems();
+              } else {
+                alert(
+                  `you can't reduce again, you are at your limit, you can decide to remove the Item`
+                );
+              }
+            }}
             style={styles.button}
           >
             <Text style={styles.buttonText}>-</Text>
           </TouchableOpacity>
           <Text style={styles.quantity}>{item.quantity}</Text>
           <TouchableOpacity
-            onPress={async() =>{ 
-           const response=await handleAdd(item.productId, { quantity: 1 })
-         const result=await getItems();
+            onPress={async () => {
+              const response = await handleAdd(item.productId, { quantity: 1 });
+              const result = await getItems();
             }}
             style={styles.button}
           >
@@ -143,9 +130,9 @@ const Cart = () => {
         </View>
       </View>
       <TouchableOpacity
-        onPress={async() => {
-        await  handleRemoveCartItem(item.productId)
-        await getItems()
+        onPress={async () => {
+          await handleRemoveCartItem(item.productId);
+          await getItems();
         }}
         style={styles.removeButton}
       >
@@ -168,7 +155,12 @@ const Cart = () => {
       <View style={styles.checkoutContainer}>
         <Button
           title="Proceed"
-          onPress={() => router.push({pathname:"/orderproduct",params:{totalAmount:calculateTotal()}})}
+          onPress={() =>
+            router.push({
+              pathname: "/orderproduct",
+              params: { totalAmount: calculateTotal() },
+            })
+          }
           color={COLORS.primary}
         />
       </View>

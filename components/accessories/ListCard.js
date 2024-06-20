@@ -14,7 +14,6 @@ const ListCard = ({itemList,itemValue}) => {
             
              <Pressable onPress={()=>{
               if (!isDisabled) {
-                console.log(item)
                 setIsDisabled(true);
                 // Your logic here when TouchableOpacity is pressed
                 setCategory(item.title)
