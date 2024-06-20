@@ -1,18 +1,21 @@
 import {
-  Pressable,
   SafeAreaView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
+  ToastAndroid
 } from "react-native";
 import React from "react";
 import { COLORS, SIZES } from "../../constants";
 import { Image } from "react-native";
-
-const CryptoDetails = () => {
-  function Continue() {}
+import { router } from "expo-router";
+import * as Clipboard from "expo-clipboard";
+const CryptoDetails = ({ walletAddress, symbol, network, id }) => {
+  const copyToClipboard = async () => {
+    await Clipboard.setStringAsync(walletAddress);
+    ToastAndroid.show('Copied!', ToastAndroid.LONG);
+  };
   return (
     <SafeAreaView
       style={{
@@ -24,8 +27,11 @@ const CryptoDetails = () => {
     >
       <View style={{ marginTop: 200 }}>
         <View style={styles.bankDetails}>
-          <Text style={styles.input}> 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</Text>
-          <TouchableOpacity style={{ position: "absolute", right: 10 }}>
+          <Text style={styles.input}> {walletAddress}</Text>
+          <TouchableOpacity
+            onPress={copyToClipboard}
+            style={{ position: "absolute", right: 10 }}
+          >
             <Image
               source={require("../../assets/icons/copy.png")}
               resizeMode="contain"
@@ -33,13 +39,18 @@ const CryptoDetails = () => {
             />
           </TouchableOpacity>
         </View>
-  
-        <Text style={{position:'absolute',padding:50}}>Sent only USDT-TRC2O network
-        to the wallet address above</Text>
-        <TouchableOpacity style={[styles.button]} onPress={Continue}>
+
+        <Text style={{ position: "absolute", padding: 50 }}>
+          Sent only {symbol}-{network} network to the wallet address above
+        </Text>
+        <TouchableOpacity
+          style={[styles.button]}
+          onPress={() => {
+            router.push({ pathname: "/paymentproof", params: { id } });
+          }}
+        >
           <Text style={styles.buttonText}>Proceed</Text>
         </TouchableOpacity>
-      
       </View>
     </SafeAreaView>
   );
@@ -63,7 +74,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginVertical: 1,
-    padding: 10,
+    padding: 5,
   },
   labelText: {
     fontSize: 14,
