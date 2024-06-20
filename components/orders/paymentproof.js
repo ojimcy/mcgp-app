@@ -53,14 +53,12 @@ const PaymentProof = ({id}) => {
       name: `image_${generateFileName}.jpg`,
     });
     try {
-      console.log(formData)
       apiClient.interceptors.request.use((config) => {
         config.headers["Content-Type"] = "multipart/form-data";
       config.headers.Accept = "application/json";
         return config;
       });
       const response = await sendProof(id, formData);
-      console.log(response)
       if (response.status === 200) {
         Toast.show({
           type: "success",
