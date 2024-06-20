@@ -60,16 +60,16 @@ const PaymentProof = ({id}) => {
         return config;
       });
       const response = await sendProof(id, formData);
-      if (response.status === 201) {
+      console.log(response)
+      if (response.status === 200) {
         Toast.show({
           type: "success",
           text1: "Category Created",
           text2: "The category was created successfully.",
         });
-        router.push('/categoryproducts')
+        router.push('/products')
       }
     } catch (error) {
-        console.log(error?.response.data.message)
         alert(error?.response.data.message)
     }
   }
