@@ -74,7 +74,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginVertical: 1,
-    padding: 5,
+    paddingVertical: 10,
+    fontSize:13
   },
   labelText: {
     fontSize: 14,
