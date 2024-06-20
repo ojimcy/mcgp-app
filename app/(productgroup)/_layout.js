@@ -30,6 +30,12 @@ const Layout = () => {
           headerTitle: `Payment Method`,
         }}
       />
+      <Stack.Screen
+        name="paymentproof"
+        options={{
+          headerTitle: `Payment Proof`,
+        }}
+      />
       </Stack>
   )
 }

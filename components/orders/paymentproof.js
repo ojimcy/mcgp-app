@@ -8,13 +8,14 @@ import { COLORS, SIZES } from "../../constants";
 import Toast from "react-native-toast-message";
 import { router } from "expo-router";
 import { Icon } from "react-native-elements";
-import { baseUrl } from "../../constants/api/apiClient";
-import { useAuth } from "../../AuthContext/AuthContext";
-import axios from "axios";
+import { apiClient } from "../../constants/api/apiClient";
+//import { baseUrl } from "../../constants/api/apiClient";
+//import { useAuth } from "../../AuthContext/AuthContext";
+//import axios from "axios";
 const PaymentProof = ({id}) => {
     console.log(id);
-  const [image, setImage] = useState();
-  const {token}=useAuth()
+  const [image, setImage] = useState(null);
+ // const {token}=useAuth()
   const pickImageAsync = async () => {
     try {
       const { status } =
@@ -41,6 +42,10 @@ const PaymentProof = ({id}) => {
   };
 
   async function uploadProof() {
+    if(!image){
+      alert('Please select Image')
+      return
+    }
     const formData = new FormData();
     formData.append("proof", {
       uri: image,
@@ -48,13 +53,13 @@ const PaymentProof = ({id}) => {
       name: `image_${generateFileName}.jpg`,
     });
     try {
-        const response = await axios.post(`${baseUrl}/${id}/pay`, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-              'Authorization': `${token}`
-            }
-          });
-      console.log(response)
+      console.log(formData)
+      apiClient.interceptors.request.use((config) => {
+        config.headers["Content-Type"] = "multipart/form-data";
+      config.headers.Accept = "application/json";
+        return config;
+      });
+      const response = await sendProof(id, formData);
       if (response.status === 201) {
         Toast.show({
           type: "success",
@@ -64,22 +69,8 @@ const PaymentProof = ({id}) => {
         router.push('/categoryproducts')
       }
     } catch (error) {
-        console.log(error)
-        alert(error.response.data.message)
-    /*   if (error.response) {
-        Toast.show({
-          type: "error",
-          text1: "Error Creating Category",
-          text2: error.response.data.message || "An error occurred",
-        });
-        
-      } else {
-        Toast.show({
-          type: "error",
-          text1: "Network Error",
-          text2: error.message,
-        });
-      } */
+        console.log(error?.response.data.message)
+        alert(error?.response.data.message)
     }
   }
   return (
