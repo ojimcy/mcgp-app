@@ -13,6 +13,7 @@ import { COLORS } from "../../constants";
 import { router } from "expo-router";
 import axios from "axios";
 import { baseUrl } from "../../constants/api/apiClient";
+import OrderCard from "./ordercard";
 
 const OrderList = () => {
   const { items, setItems, token } = useAuth();
@@ -44,11 +45,10 @@ const OrderList = () => {
           Authorization: `${token}`,
         },
       });
-      console.log('checking Ex',response.data.results.product)
       console.log('checking Ex',response.data.results)
       setItems(response.data.results)
       if (response.status === 200) {
-        setItems(response.data);
+        setOrders(response.data.results);
         return;
       } else {
         return;
@@ -99,7 +99,7 @@ const OrderList = () => {
    // return items.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
-  const renderItem = ({ item }) => (
+  /* const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>
       <Image source={{ uri: item.image }} style={styles.image} />
       <View style={styles.details}>
@@ -143,17 +143,17 @@ const OrderList = () => {
         <Text style={styles.removeButtonText}>Remove</Text>
       </TouchableOpacity>
     </View>
-  );
+  ); */
 
   return (
     <View style={styles.container}>
       <FlatList
-        data={items}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={styles.list}
-      />
-      <View style={styles.totalContainer}>
+      data={orders}
+      keyExtractor={(item) => item.id}
+      renderItem={({ item }) => <OrderCard order={item} />}
+      contentContainerStyle={styles.container}
+    />
+      {/* <View style={styles.totalContainer}>
         <Text style={styles.totalText}>Total: ₦{calculateTotal()}</Text>
       </View>
       <View style={styles.checkoutContainer}>
@@ -167,14 +167,14 @@ const OrderList = () => {
           }
           color={COLORS.primary}
         />
-      </View>
+      </View> */}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+   /*  flex: 1, */
     padding: 20,
     backgroundColor: "#f5f5f5",
   },
