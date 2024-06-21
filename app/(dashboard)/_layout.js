@@ -67,30 +67,20 @@ const Layout = () => {
               color: navigation.isFocused() ? COLORS.primary : "black", // Change font color
             },
             headerTintColor: navigation.isFocused() ? COLORS.primary : "black",
-            drawerActiveTintColor:COLORS.primary,
+            drawerActiveTintColor: COLORS.primary,
             /* drawerLabel:'Show' */
           })}
-          /* {{
-            headerRight: () => (
-              <Image
-              source={require("../../assets/images/person01.png")}
-              style={{ width: 30, height: 30, resizeMode:"contain",marginRight:10 }}
-            />
-            ), 
-            headerTitle:'TSA Connect',
-            title: 'Main Menu',
-            headerTitleAlign: 'center',
-            headerTitleStyle: {
-                fontSize: 16, // Reduce font size
-                color: COLORS.primary, // Change font color
-              },
-             
-          }} */
         />
         <Drawer.Screen
           name="addcategory"
           options={{
             title: "Add Category",
+          }}
+        />
+        <Drawer.Screen
+          name="orderlist"
+          options={{
+            title: "Order List",
           }}
         />
       </Drawer>
