@@ -40,7 +40,7 @@ const OrderList = () => {
   };
   const getItems = async () => {
     try {
-      const response = await axios.get(`${baseUrl}/order/get-all`, {
+      const response = await axios.get(`${baseUrl}/order/my-orders`, {
         headers: {
           Authorization: `${token}`,
         },

@@ -1,9 +1,10 @@
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { Drawer } from "expo-router/drawer";
 import { COLORS } from "../../constants";
 import Toast from "react-native-toast-message";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { router } from "expo-router";
 const Layout = () => {
   return (
     <>
@@ -16,13 +17,13 @@ const Layout = () => {
               case "addcategory":
                 iconName = "clipboard-list";
                 break;
-              case "Inbox":
-                iconName = "email";
+              case "profile":
+                iconName = "account-cog";
                 break;
               case "Pending Reviews":
                 iconName = "comment-processing";
                 break;
-              case "Voucher":
+              case "orderlist":
                 iconName = "ticket-percent";
                 break;
               case "Saved Items":
@@ -35,7 +36,7 @@ const Layout = () => {
                 iconName = "eye";
                 break;
               case "(tabs)":
-                iconName = "account-cog";
+                iconName = "home";
                 break;
               default:
                 break;
@@ -43,12 +44,19 @@ const Layout = () => {
             return <Icon name={iconName} size={size} color={color} />;
           },
           headerTintColor: navigation.isFocused() ? COLORS.primary : "black",
+          drawerLabelStyle: {
+            marginVertical: 0, // Adjust the vertical margin here
+          },
+          
         })}
       >
         <Drawer.Screen
           name="(tabs)"
           options={({ navigation, route }) => ({
             headerRight: () => (
+              <Pressable onPress={()=>{
+                router.push('/profile')
+              }}>
               <Image
                 source={require("../../assets/images/person01.png")}
                 style={{
@@ -58,9 +66,10 @@ const Layout = () => {
                   marginRight: 10,
                 }}
               />
+              </Pressable>
             ),
             headerTitle: "TSA Connect",
-            title: "Main Menu",
+            title: "Dashboard",
             headerTitleAlign: "center",
             headerTitleStyle: {
               fontSize: 14, // Reduce font size
@@ -75,12 +84,21 @@ const Layout = () => {
           name="addcategory"
           options={{
             title: "Add Category",
+            drawerActiveTintColor: COLORS.primary,
           }}
         />
         <Drawer.Screen
           name="orderlist"
           options={{
-            title: "Order List",
+            title: "My Orders",
+            drawerActiveTintColor: COLORS.primary,
+          }}
+        />
+        <Drawer.Screen
+          name="profile"
+          options={{
+            title: "Profile",
+            drawerActiveTintColor: COLORS.primary,
           }}
         />
       </Drawer>
