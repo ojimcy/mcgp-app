@@ -1,23 +1,27 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Avatar, Icon, Card } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../AuthContext/AuthContext';
+import { getCurrentUser } from '../../constants/api/AuthenticationService';
+import axios from 'axios';
+import { baseUrl } from '../../constants/api/apiClient';
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
   const { logOut, currentUser } = useAuth(); 
 
-  console.log(currentUser);
-/*   const user = {
-    firstName: 'John',
-    lastName: 'Doe',
-    phoneNumber: '+123456789',
-    profilePicture: null,
-    balance: 500000,
-  }; */
-
-  
+async function getUser(){
+    try{
+     const response=await axios.get(`${baseUrl}/users/me`);
+     console.log(response.data)   
+    }catch(error){
+console.log(error?.response.data.message)
+    }
+}
+  useEffect(()=>{
+    getUser()
+  },[])
 
   return (
     <View style={styles.container}>
