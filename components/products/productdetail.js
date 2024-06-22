@@ -11,9 +11,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { COLORS } from "../../constants";
 
 const ProductDetail = ({ item }) => {
-  console.log('checking from product Detail',item)
   const [isMore, setIsMore] = useState(false);
-  console.log("login");
 //  console.log("attr", item.attributes||0);
   const renderStars = (rating) => {
     const stars = [];
@@ -31,10 +29,10 @@ const ProductDetail = ({ item }) => {
     return stars;
   };
 
-  /*  const getDescriptionSnippet = (desc) => {
+   const getDescriptionSnippet = (desc) => {
     return desc.length > 100 ? desc.substring(0, 100) + '...' : desc;
   };
- */
+
   return (
     <ScrollView style={styles.container}>
       {item &&(
@@ -46,7 +44,7 @@ const ProductDetail = ({ item }) => {
       />
       <View style={styles.contentContainer}>
         <Text style={styles.title}>
-          {item.companyName} is always good to be here!
+          {item.companyName}
           {"'s "}
           {item.name}
         </Text>
@@ -60,13 +58,13 @@ const ProductDetail = ({ item }) => {
             />
             <Text style={styles.location}> {item.location}</Text>
           </View>
-         {/*  <View style={styles.ratingRow}>
+          <View style={styles.ratingRow}>
             {renderStars(item.averageRating)}
             <Text style={styles.rating}>{item.averageRating}</Text>
             <Text style={styles.ratingCount}>
-              {item.reviews || 4} ratings
+              {item.reviews} ratings
             </Text>
-          </View> */}
+          </View>
         </View>
         <View style={styles.priceContainer}>
           <Text style={styles.price}>{item.price}</Text>

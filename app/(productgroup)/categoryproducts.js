@@ -12,7 +12,6 @@ import ProductCard from "../../components/designs/productcard";
 
 const Products = () => {
   const { value } = useLocalSearchParams();
-  console.log(value);
   const [products, setProducts] = useState([]);
   const filteredData = products.filter((item) => item.category === value);
   useEffect(() => {
