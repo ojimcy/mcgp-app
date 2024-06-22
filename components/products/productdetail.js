@@ -12,7 +12,7 @@ import { COLORS } from "../../constants";
 
 const ProductDetail = ({ item }) => {
   const [isMore, setIsMore] = useState(false);
-//  console.log("attr", item.attributes||0);
+  console.log("attr", item.attributes);
   const renderStars = (rating) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
@@ -93,16 +93,16 @@ const ProductDetail = ({ item }) => {
             </TouchableOpacity>
           )}
         </View>
-        {/* <View style={styles.productInfoContainer}>
-          {attributes.map((attribute, index) => (
+        <View style={styles.productInfoContainer}>
+          {item.attributes.split(',').map((attribute, index) => (
             <View style={styles.productInfoRow} key={index}>
               <Text style={styles.productInfoTitle}>{attribute.name}: </Text>
               <Text style={styles.productInfoValue}>
-                {attribute.values.join(', ')}
+               {/*  {attribute.values.join(', ')} */}
               </Text>
             </View>
           ))}
-        </View> */}
+        </View>
       </View>
       {isMore && (
         <>

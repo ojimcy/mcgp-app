@@ -10,3 +10,4 @@ export const getPrduct=(id)=>apiClient.get(`/adverts/${id}`);
 export const addToCart=(payLoad)=>apiClient.post(`/cart`,payLoad)
 export const sendProof=(id,payLoad)=>apiClient.post(`/order/${id}/pay`,payLoad);
 export const viewCart=()=>apiClient.get('/cart');
+export const getCurrentUser=()=>apiClient.get('/users/me')
