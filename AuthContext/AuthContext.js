@@ -13,6 +13,7 @@ import { router } from "expo-router";
 export const AppContext = createContext();
 export const useAuth = () => useContext(AppContext);
 export const AppProvider = ({ children }) => {
+  const [currentUser, setCurrentUser] = useState(null);
   const [category, setCategory] = useState("");
   const [isAuthenticated, setAuthenticated] = useState(false);
   const [username, setUsername] = useState("");
@@ -47,6 +48,7 @@ export const AppProvider = ({ children }) => {
   async function login(username, password) {
     try {
       const response = await executeJwtAuthentication(username, password);
+      console.log('auth response',response);
       if (response.status === 200) {
         const jwtToken = "Bearer " + response.data.tokens.access.token;
         await AsyncStorage.setItem("token", jwtToken);

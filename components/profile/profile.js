@@ -1,73 +1,55 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Avatar, Icon, Card } from 'react-native-elements';
-import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../AuthContext/AuthContext';
-import axios from 'axios';
-import { baseUrl } from '../../constants/api/apiClient';
+import { router } from 'expo-router';
 
 const ProfileScreen = () => {
-  const navigation = useNavigation();
-  const { logOut, token } = useAuth();
-  const [user,setUser]=useState() 
+  const { logOut, currentUser } = useAuth();
 
-async function getUser(){
-    try{
-     const response=await axios.get(`${baseUrl}/users/me`,{
-        headers: {
-            Authorization: `${token}`,
-          },
-     }); 
-     console.log(response.data)
-     setUser(response.data)
-    }catch(error){
-console.log(error?.response.data.message)
-    }
-}
-  useEffect(()=>{
-    getUser()
-  },[])
+  const fullName = `${currentUser?.firstName} ${currentUser?.lastName}`;
+  const initial = `${currentUser?.firstName[0]}${currentUser?.lastName[0]}`;
 
   return (
     <View style={styles.container}>
-      {/* <Card containerStyle={styles.card}>
+      <Card containerStyle={styles.card}>
         <TouchableOpacity
           style={styles.editIcon}
-          onPress={() => navigation.navigate('EditProfile')}
+          onPress={() => router.push('/edit')}
         >
           <Icon name="edit" size={20} color="#9D6B38" />
         </TouchableOpacity>
         <View style={styles.profileInfo}>
-          {user.profilePicture ? (
+          {currentUser?.profilePicture ? (
             <Avatar
               rounded
-              source={{ uri: user.profilePicture }}
+              source={{ uri: currentUser?.profilePicture }}
               size="large"
             />
           ) : (
-          <Avatar
+            <Avatar
               rounded
-              title={'initial'}
+              title={initial}
               size="large"
               overlayContainerStyle={{ backgroundColor: '#9D6B38' }}
               titleStyle={{ color: '#fff' }}
-            /> 
+            />
           )}
           <View style={styles.textInfo}>
-            <Text style={styles.fullName}>{user.fullName}</Text>
-            <Text style={styles.phoneNumber}>{user.phoneNumber}</Text>
+            <Text style={styles.fullName}>{fullName}</Text>
+            <Text style={styles.phoneNumber}>{currentUser?.phoneNumber}</Text>
           </View>
         </View>
       </Card>
       <View style={styles.linksContainer}>
         <TouchableOpacity
           style={styles.profileLink}
-          onPress={() => navigation.navigate('EditProfile')}
+          onPress={() => router.push('edit-profile')}
         >
           <Icon name="description" size={20} color="#9D6B38" />
           <Text style={styles.linkText}>My Adverts</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.profileLink}>
+        <TouchableOpacity style={styles.profileLink} onPress={() => router.push('/dashboard/order')}>
           <Icon name="list" size={20} color="#9D6B38" />
           <Text style={styles.linkText}>Orders</Text>
         </TouchableOpacity>
@@ -78,15 +60,15 @@ console.log(error?.response.data.message)
         <TouchableOpacity style={styles.profileLink}>
           <Icon name="account-balance-wallet" size={20} color="#9D6B38" />
           <View style={styles.balanceRow}>
-            <Text style={styles.balance}>{user.balance} USD</Text>
+            <Text style={styles.balance}>{currentUser?.balance} USD</Text>
             <Text style={styles.balanceText}>My Balance</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity style={styles.profileLink} onPress={logOut}>
-        <Icon name="exit-to-app" size={20} color="#9D6B38" />
+          <Icon name="exit-to-app" size={20} color="#9D6B38" />
           <Text style={styles.linkText}>Logout</Text>
         </TouchableOpacity>
-      </View> */}
+      </View>
     </View>
   );
 };
