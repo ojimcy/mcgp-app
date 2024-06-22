@@ -5,18 +5,15 @@ import { useLocalSearchParams } from 'expo-router'
 import ProductDetail from '../../components/products/productdetail'
 
 const ProductDetails = () => {
-  const {image,companyName,title,description,location,price,phone}=useLocalSearchParams();
-  console.log(image)
+  //const {image,companyName,title,description,location,price,phone}=useLocalSearchParams();
+  const data=useLocalSearchParams();
+  console.log('my checks',data.title)
   return (
     <View>
-     <ProductDetail image={image} 
-     companyName={companyName} 
-     title={title} 
-     description={description}
-     location={location}
-     price={price}
-     phone={phone}
-     />
+      {data &&
+      <ProductDetail 
+    item={data}
+     />}
     </View>
   )
 }

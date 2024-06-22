@@ -41,14 +41,23 @@ const Layout = () => {
               default:
                 break;
             }
-            return <Icon name={iconName} size={size} color={color} />;
+            return <Icon name={iconName} size={25} color={color} style={{marginVertical:-5}}/>;
           },
           headerTintColor: navigation.isFocused() ? COLORS.primary : "black",
+        /*  drawerPosition:'right', */
           drawerLabelStyle: {
+            marginHorizontal:-20,
+            fontSize:16,
+            padding:-20
+          },
+          itemStyle: {
             marginVertical: 0, // Adjust the vertical margin here
           },
-          
+          drawerContentContainerStyle:{
+            justifyContent:'center'
+          }
         })}
+      
       >
         <Drawer.Screen
           name="(tabs)"
@@ -72,7 +81,7 @@ const Layout = () => {
             title: "Dashboard",
             headerTitleAlign: "center",
             headerTitleStyle: {
-              fontSize: 14, // Reduce font size
+              fontSize: 16, // Reduce font size
               color: navigation.isFocused() ? COLORS.primary : "black", // Change font color
             },
             headerTintColor: navigation.isFocused() ? COLORS.primary : "black",
