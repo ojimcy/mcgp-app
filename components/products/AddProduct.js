@@ -32,6 +32,7 @@ const AddProduct = () => {
   const [email, setEmail] = useState("");
   const [location, setLocation] = useState("");
   const [category, setCategory] = useState("");
+  const [companyName,setCompanyName]=useState()
   const { setLoading, loading } = useAuth();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -92,7 +93,6 @@ const AddProduct = () => {
       });
       return;
     }
-    console.log(productName,location,email,description,category,phoneNumber)
     setLoading(true);
     const formData = new FormData();
     productImages.forEach((uri, index) => {
@@ -111,8 +111,7 @@ const AddProduct = () => {
     formData.append("email", email);
     formData.append("phoneNumber", phoneNumber);
     formData.append("category", category);
-    formData.append("companyName", "VS45");
-   // console.log(productName,location,email,description,category)
+    formData.append("companyName", companyName);
     try {
       const response = await registerAds(formData);
       if (response) {
@@ -173,8 +172,7 @@ const AddProduct = () => {
         }));
         setCategories(fetchedCategories);
       } catch (error) {
-        console.error("Error fetching categories:", error);
-        console.log(error?.response?.data?.message);
+        alert(error?.response?.data?.message);
       }
     };
     fetchCategories();
@@ -222,6 +220,12 @@ const AddProduct = () => {
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
+      />
+      <Text style={styles.label}>Company Name</Text>
+      <TextInput
+        style={styles.input}
+        value={companyName}
+        onChangeText={setCompanyName}
       />
       <Text style={styles.label}>Enter Category</Text>
       <Picker

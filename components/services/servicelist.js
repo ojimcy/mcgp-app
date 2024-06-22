@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ScrollView, View, Text, Image, StyleSheet } from 'react-native';
 import { COLORS } from '../../constants';
+import { getCategories } from '../../constants/api/AuthenticationService';
+import { useAuth } from '../../AuthContext/AuthContext';
 
-// Example Data
-const categories = [
+/* const categories = [
  
       { title: 'Home cleaning services', icon: require('../../assets/services/homeservice.png') },
       { title: 'Laundry services', icon: require('../../assets/services/laundry.png') },
@@ -12,9 +13,26 @@ const categories = [
       { title: 'Spar services', icon: require('../../assets/services/spar.png') },
       { title: 'Hair stylist', icon: require('../../assets/services/hair.png') },
       { title: 'Transport system services', icon: require('../../assets/services/truck.png') }
-    ];
+    ]; */
 
 const ServiceList = () => {
+  const [categories,setCategories]=useState([])
+  const {logOut}=useAuth()
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await getCategories('Products'); // Adjust the endpoint based on your API
+        if(response.status===401){
+         await logOut()
+          } 
+        const fetchedCategories = response.data.results;
+        setCategories(fetchedCategories);
+      } catch (error) {
+        await logOut()
+      }
+    };
+    fetchCategories();
+  }, []);
   return (
     <ScrollView style={styles.container}>
          {categories.map((item, itemIndex) => (

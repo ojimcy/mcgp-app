@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, View, Text, Image, StyleSheet } from 'react-native';
 import { COLORS } from '../../constants';
+import { getCategories } from '../../constants/api/AuthenticationService';
+import { useAuth } from '../../AuthContext/AuthContext';
 
+
+/* 
 // Example Data
 const categories = [
   {
@@ -25,9 +29,26 @@ const categories = [
       { name: 'Ladies Bags', icon: require('../../assets/products/wear.png') }
     ],
   }
-];
+]; */
 
 const ProductList = () => {
+  const [categories,setCategories]=useState([])
+  const {logOut}=useAuth()
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await getCategories('Products'); // Adjust the endpoint based on your API
+        if(response.status===401){
+         await logOut()
+          } 
+        const fetchedCategories = response.data.results;
+        setCategories(fetchedCategories);
+      } catch (error) {
+        await logOut()
+      }
+    };
+    fetchCategories();
+  }, []);
   return (
     <ScrollView style={styles.container}>
       {categories.map((category, index) => (

@@ -1,20 +1,25 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Avatar, Icon, Card } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../AuthContext/AuthContext';
-import { getCurrentUser } from '../../constants/api/AuthenticationService';
 import axios from 'axios';
 import { baseUrl } from '../../constants/api/apiClient';
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
-  const { logOut, currentUser } = useAuth(); 
+  const { logOut, token } = useAuth();
+  const [user,setUser]=useState() 
 
 async function getUser(){
     try{
-     const response=await axios.get(`${baseUrl}/users/me`);
-     console.log(response.data)   
+     const response=await axios.get(`${baseUrl}/users/me`,{
+        headers: {
+            Authorization: `${token}`,
+          },
+     }); 
+     console.log(response.data)
+     setUser(response.data)
     }catch(error){
 console.log(error?.response.data.message)
     }
@@ -25,7 +30,7 @@ console.log(error?.response.data.message)
 
   return (
     <View style={styles.container}>
-      <Card containerStyle={styles.card}>
+      {/* <Card containerStyle={styles.card}>
         <TouchableOpacity
           style={styles.editIcon}
           onPress={() => navigation.navigate('EditProfile')}
@@ -40,16 +45,16 @@ console.log(error?.response.data.message)
               size="large"
             />
           ) : (
-            <Avatar
+          <Avatar
               rounded
-              title={initial}
+              title={'initial'}
               size="large"
               overlayContainerStyle={{ backgroundColor: '#9D6B38' }}
               titleStyle={{ color: '#fff' }}
-            />
+            /> 
           )}
           <View style={styles.textInfo}>
-            <Text style={styles.fullName}>{fullName}</Text>
+            <Text style={styles.fullName}>{user.fullName}</Text>
             <Text style={styles.phoneNumber}>{user.phoneNumber}</Text>
           </View>
         </View>
@@ -81,7 +86,7 @@ console.log(error?.response.data.message)
         <Icon name="exit-to-app" size={20} color="#9D6B38" />
           <Text style={styles.linkText}>Logout</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </View>
   );
 };
