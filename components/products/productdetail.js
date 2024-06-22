@@ -40,7 +40,7 @@ const ProductDetail = ({ item }) => {
       {item &&(
         <>
         <Image
-        source={{ uri: item.image }}
+        source={{ uri: item.images.split(',')[0] }}
         style={styles.image}
         accessibilityLabel="Product Image"
       />
@@ -48,7 +48,7 @@ const ProductDetail = ({ item }) => {
         <Text style={styles.title}>
           {item.companyName} is always good to be here!
           {"'s "}
-          {item.title}
+          {item.name}
         </Text>
         <View style={styles.locationContainer}>
           <View style={styles.locationRow}>
@@ -60,13 +60,13 @@ const ProductDetail = ({ item }) => {
             />
             <Text style={styles.location}> {item.location}</Text>
           </View>
-          <View style={styles.ratingRow}>
+         {/*  <View style={styles.ratingRow}>
             {renderStars(item.averageRating)}
             <Text style={styles.rating}>{item.averageRating}</Text>
             <Text style={styles.ratingCount}>
-              {item.reviews /* .length */ || 4} ratings
+              {item.reviews || 4} ratings
             </Text>
-          </View>
+          </View> */}
         </View>
         <View style={styles.priceContainer}>
           <Text style={styles.price}>{item.price}</Text>

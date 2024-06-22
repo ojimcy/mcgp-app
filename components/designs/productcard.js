@@ -76,13 +76,13 @@ const ProductCard = ({ data }) => {
         <Pressable
           onPress={() => {
             console.log("cliked!");
-            router.push({
+          /*   router.push({
               pathname: "/productdetails",
               params: { image: data.images[1],companyName:data.companyName,title:data.name,description:data.description,location:data.location,price:data.price,phone:data.phoneNumber },
-            });
+            }); */
             router.push({
               pathname: "/productdetails",
-              params: { data },
+              params: data ,
             });
           }}
         >
