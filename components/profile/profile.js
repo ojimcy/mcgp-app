@@ -9,15 +9,16 @@ const ProfileScreen = () => {
   const { logOut, currentUser } = useAuth(); 
 
   console.log(currentUser);
-/*   const user = {
+  const user = {
     firstName: 'John',
     lastName: 'Doe',
     phoneNumber: '+123456789',
     profilePicture: null,
     balance: 500000,
-  }; */
+  };
 
-  
+  const fullName = `${user.firstName} ${user.lastName}`;
+  const initial = `${user.firstName[0]}${user.lastName[0]}`;
 
   return (
     <View style={styles.container}>
