@@ -1,25 +1,24 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   addToCart,
   executeJwtAuthentication,
   getCurrentUser,
   register,
-} from "../constants/api/AuthenticationService";
-import { apiClient } from "../constants/api/apiClient";
-import { router } from "expo-router";
+} from '../constants/api/AuthenticationService';
+import { apiClient } from '../constants/api/apiClient';
+import { router } from 'expo-router';
 
 // Create the context
 export const AppContext = createContext();
 export const useAuth = () => useContext(AppContext);
 export const AppProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState('');
   const [isAuthenticated, setAuthenticated] = useState(false);
-  const [username, setUsername] = useState("");
-  const [token, setToken] = useState("");
+  const [username, setUsername] = useState('');
+  const [token, setToken] = useState('');
   const [loading, setLoading] = useState(false);
-  const [appService, setAppService] = useState("");
+  const [appService, setAppService] = useState('');
   const [items, setItems] = useState([]);
   const [currentUser, setCurrentUser] = useState();
   const addItem = async (newItem) => {
@@ -29,12 +28,12 @@ export const AppProvider = ({ children }) => {
       const response = await addToCart(newItem);
       console.log(response);
       if (response.status === 201) {
-        return { success: true, error: false, message: "success" };
+        return { success: true, error: false, message: 'success' };
       } else {
-        return { success: false, error: true, message: "could not create" };
+        return { success: false, error: true, message: 'could not create' };
       }
     } catch (error) {
-      console.log("checking error", error.response?.data?.message);
+      console.log('checking error', error.response?.data?.message);
       return {
         success: false,
         error: true,
@@ -48,23 +47,23 @@ export const AppProvider = ({ children }) => {
   async function login(username, password) {
     try {
       const response = await executeJwtAuthentication(username, password);
-      console.log('auth response',response);
+      console.log('auth response', response);
       if (response.status === 200) {
-        const jwtToken = "Bearer " + response.data.tokens.access.token;
-        await AsyncStorage.setItem("token", jwtToken);
+        const jwtToken = 'Bearer ' + response.data.tokens.access.token;
+        await AsyncStorage.setItem('token', jwtToken);
         setToken(jwtToken);
         setUsername(username);
         setAuthenticated(true);
         apiClient.interceptors.request.use((config) => {
           config.headers.Authorization = jwtToken;
-          config.headers["Content-Type"] = "multipart/form-data";
+          config.headers['Content-Type'] = 'multipart/form-data';
           return config;
         });
-        return { success: true, error: false, message: "success" };
+        return { success: true, error: false, message: 'success' };
       } else {
         setLoading(false);
         await logOut();
-        return { success: false, error: true, message: "could not create" };
+        return { success: false, error: true, message: 'could not create' };
       }
     } catch (error) {
       setLoading(false);
@@ -78,23 +77,23 @@ export const AppProvider = ({ children }) => {
   }
   const getItems = async () => {
     try {
-      const token = await AsyncStorage.getItem("token");
+      const token = await AsyncStorage.getItem('token');
       console.log(token);
       const response = await axios.get(`${baseUrl}/cart`, {
         headers: {
           Authorization: token,
         },
       });
-      console.log("checking responses", response);
+      console.log('checking responses', response);
       if (response.status === 200) {
-        return { success: true, data: response.data, message: "success" };
+        return { success: true, data: response.data, message: 'success' };
       } else {
-        return { success: false, data: "", message: "failed to getItems" };
+        return { success: false, data: '', message: 'failed to getItems' };
       }
     } catch (error) {
       return {
         success: false,
-        data: "",
+        data: '',
         message: error.response?.data?.message,
       };
     }
@@ -103,19 +102,19 @@ export const AppProvider = ({ children }) => {
     try {
       const response = await register(payLoad);
       if (response.status === 201) {
-        const jwtToken = "Bearer " + response.data.tokens.access.token;
+        const jwtToken = 'Bearer ' + response.data.tokens.access.token;
         setToken(jwtToken);
         setAuthenticated(true);
         apiClient.interceptors.request.use((config) => {
           config.headers.Authorization = jwtToken;
-          config.headers["Content-Type"] = "multipart/form-data";
+          config.headers['Content-Type'] = 'multipart/form-data';
           //config.headers.Accept = "application/json";
           return config;
         });
-        return { success: true, error: false, message: "success" };
+        return { success: true, error: false, message: 'success' };
       } else {
         setLoading(false);
-        return { success: false, error: true, message: "could not create" };
+        return { success: false, error: true, message: 'could not create' };
       }
     } catch (error) {
       setLoading(false);
@@ -133,11 +132,11 @@ export const AppProvider = ({ children }) => {
     setAuthenticated(false);
     setUsername(null);
     apiClient.interceptors.request.use((config) => {
-      config.headers.Authorization = "";
+      config.headers.Authorization = '';
       return config;
     });
-    await AsyncStorage.removeItem("token");
-    router.push("/login");
+    await AsyncStorage.removeItem('token');
+    router.push('/login');
   }
   async function loggedInUser() {
     try {
@@ -150,6 +149,7 @@ export const AppProvider = ({ children }) => {
   useEffect(() => {
     loggedInUser();
   }, []);
+
   return (
     <AppContext.Provider
       value={{
@@ -172,7 +172,7 @@ export const AppProvider = ({ children }) => {
         addItem,
         removeItem,
         getItems,
-        currentUser
+        currentUser,
       }}
     >
       {children}

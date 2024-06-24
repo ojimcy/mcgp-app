@@ -10,19 +10,18 @@ import { Avatar, Icon, Card } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../AuthContext/AuthContext';
 import { countries } from '../../constants/api/statesConstants';
+import { Picker } from "@react-native-picker/picker";
 
 const EditProfileScreen = () => {
   const navigation = useNavigation();
   const { currentUser } = useAuth();
 
-  const [firstName, setFirstName] = useState(currentUser.firstName);
-  const [lastName, setLastName] = useState(currentUser.lastName);
-  const [phoneNumber, setPhoneNumber] = useState(currentUser.phoneNumber);
-  const [countryList, setCountries] = useState(countries);
-  const [country, setCountry] = useState();
+  const [firstName, setFirstName] = useState(currentUser?.firstName);
+  const [lastName, setLastName] = useState(currentUser?.lastName);
+  const [phoneNumber, setPhoneNumber] = useState(currentUser?.phoneNumber);
+  const [country, setCountry] = useState(currentUser?.country);
 
   const name = `${firstName} ${lastName}`;
-
   return (
     <View style={styles.container}>
       <Card containerStyle={styles.card}>
@@ -66,7 +65,7 @@ const EditProfileScreen = () => {
               }}
             >
               <Picker.Item label={'Select Country'} value={''} />
-              {countryList.map((item, index) => (
+              {countries.map((item, index) => (
                 <Picker.Item key={index} label={item} value={item} />
               ))}
             </Picker>
