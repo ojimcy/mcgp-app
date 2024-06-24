@@ -19,7 +19,7 @@ const Layout = () => {
                 break;
               case "profile":
                 iconName = "account-cog";
-                break;
+                break; 
               case "Pending Reviews":
                 iconName = "comment-processing";
                 break;

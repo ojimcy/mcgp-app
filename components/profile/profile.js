@@ -1,39 +1,29 @@
 import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Avatar, Icon, Card } from 'react-native-elements';
-import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../AuthContext/AuthContext';
+import { router } from 'expo-router';
 
 const ProfileScreen = () => {
-  const navigation = useNavigation();
-  const { logOut, currentUser } = useAuth(); 
+  const { logOut, currentUser } = useAuth();
 
-  console.log(currentUser);
-  const user = {
-    firstName: 'John',
-    lastName: 'Doe',
-    phoneNumber: '+123456789',
-    profilePicture: null,
-    balance: 500000,
-  };
-
-  const fullName = `${user.firstName} ${user.lastName}`;
-  const initial = `${user.firstName[0]}${user.lastName[0]}`;
+  const fullName = `${currentUser?.firstName} ${currentUser?.lastName}`;
+  const initial = `${currentUser?.firstName[0]}${currentUser?.lastName[0]}`;
 
   return (
     <View style={styles.container}>
       <Card containerStyle={styles.card}>
         <TouchableOpacity
           style={styles.editIcon}
-          onPress={() => navigation.navigate('EditProfile')}
+          onPress={() => router.push('/edit')}
         >
           <Icon name="edit" size={20} color="#9D6B38" />
         </TouchableOpacity>
         <View style={styles.profileInfo}>
-          {user.profilePicture ? (
+          {currentUser?.profilePicture ? (
             <Avatar
               rounded
-              source={{ uri: user.profilePicture }}
+              source={{ uri: currentUser?.profilePicture }}
               size="large"
             />
           ) : (
@@ -47,19 +37,19 @@ const ProfileScreen = () => {
           )}
           <View style={styles.textInfo}>
             <Text style={styles.fullName}>{fullName}</Text>
-            <Text style={styles.phoneNumber}>{user.phoneNumber}</Text>
+            <Text style={styles.phoneNumber}>{currentUser?.phoneNumber}</Text>
           </View>
         </View>
       </Card>
       <View style={styles.linksContainer}>
         <TouchableOpacity
           style={styles.profileLink}
-          onPress={() => navigation.navigate('EditProfile')}
+          onPress={() => router.push('edit-profile')}
         >
           <Icon name="description" size={20} color="#9D6B38" />
           <Text style={styles.linkText}>My Adverts</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.profileLink}>
+        <TouchableOpacity style={styles.profileLink} onPress={() => router.push('/dashboard/order')}>
           <Icon name="list" size={20} color="#9D6B38" />
           <Text style={styles.linkText}>Orders</Text>
         </TouchableOpacity>
@@ -70,12 +60,12 @@ const ProfileScreen = () => {
         <TouchableOpacity style={styles.profileLink}>
           <Icon name="account-balance-wallet" size={20} color="#9D6B38" />
           <View style={styles.balanceRow}>
-            <Text style={styles.balance}>{user.balance} USD</Text>
+            <Text style={styles.balance}>{currentUser?.balance} USD</Text>
             <Text style={styles.balanceText}>My Balance</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity style={styles.profileLink} onPress={logOut}>
-        <Icon name="exit-to-app" size={20} color="#9D6B38" />
+          <Icon name="exit-to-app" size={20} color="#9D6B38" />
           <Text style={styles.linkText}>Logout</Text>
         </TouchableOpacity>
       </View>
