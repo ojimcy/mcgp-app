@@ -5,22 +5,24 @@ import { COLORS, SIZES } from "../../../../constants";
 import ListCard from "../../../../components/accessories/ListCard";
 import HeaderSearch from "../../../../components/marketplace/header";
 import { getCategories } from "../../../../constants/api/AuthenticationService";
-import { router } from "expo-router";
 import { useAuth } from "../../../../AuthContext/AuthContext";
+import axios from "axios";
+import { baseUrl } from "../../../../constants/api/apiClient";
 const products = () => {
   const [categories,setCategories]=useState([])
-  const {logOut}=useAuth()
+  const {logOut,token}=useAuth()
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await getCategories('Products'); // Adjust the endpoint based on your API
-        if(response.status===401){
-         await logOut()
-          } 
+        const response = await axios.get(`${baseUrl}/category?type=Product`,{
+          headers: {
+            Authorization: `${token}`,
+          },
+        }) // Adjust the endpoint based on your API
         const fetchedCategories = response.data.results;
         setCategories(fetchedCategories);
       } catch (error) {
-        await logOut()
+        console.log(error?.response.data.message)
       }
     };
     fetchCategories();

@@ -1,10 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React, { useEffect } from 'react'
+import { StyleSheet} from 'react-native'
 import HomeScreen from '../../../../screens/Home'
-import { useAuth } from '../../../../AuthContext/AuthContext';
-import { router } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import HomePage from '../../../../nft/Home';
 
 
 const Home = () => {

@@ -1,35 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { ScrollView, View, Text, Image, StyleSheet } from 'react-native';
 import { COLORS } from '../../constants';
-import { getCategories } from '../../constants/api/AuthenticationService';
+import { getCategories, getFeaturedCategories } from '../../constants/api/AuthenticationService';
 import { useAuth } from '../../AuthContext/AuthContext';
 
-
-/* 
-// Example Data
-const categories = [
-  {
-    title: 'Electronics',
-    items: [
-      { name: 'Smart TV', icon: require('../../assets/products/tv.png') },
-      { name: 'Smart Phone', icon: require('../../assets/products/phone.png') },
-      { name: 'Generators', icon: require('../../assets/products/generator.png') }
-    ],
-  },
-  {
-    title: 'Accessories',
-    items: [
-      { name: 'Shoes', icon: require('../../assets/products/shoe.png') },
-      { name: 'Wrist Watches', icon: require('../../assets/products/watch.png') }
-    ],
-  },
-  {
-    title: 'Cooperate Wear',
-    items: [
-      { name: 'Ladies Bags', icon: require('../../assets/products/wear.png') }
-    ],
-  }
-]; */
 
 const ProductList = () => {
   const [categories,setCategories]=useState([])
@@ -37,29 +11,30 @@ const ProductList = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await getCategories('Products'); // Adjust the endpoint based on your API
-        if(response.status===401){
+        const response = await getFeaturedCategories(); // Adjust the endpoint based on your API
+     console.log('From Product List',response.data)
+        /*   if(response.status===401){
          await logOut()
-          } 
+          }  */
         const fetchedCategories = response.data.results;
         setCategories(fetchedCategories);
       } catch (error) {
-        await logOut()
+       console.log('Error From Product List',error?.response.data.message)
       }
     };
     fetchCategories();
   }, []);
   return (
     <ScrollView style={styles.container}>
-      {categories.map((category, index) => (
+      { categories.map((category, index) => (
         <View key={index} style={styles.categoryContainer}>
           <Text style={styles.categoryTitle}>{category.title}</Text>
-          {category.items.map((item, itemIndex) => (
+          {category.items ?  category.items.map((item, itemIndex) => (
             <View key={itemIndex} style={styles.itemContainer}>
               <Image source={item.icon} style={styles.iconStyle} resizeMode='contain'/>
               <Text style={styles.itemText}>{item.name}</Text>
             </View>
-          ))}
+          )):undefined}
         </View>
       ))}
     </ScrollView>

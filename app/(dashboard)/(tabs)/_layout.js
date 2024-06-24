@@ -1,20 +1,8 @@
 import { Image, StyleSheet } from 'react-native'
-import React,{useEffect} from 'react'
 import { Tabs } from 'expo-router'
-import * as NavigationBar from 'expo-navigation-bar';
 import { COLORS } from '../../../constants';
 
 const DashLayout = () => {
-    
-    useEffect(() => {
-        async function configureNavigationBar() {
-            // Set the navigation bar position to absolute
-            await NavigationBar.setPositionAsync('absolute');
-            await NavigationBar.setBackgroundColorAsync('#fff');
-          }
-      
-          configureNavigationBar();
-      }, []);
   return (
     <Tabs 
     screenOptions={{

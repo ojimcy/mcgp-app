@@ -11,22 +11,25 @@ import React, { useEffect, useState } from "react";
 import { COLORS, SIZES } from "../../constants/theme";
 import Icon from "react-native-vector-icons/FontAwesome";
 import * as ImagePicker from "expo-image-picker";
-import { getCategories, registerCategory } from "../../constants/api/AuthenticationService";
+import {
+  getCategories,
+  registerCategory,
+} from "../../constants/api/AuthenticationService";
 import { useAuth } from "../../AuthContext/AuthContext";
-import Toast from 'react-native-toast-message';
+import Toast from "react-native-toast-message";
 import toastConfig from "../../toastConfig";
 import { Picker } from "@react-native-picker/picker";
-import { RadioButton } from 'react-native-paper';
+import { RadioButton } from "react-native-paper";
 import { generateFileName } from "../../constants/api/filename";
 const AddCategory = () => {
   const [description, setDescription] = useState("");
   const [title, setTitle] = useState("");
   const [type, setType] = useState("");
   const [featuredImage, setFeaturedImage] = useState(null);
-  const [parentCategory,setParentCategory]=useState()
-  const [categories,setCategories]=useState([])
+  const [parentCategory, setParentCategory] = useState("");
+  const [categories, setCategories] = useState([]);
   const [isFeatured, setIsFeatured] = useState(true);
-  const {logOut } = useAuth();
+  const { logOut } = useAuth();
   const pickImageAsync = async () => {
     try {
       const { status } =
@@ -54,57 +57,63 @@ const AddCategory = () => {
 
   async function createCategory() {
     if (!title || !description || !type) {
-    //  alert("Please fill all fields and upload an image.");
+      //  alert("Please fill all fields and upload an image.");
       Toast.show({
-        type: 'error',
-        text1: 'Please fill all fields and upload an image'
+        type: "error",
+        text1: "Please fill all fields and upload an image",
       });
       return;
     }
     const formData = new FormData();
-    formData.append('image', {
-      uri: featuredImage,
-      type: 'image/jpeg',
-      name: `image_${generateFileName}.jpg`,
-    });
-    formData.append('title',title)
-    formData.append('description',description)
-    formData.append('type',type)
-    formData.append('parentCategory',parentCategory)
-    formData.append('isFeatured',isFeatured)
+    if (featuredImage) {
+      formData.append("image", {
+        uri: featuredImage,
+        type: "image/jpeg",
+        name: `image_${generateFileName}.jpg`,
+      });
+    }
+
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("type", type);
+    if (parentCategory) {
+      formData.append("parentCategory", parentCategory);
+    }
+    formData.append("isFeatured", isFeatured);
     try {
+      console.log(formData);
       const response = await registerCategory(formData);
+      console.log(response.status);
       if (response.status === 201) {
         Toast.show({
-            type: 'success',
-            text1: 'Category Created',
-            text2: 'The category was created successfully.',
-          });
+          type: "success",
+          text1: "Category Created",
+          text2: "The category was created successfully.",
+        });
       }
     } catch (error) {
       if (error.response) {
-            Toast.show({
-              type: 'error',
-              text1: 'Error Creating Category',
-              text2: error.response.data.message || 'An error occurred',
-            });
-      } else {
         Toast.show({
-            type: 'error',
-            text1: 'Network Error',
-            text2: error.message,
-          });
+          type: "error",
+          text1: "Error Creating Category",
+          text2: error.response.data.message || "An error occurred",
+        });
+        alert(error.response.data.message);
+      } else {
+        alert("Could not create");
+        Toast.show({
+          type: "error",
+          text1: "Network Error",
+          text2: error.message,
+        });
       }
     }
   }
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await getCategories('Products'); // Adjust the endpoint based on your API
-        if(response.status===401){
-          await logOut()
-          return
-        }
+        const response = await getCategories("Product"); // Adjust the endpoint based on your API
+        console.log(response.data);
         const fetchedCategories = response.data.results.map((category) => ({
           title: category.title,
           id: category.id,
@@ -124,86 +133,88 @@ const AddCategory = () => {
       } catch (error) {
         console.error("Error fetching categories:", error);
         console.log(error?.response?.data?.message);
-        await logOut()
+        await logOut();
       }
     };
     fetchCategories();
   }, []);
 
   return (
-    <View style={{backgroundColor:'#fff',flex:1}}>
+    <View style={{ backgroundColor: "#fff", flex: 1 }}>
+      <ScrollView style={styles.cover}>
+        <Toast config={toastConfig} />
+        <Text style={styles.label}>Enter Category</Text>
+        <TextInput
+          style={styles.input}
+          value={title}
+          onChangeText={(e) => setTitle(e)}
+        />
+        <Text style={styles.label}>Enter Description</Text>
+        <TextInput
+          style={styles.input}
+          value={description}
+          onChangeText={(e) => setDescription(e)}
+          autoCapitalize="none"
+        />
+        <Text style={styles.label}>Enter Category Type</Text>
+        <Picker
+          style={styles.input}
+          selectedValue={type}
+          onValueChange={(itemValue) => setType(itemValue)}
+        >
+          <Picker.Item label={"Select Type"} value={""} />
+          <Picker.Item label={"Product"} value={"Product"} />
+          <Picker.Item label={"Service"} value={"Service"} />
+        </Picker>
 
-    <ScrollView style={styles.cover}>
-    <Toast config={toastConfig}/>
-      <Text style={styles.label}>Enter Category</Text>
-      <TextInput
-        style={styles.input}
-        value={title}
-        onChangeText={(e) => setTitle(e)}
-      />
-      <Text style={styles.label}>Enter Description</Text>
-      <TextInput
-        style={styles.input}
-        value={description}
-        onChangeText={(e) => setDescription(e)}
-        autoCapitalize="none"
-      />
-       <Text style={styles.label}>Enter Category Type</Text>
-       <Picker
-        style={styles.input}
-        selectedValue={type}
-        onValueChange={(itemValue) => setType(itemValue)}
-      >
-        <Picker.Item  label={"Select Type"} value={""} />
-        <Picker.Item  label={"Product"} value={"Product"} />
-        <Picker.Item  label={"Service"} value={"Service"} />
-      </Picker>
-        
-      <Text style={styles.label}>Upload Featured Image</Text>
-      <View style={styles.uploadContainer}>
-        <TouchableOpacity onPress={pickImageAsync}>
-          <Icon name="upload" size={25} color="#aaa" />
-        </TouchableOpacity>
-      </View>
-
-      {featuredImage && (
-        <View style={styles.imageContainer}>
-          <Image source={{ uri: featuredImage }} style={styles.uploadedImage} />
+        <Text style={styles.label}>Upload Featured Image</Text>
+        <View style={styles.uploadContainer}>
+          <TouchableOpacity onPress={pickImageAsync}>
+            <Icon name="upload" size={25} color="#aaa" />
+          </TouchableOpacity>
         </View>
-      )}
 
-<Text style={styles.label}>Enter Category</Text>
-      <Picker
-        style={styles.input}
-        selectedValue={parentCategory}
-        onValueChange={(itemValue) => setParentCategory(itemValue)}
-      >
-        <Picker.Item  label={"Select Parent Category"} value={""} />
-        {categories.map((item, index) => (
-          <Picker.Item key={index} label={item.title} value={item.id} />
-        ))}
-      </Picker>
-      <Text style={styles.label}>Featured?</Text>
-      <View style={styles.radioContainer}>
-        <RadioButton
-          value={isFeatured}
-          status={isFeatured ? 'checked' : 'unchecked'}
-          onPress={() => setIsFeatured(true)}
-        />
-        <Text style={styles.radioText}>Yes</Text>
-        <RadioButton
-          value={isFeatured}
-          status={!isFeatured ? 'checked' : 'unchecked'}
-          onPress={() => setIsFeatured(false)}
-        />
-        <Text style={styles.radioText}>No</Text>
-      </View>
-      <View style={{ alignItems: "center",marginBottom:55 }}>
-        <TouchableOpacity style={styles.button} onPress={createCategory}>
-          <Text style={styles.buttonText}>Continue</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+        {featuredImage && (
+          <View style={styles.imageContainer}>
+            <Image
+              source={{ uri: featuredImage }}
+              style={styles.uploadedImage}
+            />
+          </View>
+        )}
+
+        <Text style={styles.label}>Enter Category</Text>
+        <Picker
+          style={styles.input}
+          selectedValue={parentCategory}
+          onValueChange={(itemValue) => setParentCategory(itemValue)}
+        >
+          <Picker.Item label={"Select Parent Category"} value={""} />
+          {categories.map((item, index) => (
+            <Picker.Item key={index} label={item.title} value={item.id} />
+          ))}
+        </Picker>
+        <Text style={styles.label}>Featured?</Text>
+        <View style={styles.radioContainer}>
+          <RadioButton
+            value={isFeatured}
+            status={isFeatured ? "checked" : "unchecked"}
+            onPress={() => setIsFeatured(true)}
+          />
+          <Text style={styles.radioText}>Yes</Text>
+          <RadioButton
+            value={isFeatured}
+            status={!isFeatured ? "checked" : "unchecked"}
+            onPress={() => setIsFeatured(false)}
+          />
+          <Text style={styles.radioText}>No</Text>
+        </View>
+        <View style={{ alignItems: "center", marginBottom: 55 }}>
+          <TouchableOpacity style={styles.button} onPress={createCategory}>
+            <Text style={styles.buttonText}>Continue</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </View>
   );
 };
@@ -236,7 +247,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: COLORS.primary,
-    marginBottom:20
+    marginBottom: 20,
   },
   buttonText: {
     color: "#fff",
@@ -271,8 +282,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
   },
   radioContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 20,
     marginHorizontal: SIZES.width * 0.05,
   },

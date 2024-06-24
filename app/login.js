@@ -14,7 +14,7 @@ const login = () => {
         setToken(value);
       }
     } catch (e) {
-      console.log(e);
+
     }
   };
 

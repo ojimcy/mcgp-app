@@ -1,5 +1,5 @@
 
-import { Image, StatusBar, StyleSheet, Text, View } from "react-native";
+import { Image, Platform, StatusBar, StyleSheet, Text, View } from "react-native";
 import React, { useEffect } from "react";
 import { Stack } from "expo-router";
 import * as NavigationBar from "expo-navigation-bar";
@@ -8,11 +8,10 @@ import Toast from 'react-native-toast-message';
 const RootLayout = () => {
   useEffect(() => {
     async function configureNavigationBar() {
-      // Set the navigation bar position to absolute
-      await NavigationBar.setPositionAsync("absolute");
-
-      // Set the navigation bar background color to transparent
-      await NavigationBar.setBackgroundColorAsync("#fff");
+      if (Platform.OS === 'android') {
+        await NavigationBar.setBackgroundColorAsync("#fff");
+      }
+     
     }
 
     configureNavigationBar();
