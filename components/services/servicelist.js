@@ -32,7 +32,7 @@ const ServiceList = () => {
       {categories.map((item, itemIndex) => (
         <View key={itemIndex} style={styles.itemContainer}>
           <Image
-            source={item.icon}
+            source={{uri:item.image}}
             style={styles.iconStyle}
             resizeMode="contain"
           />
