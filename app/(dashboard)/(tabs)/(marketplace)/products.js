@@ -1,5 +1,5 @@
 import { StyleSheet, View, Text, TextInput } from "react-native";
-import React,{useEffect,useState} from "react";
+import React, { useEffect, useState } from "react";
 
 import { COLORS, SIZES } from "../../../../constants";
 import ListCard from "../../../../components/accessories/ListCard";
@@ -8,33 +8,31 @@ import { useAuth } from "../../../../AuthContext/AuthContext";
 import axios from "axios";
 import { baseUrl } from "../../../../constants/api/apiClient";
 const products = () => {
-  const [categories,setCategories]=useState([])
-  const {token}=useAuth()
+  const [categories, setCategories] = useState([]);
+  const { logOut, token } = useAuth();
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(`${baseUrl}/category?type=Product`,{
+        const response = await axios.get(`${baseUrl}/category?type=Product`, {
           headers: {
             Authorization: `${token}`
           },
-        }) // Adjust the endpoint based on your API
+        }); // Adjust the endpoint based on your API
         const fetchedCategories = response.data.results;
         setCategories(fetchedCategories);
       } catch (error) {
-        console.log(error?.response.data.message)
+        console.log(error?.response.data.message);
       }
     };
     fetchCategories();
   }, []);
   return (
-    <View style={{ flex: 1,backgroundColor:COLORS.white }}>
-     
+    <View style={{ flex: 1, backgroundColor: COLORS.white }}>
       <View>
-      <HeaderSearch />
+        <HeaderSearch />
       </View>
-      
-     
-      <ListCard itemList={categories} itemValue='categoryproducts'/>
+
+      <ListCard itemList={categories} itemValue="categoryproducts" />
     </View>
   );
 };

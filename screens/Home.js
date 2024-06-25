@@ -49,7 +49,7 @@ Mcgp and other "
             />
             <Card
               imageUrl={assets.mining}
-              title="mining pool:
+              title="Mining pool:
     Mine & earn MCGP for free"
               buttonTitle="Start Mining"
             />
@@ -69,7 +69,7 @@ product and service."
             />
             <Card
               iconName="payments"
-              title="pay for tv cables sub
+              title="Pay for tv cables sub
     / other utilities & fees"
               buttonTitle="Pay"
             />
