@@ -13,7 +13,6 @@ import { COLORS, SIZES } from "../../constants/theme";
 import Icon from "react-native-vector-icons/FontAwesome";
 import * as ImagePicker from "expo-image-picker";
 import {
-  getCategories,
   registerAds,
 } from "../../constants/api/AuthenticationService";
 import Toast from "react-native-toast-message";
@@ -21,8 +20,11 @@ import toastConfig from "../../toastConfig";
 import { LinearProgress } from "react-native-elements";
 import { useAuth } from "../../AuthContext/AuthContext";
 import { Picker } from "@react-native-picker/picker";
+import axios from "axios";
+import { baseUrl } from "../../constants/api/apiClient";
 
 const AddProduct = () => {
+  const {token}=useAuth()
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [productImages, setProductImages] = useState([]);
@@ -42,6 +44,23 @@ const AddProduct = () => {
     return new Promise((resolve) => setTimeout(resolve, duration));
   }, []);
 
+  
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(`${baseUrl}/category?type=Product`,{
+          headers: {
+            Authorization: `${token}`,
+          },
+        }) // Adjust the endpoint based on your API
+        const fetchedCategories = response.data.results;
+        setCategories(fetchedCategories);
+      } catch (error) {
+        console.log(error?.response.data.message)
+      }
+    };
+    fetchCategories();
+  }, []);
   const pickProductImages = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
@@ -151,32 +170,6 @@ const AddProduct = () => {
     setMaxPrice("");
   };
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await getCategories('Products'); // Adjust the endpoint based on your API
-        const fetchedCategories = response.data.results.map((category) => ({
-          title: category.title,
-          id: category.id,
-          icon: () =>
-            category.featuredImage ? (
-              <Image
-                source={{ uri: category.featuredImage }}
-                style={styles.icon}
-              />
-            ) : (
-              <View style={styles.placeholderIcon}>
-                <Text>📷</Text>
-              </View>
-            ),
-        }));
-        setCategories(fetchedCategories);
-      } catch (error) {
-        alert(error?.response?.data?.message);
-      }
-    };
-    fetchCategories();
-  }, []);
 
   return (
     <ScrollView style={styles.cover}>

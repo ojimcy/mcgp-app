@@ -4,7 +4,6 @@ import React,{useEffect,useState} from "react";
 import { COLORS, SIZES } from "../../../../constants";
 import ListCard from "../../../../components/accessories/ListCard";
 import HeaderSearch from "../../../../components/marketplace/header";
-import { getCategories } from "../../../../constants/api/AuthenticationService";
 import { useAuth } from "../../../../AuthContext/AuthContext";
 import axios from "axios";
 import { baseUrl } from "../../../../constants/api/apiClient";

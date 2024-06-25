@@ -3,34 +3,26 @@ import { ScrollView, View, Text, Image, StyleSheet } from "react-native";
 import { COLORS } from "../../constants";
 import { getCategories } from "../../constants/api/AuthenticationService";
 import { useAuth } from "../../AuthContext/AuthContext";
+import { baseUrl } from "../../constants/api/apiClient";
+import axios from "axios";
 
-/* const categories = [
- 
-      { title: 'Home cleaning services', icon: require('../../assets/services/homeservice.png') },
-      { title: 'Laundry services', icon: require('../../assets/services/laundry.png') },
-      { title: 'Event services', icon: require('../../assets/services/event.png') },
-      { title: 'Catering services', icon: require('../../assets/services/catering.png') },
-      { title: 'Spar services', icon: require('../../assets/services/spar.png') },
-      { title: 'Hair stylist', icon: require('../../assets/services/hair.png') },
-      { title: 'Transport system services', icon: require('../../assets/services/truck.png') }
-    ]; */
 
 const ServiceList = () => {
   const [categories, setCategories] = useState([]);
-  const { logOut } = useAuth();
+  const {token}=useAuth();
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await getCategories("Service"); // Adjust the endpoint based on your API
-        console.log("From Service List", response.data);
-        /*  if(response.status===401){
-         await logOut()
-          }  */
+        const response = await axios.get(`${baseUrl}/category?type=Service`,{
+          headers: {
+            Authorization: `${token}`,
+          },
+        })
         const fetchedCategories = response.data.results;
         setCategories(fetchedCategories);
       } catch (error) {
-        console.log("Error from Service List", error?.response.data.message);
-        //  await logOut()
+        console.error('Error fetching categories:', error);
+        console.log(error?.response?.data?.message)
       }
     };
     fetchCategories();

@@ -1,17 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { ScrollView, View, Text, Image, StyleSheet } from 'react-native';
 import { COLORS } from '../../constants';
-import { getCategories, getFeaturedCategories } from '../../constants/api/AuthenticationService';
 import { useAuth } from '../../AuthContext/AuthContext';
+import { baseUrl } from '../../constants/api/apiClient';
+import axios from 'axios';
 
 
 const ProductList = () => {
   const [categories,setCategories]=useState([])
-  const {logOut}=useAuth()
+  const {logOut,token}=useAuth()
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await getFeaturedCategories(); // Adjust the endpoint based on your API
+        const response = await axios.get(`${baseUrl}/category?isParent=true&isFeatured=true`,{
+          headers: {
+            Authorization: `${token}`,
+          },
+        })
      console.log('From Product List',response.data)
         /*   if(response.status===401){
          await logOut()
@@ -29,7 +34,7 @@ const ProductList = () => {
       { categories.map((category, index) => (
         <View key={index} style={styles.categoryContainer}>
           <Text style={styles.categoryTitle}>{category.title}</Text>
-          {category.items ?  category.items.map((item, itemIndex) => (
+          {category.parentCategory ?  category.items.map((item, itemIndex) => (
             <View key={itemIndex} style={styles.itemContainer}>
               <Image source={item.icon} style={styles.iconStyle} resizeMode='contain'/>
               <Text style={styles.itemText}>{item.name}</Text>
