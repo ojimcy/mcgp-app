@@ -117,7 +117,6 @@ const PaymentSelection = ({
                   },
                   paymentMethod: "fiat",
                 });
-                console.log(result);
                 if (result.success) {
                   router.push({
                     pathname: "/paymentdetail",
@@ -134,7 +133,7 @@ const PaymentSelection = ({
               }}
               /*  disabled={loading} */
             >
-              <Text style={styles.buttonText}>Buy Product</Text>
+              <Text style={styles.buttonText}>{tTy?'Pay System Fee' :'Buy Product'}</Text>
             </TouchableOpacity>
           </>
         )}
