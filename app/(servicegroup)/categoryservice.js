@@ -36,7 +36,7 @@ const Services = () => {
     <ScrollView style={{backgroundColor:'#fff'}}>
        {filteredData.length > 0 ? (
         filteredData.map((item, index) => (
-  <ServiceCard key={index} title={item.title} description={item.description} image={item.images[0]} />
+  <ServiceCard key={index} title={item.name} description={item.description} image={item.images[0]} />
         ))
       ) : (
         <View style={styles.noResultsContainer}>
