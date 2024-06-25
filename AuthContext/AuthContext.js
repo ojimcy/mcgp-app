@@ -21,6 +21,7 @@ export const AppProvider = ({ children }) => {
   const [appService, setAppService] = useState('');
   const [items, setItems] = useState([]);
   const [currentUser, setCurrentUser] = useState();
+  const [tTy, settTy] = useState();
   const addItem = async (newItem) => {
     /* setItems((prevItems) => [...prevItems, newItem]); */
     console.log(newItem);
