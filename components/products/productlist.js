@@ -5,41 +5,62 @@ import { useAuth } from '../../AuthContext/AuthContext';
 import { baseUrl } from '../../constants/api/apiClient';
 import axios from 'axios';
 
-
 const ProductList = () => {
-  const [categories,setCategories]=useState([])
-  const {logOut,token}=useAuth()
+  const [categories, setCategories] = useState([]);
+  const { token } = useAuth();
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(`${baseUrl}/category?isParent=true&isFeatured=true`,{
-          headers: {
-            Authorization: `${token}`,
-          },
-        })
-     console.log('From Product List',response.data)
-        /*   if(response.status===401){
-         await logOut()
-          }  */
-        const fetchedCategories = response.data.results;
-        setCategories(fetchedCategories);
+        const response = await axios.get(
+          `${baseUrl}/category?isParent=true&isFeatured=true`,
+          {
+            headers: {
+              Authorization: `${token}`,
+            },
+          }
+        );
+
+        const parentCategories = response.data.results;
+
+        const categoriesWithChildren = await Promise.all(
+          parentCategories.map(async (category) => {
+            const childrenResponse = await axios.get(
+              `${baseUrl}/category?parentCategory=${category.id}`,
+              {
+                headers: {
+                  Authorization: `${token}`,
+                },
+              }
+            );
+
+            const limitedChildren = childrenResponse.data.results.slice(0, 4);
+            return { ...category, children: limitedChildren };
+          })
+        );
+
+        setCategories(categoriesWithChildren);
       } catch (error) {
-       console.log('Error From Product List',error?.response.data.message)
+        console.log('Error From Product List', error?.response.data.message);
       }
     };
     fetchCategories();
   }, []);
+
   return (
     <ScrollView style={styles.container}>
-      { categories.map((category, index) => (
+      {categories.map((category, index) => (
         <View key={index} style={styles.categoryContainer}>
           <Text style={styles.categoryTitle}>{category.title}</Text>
-          {category.parentCategory ?  category.items.map((item, itemIndex) => (
-            <View key={itemIndex} style={styles.itemContainer}>
-              <Image source={item.icon} style={styles.iconStyle} resizeMode='contain'/>
-              <Text style={styles.itemText}>{item.name}</Text>
+          {category.children.map((child, childIndex) => (
+            <View key={childIndex} style={styles.itemContainer}>
+              <Image
+                source={{ uri: child.image }}
+                style={styles.iconStyle}
+                resizeMode="contain"
+              />
+              <Text style={styles.itemText}>{child.title}</Text>
             </View>
-          )):undefined}
+          ))}
         </View>
       ))}
     </ScrollView>
@@ -64,8 +85,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 5,
-    borderColor:COLORS.gray,
-    borderBottomWidth:0.5
+    borderColor: COLORS.gray,
+    borderBottomWidth: 0.5,
   },
   iconStyle: {
     width: 50,
@@ -74,7 +95,7 @@ const styles = StyleSheet.create({
   },
   itemText: {
     fontSize: 16,
-  }
+  },
 });
 
 export default ProductList;
