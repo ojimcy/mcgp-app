@@ -70,7 +70,7 @@ const PaymentProof = ({id}) => {
           text1: "Category Created",
           text2: "The category was created successfully.",
         });
-        router.push('/products')
+        router.push('/confirmation')
       }
     } catch (error) {
         alert(error?.response.data.message)

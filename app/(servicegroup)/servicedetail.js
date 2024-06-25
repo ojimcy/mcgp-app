@@ -6,7 +6,7 @@ import { CONTACT_FEE } from '../../constants/constantValues'
 
 const ServiceDetail = () => {
     const {title,image,description}=useLocalSearchParams()
-    console.log(title,image,description)
+   // console.log(title,image,description)
     function handlePay(){
 router.push({pathname:'/orderproduct',params:{contactFee:CONTACT_FEE}})
     }

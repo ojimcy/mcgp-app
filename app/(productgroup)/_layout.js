@@ -37,6 +37,12 @@ const Layout = () => {
         }}
       />
       <Stack.Screen
+        name="confirmation"
+        options={{
+          headerTitle: `Confirmation Page`,
+        }}
+      />
+      <Stack.Screen
         name="cryptodetails"
         options={{
           headerTitle: `Crypto Details`,
