@@ -5,27 +5,31 @@ import {
   View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { router, useLocalSearchParams } from "expo-router";
-import { getAdverts } from "../../constants/api/AuthenticationService";
+import {  useLocalSearchParams } from "expo-router";
 import ProductCard from "../../components/designs/productcard";
+import { useAuth } from "../../AuthContext/AuthContext";
+import axios from "axios";
+import { baseUrl } from "../../constants/api/apiClient";
 
 
 const Products = () => {
+  const {token}=useAuth()
   const { value } = useLocalSearchParams();
   const [products, setProducts] = useState([]);
   const filteredData = products.filter((item) => item.category === value);
   useEffect(() => {
     const fetchedProducts = async () => {
       try {
-        const response = await getAdverts("Product");
-        if(response.status===401){
-        return router.push('/login')
-        } 
+        const response = await axios.get(`${baseUrl}/adverts?type=Product`,{
+          headers: {
+            Authorization: `${token}`,
+          },
+        });
         const fetchProducts = response.data.results;
         setProducts(fetchProducts);
        
       } catch (error) {
-        return router.push('/login')
+      alert(error?.response.data.message)
       }
     };
     fetchedProducts();

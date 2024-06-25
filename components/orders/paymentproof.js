@@ -8,10 +8,13 @@ import { COLORS, SIZES } from "../../constants";
 import Toast from "react-native-toast-message";
 import { router } from "expo-router";
 import { Icon } from "react-native-elements";
-import { apiClient } from "../../constants/api/apiClient";
+import { apiClient, baseUrl } from "../../constants/api/apiClient";
+import axios from "axios";
+import { useAuth } from "../../AuthContext/AuthContext";
 
 const PaymentProof = ({id}) => {
     console.log(id);
+    const {token}=useAuth()
   const [image, setImage] = useState(null);
   const pickImageAsync = async () => {
     try {
@@ -55,7 +58,12 @@ const PaymentProof = ({id}) => {
       config.headers.Accept = "application/json";
         return config;
       });
-      const response = await sendProof(id, formData);
+      const response = await axios.post(`${baseUrl}/order/${id}/pay`, formData,{
+        headers:{
+          Authorization:token,
+"Content-Type":"multipart/form-data"
+        }
+      });
       if (response.status === 200) {
         Toast.show({
           type: "success",

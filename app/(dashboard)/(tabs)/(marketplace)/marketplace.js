@@ -53,7 +53,7 @@ const MarketPlace = () => {
   return (
     <View style={{ flex: 1 ,backgroundColor:COLORS.white}}>
       <HeaderSearch />
-      <ListCard itemList={favourites}/>
+      <ListCard itemList={favourites} itemValue='favourites'/>
     </View>
   );
 };

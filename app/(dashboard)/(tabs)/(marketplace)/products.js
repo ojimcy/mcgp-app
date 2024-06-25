@@ -9,13 +9,13 @@ import axios from "axios";
 import { baseUrl } from "../../../../constants/api/apiClient";
 const products = () => {
   const [categories,setCategories]=useState([])
-  const {logOut,token}=useAuth()
+  const {token}=useAuth()
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(`${baseUrl}/category?type=Product`,{
           headers: {
-            Authorization: `${token}`,
+            Authorization: `${token}`
           },
         }) // Adjust the endpoint based on your API
         const fetchedCategories = response.data.results;

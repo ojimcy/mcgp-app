@@ -11,8 +11,11 @@ const ListCard = ({itemList,itemValue}) => {
   return (
     <ScrollView style={styles.container}>
           {itemList.map((item, itemIndex) => (
-            
              <Pressable onPress={()=>{
+              console.log(itemValue)
+              if(itemValue==='digital'){
+                return alert('coming soon')
+              }
               if (!isDisabled) {
                 setIsDisabled(true);
                 // Your logic here when TouchableOpacity is pressed

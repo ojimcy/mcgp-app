@@ -12,9 +12,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { COLORS, SIZES } from "../../constants/theme";
 import Icon from "react-native-vector-icons/FontAwesome";
 import * as ImagePicker from "expo-image-picker";
-import {
-  registerAds,
-} from "../../constants/api/AuthenticationService";
+import { registerAds } from "../../constants/api/AuthenticationService";
 import Toast from "react-native-toast-message";
 import toastConfig from "../../toastConfig";
 import { LinearProgress } from "react-native-elements";
@@ -24,7 +22,7 @@ import axios from "axios";
 import { baseUrl } from "../../constants/api/apiClient";
 
 const AddProduct = () => {
-  const {token}=useAuth()
+  const { token } = useAuth();
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [productImages, setProductImages] = useState([]);
@@ -34,7 +32,7 @@ const AddProduct = () => {
   const [email, setEmail] = useState("");
   const [location, setLocation] = useState("");
   const [category, setCategory] = useState("");
-  const [companyName,setCompanyName]=useState()
+  const [companyName, setCompanyName] = useState();
   const { setLoading, loading } = useAuth();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -44,19 +42,18 @@ const AddProduct = () => {
     return new Promise((resolve) => setTimeout(resolve, duration));
   }, []);
 
-  
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(`${baseUrl}/category?type=Product`,{
+        const response = await axios.get(`${baseUrl}/category?type=Product`, {
           headers: {
             Authorization: `${token}`,
           },
-        }) // Adjust the endpoint based on your API
+        }); // Adjust the endpoint based on your API
         const fetchedCategories = response.data.results;
         setCategories(fetchedCategories);
       } catch (error) {
-        console.log(error?.response.data.message)
+        console.log(error?.response.data.message);
       }
     };
     fetchCategories();
@@ -90,8 +87,6 @@ const AddProduct = () => {
   };
 
   const createProduct = async () => {
-    
-    console.log(productName,location,email,description,category,phoneNumber,minPrice,maxPrice,  productImages.length)
     if (
       !productName ||
       !location ||
@@ -100,10 +95,9 @@ const AddProduct = () => {
       !category ||
       !description ||
       !minPrice ||
-      !maxPrice ||
       productImages.length === 0
     ) {
-      await delay()
+      await delay();
       setIsModalVisible(true);
       Toast.show({
         type: "error",
@@ -132,7 +126,12 @@ const AddProduct = () => {
     formData.append("category", category);
     formData.append("companyName", companyName);
     try {
-      const response = await registerAds(formData);
+      const response = await axios.post(`${baseUrl}/adverts`, formData, {
+        headers: {
+          Authorization: token,
+          "Content-Type": "multipart/form-data",
+        },
+      });
       if (response) {
         setLoading(false);
         setIsModalVisible(true);
@@ -146,6 +145,7 @@ const AddProduct = () => {
         resetForm();
       }
     } catch (error) {
+      console.log(error.response?.data?.message);
       setLoading(false);
       setIsModalVisible(true);
       Toast.show({
@@ -169,7 +169,6 @@ const AddProduct = () => {
     setProductName("");
     setMaxPrice("");
   };
-
 
   return (
     <ScrollView style={styles.cover}>
@@ -226,24 +225,19 @@ const AddProduct = () => {
         selectedValue={category}
         onValueChange={(itemValue) => setCategory(itemValue)}
       >
-        <Picker.Item  label={"Select Category"} value={""} />
+        <Picker.Item label={"Select Category"} value={""} />
         {categories.map((item, index) => (
           <Picker.Item key={index} label={item.title} value={item.id} />
         ))}
       </Picker>
-      <View style={styles.priceRangeContainer}>
+      <View>
+        <Text style={styles.label}>Enter Price</Text>
         <TextInput
-          style={[styles.input, styles.priceInput]}
+          style={[styles.input]}
           placeholder="Minimum"
           value={minPrice}
           onChangeText={setMinPrice}
-        />
-        <Text style={styles.priceSeparator}>——</Text>
-        <TextInput
-          style={[styles.input, styles.priceInput]}
-          placeholder="Maximum"
-          value={maxPrice}
-          onChangeText={setMaxPrice}
+          keyboardType="numeric"
         />
       </View>
 
@@ -322,7 +316,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: COLORS.primary,
-    marginBottom:30
+    marginBottom: 30,
   },
   buttonText: {
     color: "#fff",
@@ -435,7 +429,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 10,
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.lightButton,
     borderRadius: 5,
   },
   closeButtonText: {

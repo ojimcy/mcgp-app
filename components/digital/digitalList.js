@@ -2,6 +2,7 @@ import React from 'react';
 import { ScrollView, View, Text, Image, StyleSheet } from 'react-native';
 import { COLORS, SIZES } from '../../constants';
 import ListCard from '../accessories/ListCard';
+import { Pressable } from 'react-native';
 
 // Example Data
 const categories = [
@@ -17,10 +18,12 @@ const DigitalList = () => {
   return (
     <ScrollView style={styles.container}>
           {categories.map((item, itemIndex) => (
-            <View key={itemIndex} style={styles.itemContainer}>
+            <Pressable key={itemIndex} onPress={()=>alert('Service coming soon')}>
+            <View  style={styles.itemContainer}>
               <Image source={item.icon} style={styles.iconStyle} resizeMode='contain'/>
               <Text style={styles.itemText}>{item.title}</Text>
             </View>
+            </Pressable>
           ))}
 
     </ScrollView>
