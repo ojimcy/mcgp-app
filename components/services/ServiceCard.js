@@ -11,7 +11,7 @@ router.push({pathname:'/servicedetail',params:{title,image,description}})
   return (
     <View style={styles.cardContainer}>
      <View style={styles.imageContainer}>
-        <Image source={image} resizeMode='contain'style={{width:"100%",height:'100%'}}/>
+        <Image source={{uri:image}} resizeMode='contain'style={{width:"100%",height:'100%'}}/>
      </View>
      <View style={styles.textContainer}>
     <View style={{backgroundColor:COLORS.white,width:SIZES.width*(0.9069767)}}>

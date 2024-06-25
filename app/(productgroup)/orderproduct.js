@@ -4,9 +4,9 @@ import Delivery from '../../components/orders/delivery'
 import { useLocalSearchParams } from 'expo-router';
 
 const orderproduct = () => {
-  const {totalAmount} = useLocalSearchParams();
+  const {totalAmount,contactFee} = useLocalSearchParams();
   return (
-    <Delivery data={totalAmount}/>
+    <Delivery data={totalAmount||contactFee}/>
   )
 }
 

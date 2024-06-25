@@ -1,14 +1,16 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { COLORS } from '../../constants';
+import { CONTACT_FEE } from '../../constants/constantValues';
 const ServiceDetailCard = ({ title, address, contactFee, onPayPress, imageSrc }) => {
+
   return (
     <View style={styles.card}>
-    <Image source={imageSrc} style={styles.image} />
+    <Image source={{uri:imageSrc}} style={styles.image} />
     <View style={styles.detailsContainer}>
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.address}>{address}</Text>
-      <Text style={styles.contactFee}>Contact fee: {contactFee}</Text>
+      <Text style={styles.contactFee}>Contact fee: {CONTACT_FEE}</Text>
       <View style={styles.payCatalogue}>
       <TouchableOpacity>
         <Text style={styles.catalogue}>See Catalogue</Text>
@@ -41,6 +43,7 @@ const styles = StyleSheet.create({
       image: {
         width: '100%',
         height: 200,
+        resizeMode:'contain'
       },
       detailsContainer: {
         padding: 15,
@@ -59,7 +62,7 @@ const styles = StyleSheet.create({
       contactFee: {
         fontSize: 14,
         color: '#333',
-        marginBottom: 15,
+        marginBottom: 16,
       },
       payButton: {
         backgroundColor: '#E8A14A',

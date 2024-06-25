@@ -1,17 +1,18 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import ServiceDetailCard from '../../components/services/ServiceDetail'
-import { useLocalSearchParams } from 'expo-router'
+import { router, useLocalSearchParams } from 'expo-router'
+import { CONTACT_FEE } from '../../constants/constantValues'
 
 const ServiceDetail = () => {
     const {title,image,description}=useLocalSearchParams()
     console.log(title,image,description)
     function handlePay(){
-console.log('Clicked!')
+router.push({pathname:'/orderproduct',params:{contactFee:CONTACT_FEE}})
     }
   return (
     <View>
-      <ServiceDetailCard title={title} imageSrc={image[0]} address={description} onPayPress={handlePay}/>
+      <ServiceDetailCard title={title} imageSrc={image} address={description} onPayPress={handlePay}/>
     </View>
   )
 }

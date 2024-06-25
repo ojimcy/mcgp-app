@@ -29,7 +29,7 @@ textTransform:'capitalize'
     },
   }
 }>
-<MaterialTopTabs.Screen name="marketplace" options={{title:'Favorites'}} />
+<MaterialTopTabs.Screen name="favourites" options={{title:'Favorites'}} />
 <MaterialTopTabs.Screen name="products" options={{title:'Products'}} />
 <MaterialTopTabs.Screen name="service" options={{title:'Services'}}/>
 <MaterialTopTabs.Screen name="digital" options={{title:'Digital'}}/>

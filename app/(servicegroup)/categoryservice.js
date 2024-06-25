@@ -3,19 +3,27 @@ import React,{useState,useEffect} from 'react'
 import ServiceCard from '../../components/services/ServiceCard'
 import { useLocalSearchParams } from 'expo-router'
 import { getAdverts } from '../../constants/api/AuthenticationService'
+import { baseUrl } from '../../constants/api/apiClient'
+import axios from 'axios'
+import { useAuth } from '../../AuthContext/AuthContext'
 
 const Services = () => {
     const {value}=useLocalSearchParams();
     const [services,setServices]=useState([])
+    const {token}=useAuth()
     useEffect(() => {
       const fetchedServices = async () => {
         try {
-          const response = await getAdverts('Service'); // Adjust the endpoint based on your API
-console.log(response.data)
+          const response = await axios.get(`${baseUrl}/adverts?type=Service`,{
+            headers: {
+              Authorization: `${token}`,
+            },
+          });
           const fetchServices = response.data.results;
           setServices(fetchServices);
+         
         } catch (error) {
-          console.log(error?.response?.data?.message)
+        alert(error?.response.data.message)
         }
       };
       fetchedServices();
@@ -28,7 +36,7 @@ console.log(response.data)
     <ScrollView style={{backgroundColor:'#fff'}}>
        {filteredData.length > 0 ? (
         filteredData.map((item, index) => (
-  <ServiceCard key={index} title={item.title} description={item.description} image={item.image} />
+  <ServiceCard key={index} title={item.title} description={item.description} image={item.images[0]} />
         ))
       ) : (
         <View style={styles.noResultsContainer}>

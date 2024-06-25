@@ -1,7 +1,5 @@
 import React from "react";
-import { Link } from "expo-router";
-import { Text, View } from "react-native";
-import TabButton from "../../../../components/marketplace/tab";
+import {View } from "react-native";
 import { COLORS, SIZES } from "../../../../constants";
 import HeaderSearch from "../../../../components/marketplace/header";
 import ListCard from "../../../../components/accessories/ListCard";

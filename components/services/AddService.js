@@ -12,19 +12,16 @@ import React, { useState, useEffect, useCallback } from "react";
 import { COLORS, SIZES } from "../../constants/theme";
 import Icon from "react-native-vector-icons/FontAwesome";
 import * as ImagePicker from "expo-image-picker";
-import {
-  getCategories,
-  registerAds,
-} from "../../constants/api/AuthenticationService";
 import Toast from "react-native-toast-message";
 import toastConfig from "../../toastConfig";
 import { LinearProgress } from "react-native-elements";
 import { useAuth } from "../../AuthContext/AuthContext";
 import { Picker } from "@react-native-picker/picker";
+import { baseUrl } from "../../constants/api/apiClient";
+import axios from "axios";
+import { ADVERT_TYPE_SERVICE } from "../../constants/constantValues";
 
 const AddService = () => {
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
   const [productImages, setProductImages] = useState([]);
   const [description, setDescription] = useState("");
   const [productName, setProductName] = useState("");
@@ -32,8 +29,9 @@ const AddService = () => {
   const [email, setEmail] = useState("");
   const [location, setLocation] = useState("");
   const [category, setCategory] = useState("");
-  const [companyName,setCompanyName]=useState()
-  const { setLoading, loading } = useAuth();
+  const [companyName, setCompanyName] = useState();
+  const { setLoading, loading, token } = useAuth();
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [categories, setCategories] = useState([]);
   const maxDescriptionLength = 100;
@@ -70,21 +68,18 @@ const AddService = () => {
     }
   };
 
-  const createProduct = async () => {
-    
-    console.log(productName,location,email,description,category,phoneNumber,minPrice,maxPrice,  productImages.length)
+  const createService = async () => {
+
     if (
       !productName ||
       !location ||
       !phoneNumber ||
       !email ||
       !category ||
-      !description ||
-      !minPrice ||
-      !maxPrice ||
+      !description||
       productImages.length === 0
     ) {
-      await delay()
+      await delay();
       setIsModalVisible(true);
       Toast.show({
         type: "error",
@@ -105,22 +100,27 @@ const AddService = () => {
 
     formData.append("name", productName);
     formData.append("description", description);
-    formData.append("price", minPrice);
     formData.append("location", location);
-    formData.append("type", "Service");
+    formData.append("type", ADVERT_TYPE_SERVICE);
     formData.append("email", email);
+    formData.append("price", 0);
     formData.append("phoneNumber", phoneNumber);
     formData.append("category", category);
     formData.append("companyName", companyName);
     try {
-      const response = await registerAds(formData);
+      const response = await axios.post(`${baseUrl}/adverts`, formData, {
+        headers: {
+          Authorization: token,
+          "Content-Type": "multipart/form-data",
+        },
+      });
       if (response) {
         setLoading(false);
         setIsModalVisible(true);
         Toast.show({
           type: "success",
-          text1: "Product Created",
-          text2: "The product was created successfully.",
+          text1: "Service Created",
+          text2: "The Service was created successfully.",
         });
         await delay(2000);
         setIsModalVisible(false);
@@ -131,7 +131,7 @@ const AddService = () => {
       setIsModalVisible(true);
       Toast.show({
         type: "error",
-        text1: "Error Creating Product",
+        text1: "Error Creating Service",
         text2: error.response?.data?.message || "An error occurred",
       });
       await delay(4000);
@@ -144,35 +144,24 @@ const AddService = () => {
     setCategory("");
     setDescription("");
     setEmail("");
-    setMinPrice("");
     setLocation("");
     setProductImages([]);
     setProductName("");
-    setMaxPrice("");
+  
   };
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await getCategories('Services'); // Adjust the endpoint based on your API
-        const fetchedCategories = response.data.results.map((category) => ({
-          title: category.title,
-          id: category.id,
-          icon: () =>
-            category.featuredImage ? (
-              <Image
-                source={{ uri: category.featuredImage }}
-                style={styles.icon}
-              />
-            ) : (
-              <View style={styles.placeholderIcon}>
-                <Text>📷</Text>
-              </View>
-            ),
-        }));
+        const response = await axios.get(`${baseUrl}/category?type=Service`, {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }); // Adjust the endpoint based on your API
+        const fetchedCategories = response.data.results;
         setCategories(fetchedCategories);
       } catch (error) {
-        alert(error?.response?.data?.message);
+        console.log(error?.response.data.message);
       }
     };
     fetchCategories();
@@ -233,26 +222,11 @@ const AddService = () => {
         selectedValue={category}
         onValueChange={(itemValue) => setCategory(itemValue)}
       >
-        <Picker.Item  label={"Select Category"} value={""} />
+        <Picker.Item label={"Select Category"} value={""} />
         {categories.map((item, index) => (
           <Picker.Item key={index} label={item.title} value={item.id} />
         ))}
       </Picker>
-      <View style={styles.priceRangeContainer}>
-        <TextInput
-          style={[styles.input, styles.priceInput]}
-          placeholder="Minimum"
-          value={minPrice}
-          onChangeText={setMinPrice}
-        />
-        <Text style={styles.priceSeparator}>——</Text>
-        <TextInput
-          style={[styles.input, styles.priceInput]}
-          placeholder="Maximum"
-          value={maxPrice}
-          onChangeText={setMaxPrice}
-        />
-      </View>
 
       <Text style={styles.label}>Upload Quality service images</Text>
       <View style={styles.multipleImageContainer}>
@@ -291,7 +265,7 @@ const AddService = () => {
       <View style={{ alignItems: "center" }}>
         <TouchableOpacity
           style={[styles.button, loading && styles.buttonLoading]}
-          onPress={createProduct}
+          onPress={createService}
           disabled={loading}
         >
           <Text style={styles.buttonText}>Continue</Text>
@@ -329,7 +303,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: COLORS.primary,
-    marginBottom:30
+    marginBottom: 30,
   },
   buttonText: {
     color: "#fff",

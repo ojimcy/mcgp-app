@@ -12,7 +12,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import { COLORS, SIZES } from "../../constants/theme";
 import Icon from "react-native-vector-icons/FontAwesome";
 import * as ImagePicker from "expo-image-picker";
-import { registerAds } from "../../constants/api/AuthenticationService";
 import Toast from "react-native-toast-message";
 import toastConfig from "../../toastConfig";
 import { LinearProgress } from "react-native-elements";
@@ -20,6 +19,7 @@ import { useAuth } from "../../AuthContext/AuthContext";
 import { Picker } from "@react-native-picker/picker";
 import axios from "axios";
 import { baseUrl } from "../../constants/api/apiClient";
+import { ADVERT_TYPE_PRODUCT } from "../../constants/constantValues";
 
 const AddProduct = () => {
   const { token } = useAuth();
@@ -36,6 +36,7 @@ const AddProduct = () => {
   const { setLoading, loading } = useAuth();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [specification,setSpecification]=useState()
   const maxDescriptionLength = 100;
 
   const delay = useCallback((duration) => {
@@ -120,7 +121,7 @@ const AddProduct = () => {
     formData.append("description", description);
     formData.append("price", minPrice);
     formData.append("location", location);
-    formData.append("type", "Product");
+    formData.append("type", ADVERT_TYPE_PRODUCT);
     formData.append("email", email);
     formData.append("phoneNumber", phoneNumber);
     formData.append("category", category);
