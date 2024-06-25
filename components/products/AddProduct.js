@@ -20,12 +20,9 @@ import { useAuth } from "../../AuthContext/AuthContext";
 import { Picker } from "@react-native-picker/picker";
 import axios from "axios";
 import { baseUrl } from "../../constants/api/apiClient";
-import { ADVERT_TYPE_PRODUCT } from "../../constants/constantValues";
 
 const AddProduct = () => {
-  const { token, currentUser } = useAuth();
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
+  const { token } = useAuth();
   const [productImages, setProductImages] = useState([]);
   const [description, setDescription] = useState("");
   const [productName, setProductName] = useState("");
@@ -40,15 +37,12 @@ const AddProduct = () => {
   const { setLoading, loading } = useAuth();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [categories, setCategories] = useState([]);
-  const [specification,setSpecification]=useState()
   const maxDescriptionLength = 100;
 
   const delay = useCallback((duration) => {
     return new Promise((resolve) => setTimeout(resolve, duration));
   }, []);
 
-  console.log("logged", currentUser);
-  
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -126,9 +120,8 @@ const AddProduct = () => {
 
     formData.append("name", productName);
     formData.append("description", description);
-    formData.append("price", minPrice);
     formData.append("location", location);
-    formData.append("type", ADVERT_TYPE_PRODUCT);
+    formData.append("type", "Product");
     formData.append("email", email);
     formData.append("phoneNumber", phoneNumber);
     formData.append("category", category);
@@ -140,13 +133,9 @@ const AddProduct = () => {
       formData.append(`attributes[${index}].value`, attribute.value);
     });
 
+    console.log('form data', formData);
     try {
-      const response = await axios.post(`${baseUrl}/adverts`, formData, {
-        headers: {
-          Authorization: token,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await registerAds(formData);
       if (response) {
         setLoading(false);
         setIsModalVisible(true);
@@ -160,13 +149,13 @@ const AddProduct = () => {
         resetForm();
       }
     } catch (error) {
-      console.log(error.response?.data?.message);
+      console.error(error.response?.data)
       setLoading(false);
       setIsModalVisible(true);
       Toast.show({
         type: "error",
         text1: "Error Creating Product",
-        text2: error.response?.data?.message || "An error occurred",
+        text2: "An error occurred while creating product",
       });
       await delay(4000);
       setIsModalVisible(false);
@@ -178,11 +167,9 @@ const AddProduct = () => {
     setCategory("");
     setDescription("");
     setEmail("");
-    setMinPrice("");
     setLocation("");
     setProductImages([]);
     setProductName("");
-    setMaxPrice("");
     setPrice("");
     setStock("");
     setAttributes([]);
@@ -504,7 +491,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 10,
-    backgroundColor: COLORS.lightButton,
+    backgroundColor: COLORS.primary,
     borderRadius: 5,
   },
   closeButtonText: {
