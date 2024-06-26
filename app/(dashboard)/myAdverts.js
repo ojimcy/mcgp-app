@@ -16,7 +16,7 @@ import axios from "axios";
 import { baseUrl } from "../../constants/api/apiClient";
 
 const MyAdvertsScreen = () => {
-  const { currentUser, token } = useAuth();
+  const { token,setCurrentUser } = useAuth();
   const [adverts, setAdverts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -25,9 +25,19 @@ const MyAdvertsScreen = () => {
   }, []);
 
   const fetchAdverts = async () => {
+    ///users/me
     try {
+      const {data} = await axios.get(`${baseUrl}/users/me`,
+        
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      setCurrentUser(data)
       const response = await axios.get(
-        `${baseUrl}/adverts?createdBy=${currentUser.id}`,
+        `${baseUrl}/adverts?createdBy=${data.id}`,
         {
           method: "GET",
           headers: {
@@ -85,6 +95,7 @@ const MyAdvertsScreen = () => {
       <Image
         source={{ uri: item.featuredImage || item.images[0] }}
         style={styles.image}
+        resizeMode="contain"
       />
       <View style={styles.infoContainer}>
         <Text style={styles.title}>{item.name}</Text>

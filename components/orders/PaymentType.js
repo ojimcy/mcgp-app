@@ -24,7 +24,7 @@ const PaymentSelection = ({
 }) => {
   const [selectedPaymentType, setSelectedPaymentType] = useState("Fiat");
   const [amount, setAmount] = useState(totalAmount);
-  const { token,tTy, settTy } = useAuth();
+  const { token, tTy } = useAuth();
 
   const placeOrder = async (payLoad) => {
     try {
@@ -133,7 +133,9 @@ const PaymentSelection = ({
               }}
               /*  disabled={loading} */
             >
-              <Text style={styles.buttonText}>{tTy?'Pay System Fee' :'Buy Product'}</Text>
+              <Text style={styles.buttonText}>
+                {tTy ? "Pay System Fee" : "Buy Product"}
+              </Text>
             </TouchableOpacity>
           </>
         )}
@@ -186,7 +188,9 @@ const PaymentSelection = ({
               }}
               /*  disabled={loading} */
             >
-              <Text style={styles.buttonText}>{tTy?'Pay System Fee' :'Buy Product'}</Text>
+              <Text style={styles.buttonText}>
+                {tTy ? "Pay System Fee" : "Buy Product"}
+              </Text>
             </TouchableOpacity>
           </>
         )}
@@ -195,7 +199,6 @@ const PaymentSelection = ({
     </View>
   );
 };
-
 export default PaymentSelection;
 
 const styles = StyleSheet.create({

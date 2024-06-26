@@ -4,6 +4,7 @@ import Products from "../components/onboarding/products";
 import { useAuth } from "../AuthContext/AuthContext";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { apiClient } from "../constants/api/apiClient";
 const Dashboard = () => {
   const { setToken, token, setAuthenticated } = useAuth();
   const getData = async () => {
@@ -12,6 +13,10 @@ const Dashboard = () => {
       if (value !== null) {
         setToken(value);
         setAuthenticated(true);
+        apiClient.interceptors.request.use((config) => {
+          config.headers.Authorization = value;
+          return config;
+        });
       }
     } catch (e) {
       console.log(e);

@@ -1,18 +1,42 @@
-import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Avatar, Icon, Card } from 'react-native-elements';
 import { useAuth } from '../../AuthContext/AuthContext';
 import { router } from 'expo-router';
+import axios from 'axios';
+import { baseUrl } from '../../constants/api/apiClient';
 
 const ProfileScreen = () => {
-  const { logOut, currentUser } = useAuth();
+  const { logOut, token } = useAuth();
+  const [user,setUser]=useState()
 
-  const fullName = `${currentUser?.firstName} ${currentUser?.lastName}`;
-  const initial = `${currentUser?.firstName[0]}${currentUser?.lastName[0]}`;
+async function getLoggedInUser(){
+try{
+  const {data} = await axios.get(`${baseUrl}/users/me`,
+        
+    {
+      headers: {
+        Authorization: `${token}`,
+      },
+    }
+  );
+  console.log('checking Profile console: ',data)
+  setUser(data)
+}catch(error){
+alert(error?.response.data.message)
+}
+}
+useEffect(()=>{
+  getLoggedInUser()
+},[])
 
   return (
     <View style={styles.container}>
-      <Card containerStyle={styles.card}>
+      {!user?(
+        <ActivityIndicator size={24}/>
+      ):(
+        <>
+        <Card containerStyle={styles.card}>
         <TouchableOpacity
           style={styles.editIcon}
           onPress={() => router.push('/edit')}
@@ -20,31 +44,31 @@ const ProfileScreen = () => {
           <Icon name="edit" size={20} color="#9D6B38" />
         </TouchableOpacity>
         <View style={styles.profileInfo}>
-          {currentUser?.profilePicture ? (
+          {user?.profilePicture ? (
             <Avatar
               rounded
-              source={{ uri: currentUser?.profilePicture }}
+              source={{ uri: user?.profilePicture }}
               size="large"
             />
           ) : (
             <Avatar
               rounded
-              title={initial}
+              title={'initial'}
               size="large"
               overlayContainerStyle={{ backgroundColor: '#9D6B38' }}
               titleStyle={{ color: '#fff' }}
             />
           )}
           <View style={styles.textInfo}>
-            <Text style={styles.fullName}>{fullName}</Text>
-            <Text style={styles.phoneNumber}>{currentUser?.phoneNumber}</Text>
+            <Text style={styles.fullName}>{user.name}</Text>
+            <Text style={styles.phoneNumber}>{user?.phoneNumber}</Text>
           </View>
         </View>
       </Card>
       <View style={styles.linksContainer}>
         <TouchableOpacity
           style={styles.profileLink}
-          onPress={() => router.push('edit-profile')}
+          onPress={() => router.push('/myAdverts')}
         >
           <Icon name="description" size={20} color="#9D6B38" />
           <Text style={styles.linkText}>My Adverts</Text>
@@ -60,7 +84,7 @@ const ProfileScreen = () => {
         <TouchableOpacity style={styles.profileLink}>
           <Icon name="account-balance-wallet" size={20} color="#9D6B38" />
           <View style={styles.balanceRow}>
-            <Text style={styles.balance}>{currentUser?.balance} USD</Text>
+            <Text style={styles.balance}>{user?.balance} USD</Text>
             <Text style={styles.balanceText}>My Balance</Text>
           </View>
         </TouchableOpacity>
@@ -69,6 +93,9 @@ const ProfileScreen = () => {
           <Text style={styles.linkText}>Logout</Text>
         </TouchableOpacity>
       </View>
+        </>
+      )}
+      
     </View>
   );
 };

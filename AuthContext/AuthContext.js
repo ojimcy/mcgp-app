@@ -176,7 +176,8 @@ export const AppProvider = ({ children }) => {
         removeItem,
         getItems,
         currentUser,
-        tTy, settTy
+        tTy, settTy,
+        setCurrentUser
       }}
     >
       {children}
