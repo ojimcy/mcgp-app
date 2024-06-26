@@ -13,28 +13,24 @@ import { useAuth } from "../../AuthContext/AuthContext";
 import Toast from "react-native-toast-message";
 import toastConfig from "../../toastConfig";
 import { Picker } from "@react-native-picker/picker";
-import { RadioButton } from "react-native-paper";
-import CountryComponent from "../country/countrypicker";
 import { router } from "expo-router";
 import PhoneNumber from "../country/phoneNumber";
 import { countries } from "../../constants/api/statesConstants";
 const Delivery = ({ data }) => {
-  console.log(data);
-
   const [address, setAddress] = useState("");
   const [location, setLocation] = useState();
   const [states, setStates] = useState([]);
   const [state, setState] = useState();
   const [countryList, setCountries] = useState(countries);
   const [cities, setCities] = useState([]);
-  const [phoneNumber,setPhoneNumber]=useState()
-  const [selectedCountry,setSelectedCountry]=useState();
-  const [fullName,setFullName]=useState()
+  const [phoneNumber, setPhoneNumber] = useState();
+  const [selectedCountry, setSelectedCountry] = useState();
+  const [fullName, setFullName] = useState();
   //const [homeDelivery, setHomeDelivery] = useState(true);
   const [country, setCountry] = useState();
   function removeAllSpaces(str) {
-    return str.replace(/\s+/g, '');
-}
+    return str.replace(/\s+/g, "");
+  }
   const postData = async (data) => {
     try {
       const response = await fetch(
@@ -87,13 +83,16 @@ const Delivery = ({ data }) => {
       throw error;
     }
   };
- 
+
   return (
     <View style={{ backgroundColor: "#fff", flex: 1 }}>
       <ScrollView style={styles.cover}>
         <Toast config={toastConfig} />
         <Text
-          style={[styles.labelHeader, { color: COLORS.primary, fontWeight: "600" }]}
+          style={[
+            styles.labelHeader,
+            { color: COLORS.primary, fontWeight: "600" },
+          ]}
         >
           {" "}
           Input Your Delivery Address Information
@@ -107,7 +106,7 @@ const Delivery = ({ data }) => {
           numberOfLines={5}
         />
         <Text style={styles.label}>Enter Country</Text>
-          <Picker
+        <Picker
           style={styles.input}
           selectedValue={country}
           onValueChange={(itemValue) => {
@@ -154,39 +153,34 @@ const Delivery = ({ data }) => {
           numberOfLines={5}
         />
         <Text style={styles.label}>Enter Phone</Text>
-        <PhoneNumber 
-        inputValue={phoneNumber} 
-        setInputValue={setPhoneNumber}
-        selectedCountry={selectedCountry}
-        setSelectedCountry={setSelectedCountry}
+        <PhoneNumber
+          inputValue={phoneNumber}
+          setInputValue={setPhoneNumber}
+          selectedCountry={selectedCountry}
+          setSelectedCountry={setSelectedCountry}
         />
-        {/* <Text style={styles.label}>Home Delivery</Text>
-        <View style={styles.radioContainer}>
-          <View style={{ flexDirection: "row" }}>
-            <RadioButton
-              value={homeDelivery}
-              status={homeDelivery ? "checked" : "unchecked"}
-              onPress={() => setHomeDelivery(true)}
-            />
-            <Text style={styles.radioText}>Yes</Text>
-          </View>
-          <View style={{ flexDirection: "row" }}>
-            <RadioButton
-              value={homeDelivery}
-              status={!homeDelivery ? "checked" : "unchecked"}
-              onPress={() => setHomeDelivery(false)}
-            />
-            <Text style={styles.radioText}>No</Text>
-          </View>
-        </View> */}
+
         <View style={{ alignItems: "center", marginBottom: 55 }}>
           <TouchableOpacity
             style={styles.button} /* onPress={createCategory} */
-            onPress={()=>{
-            if(!address||!state||!location||!country||!phoneNumber){
-return alert('Enter every field')
-            }
-          router.push({pathname:'/paymenttype',params:{address,state,city:location,country,phoneNumber:removeAllSpaces(selectedCountry?.callingCode+phoneNumber),totalAmount:data,fullName:fullName}})
+            onPress={() => {
+              if (!address || !state || !location || !country || !phoneNumber) {
+                return alert("Enter every field");
+              }
+              router.push({
+                pathname: "/paymenttype",
+                params: {
+                  address,
+                  state,
+                  city: location,
+                  country,
+                  phoneNumber: removeAllSpaces(
+                    selectedCountry?.callingCode + phoneNumber
+                  ),
+                  totalAmount: data,
+                  fullName: fullName,
+                },
+              });
             }}
           >
             <Text style={styles.buttonText}>Continue</Text>

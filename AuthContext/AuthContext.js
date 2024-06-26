@@ -23,18 +23,15 @@ export const AppProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState();
   const [tTy, settTy] = useState();
   const addItem = async (newItem) => {
-    /* setItems((prevItems) => [...prevItems, newItem]); */
-    console.log(newItem);
     try {
       const response = await addToCart(newItem);
-      console.log(response);
       if (response.status === 201) {
         return { success: true, error: false, message: 'success' };
       } else {
         return { success: false, error: true, message: 'could not create' };
       }
     } catch (error) {
-      console.log('checking error', error.response?.data?.message);
+      alert(error.response?.data?.message)
       return {
         success: false,
         error: true,
@@ -48,7 +45,6 @@ export const AppProvider = ({ children }) => {
   async function login(username, password) {
     try {
       const response = await executeJwtAuthentication(username, password);
-      console.log('auth response', response);
       if (response.status === 200) {
         const jwtToken = 'Bearer ' + response.data.tokens.access.token;
         await AsyncStorage.setItem('token', jwtToken);
@@ -86,7 +82,6 @@ export const AppProvider = ({ children }) => {
           Authorization: token,
         },
       });
-      console.log('checking responses', response);
       if (response.status === 200) {
         return { success: true, data: response.data, message: 'success' };
       } else {
@@ -146,7 +141,7 @@ export const AppProvider = ({ children }) => {
       const response = await getCurrentUser();
       setCurrentUser(response.data);
     } catch (err) {
-      console.log(err?.response.data.message);
+      alert(err?.response.data.message)
     }
   }
   useEffect(() => {

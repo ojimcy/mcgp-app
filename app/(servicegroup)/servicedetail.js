@@ -8,7 +8,6 @@ import { useAuth } from '../../AuthContext/AuthContext'
 const ServiceDetail = () => {
   const { token,tTy, settTy } = useAuth();
     const {title,image,description}=useLocalSearchParams()
-   // console.log(title,image,description)
     function handlePay(){
 router.push({pathname:'/orderproduct',params:{contactFee:CONTACT_FEE}})
 settTy(ADVERT_TYPE_SERVICE)

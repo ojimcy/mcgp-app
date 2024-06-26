@@ -15,13 +15,14 @@ const products = () => {
       try {
         const response = await axios.get(`${baseUrl}/category?type=Product`, {
           headers: {
-            Authorization: `${token}`
+            Authorization: `${token}`,
           },
         }); // Adjust the endpoint based on your API
         const fetchedCategories = response.data.results;
         setCategories(fetchedCategories);
       } catch (error) {
-        console.log(error?.response.data.message);
+    
+        alert(error?.response.data.message);
       }
     };
     fetchCategories();

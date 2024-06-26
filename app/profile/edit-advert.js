@@ -12,52 +12,41 @@ import React, { useState, useEffect, useCallback } from "react";
 import { COLORS, SIZES } from "../../constants/theme";
 import Icon from "react-native-vector-icons/FontAwesome";
 import * as ImagePicker from "expo-image-picker";
-import { registerAds } from "../../constants/api/AuthenticationService";
 import Toast from "react-native-toast-message";
 import toastConfig from "../../toastConfig";
 import { LinearProgress } from "react-native-elements";
 import { useAuth } from "../../AuthContext/AuthContext";
 import { Picker } from "@react-native-picker/picker";
-import axios from "axios";
 import { baseUrl } from "../../constants/api/apiClient";
+import axios from "axios";
+import {
+  ADVERT_TYPE_PRODUCT,
+  ADVERT_TYPE_SERVICE,
+} from "../../constants/constantValues";
+import { router, useLocalSearchParams } from "expo-router";
 
-const AddProduct = () => {
-  const { token } = useAuth();
-  const [productImages, setProductImages] = useState([]);
-  const [description, setDescription] = useState("");
-  const [productName, setProductName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [email, setEmail] = useState("");
-  const [location, setLocation] = useState("");
-  const [category, setCategory] = useState("");
-  const [companyName, setCompanyName] = useState("");
-  const [price, setPrice] = useState(0);
-  const [stock, setStock] = useState(0);
-  const [attributes, setAttributes] = useState([]);
-  const { setLoading, loading } = useAuth();
+const UpdateAdvert = () => {
+  const item = useLocalSearchParams();
+  const [productImages, setProductImages] = useState(
+    item.images.split(",") || []
+  );
+  const [description, setDescription] = useState(item.description || "");
+  const [productName, setProductName] = useState(item.name || "");
+  const [phoneNumber, setPhoneNumber] = useState(item.phoneNumber || undefined);
+  const [email, setEmail] = useState(item.email || "");
+  const [location, setLocation] = useState(item.location || "");
+  const [category, setCategory] = useState(item.category || "");
+  const [companyName, setCompanyName] = useState(item.companyName || undefined);
+  const [type, setType] = useState(item.type || "");
+  const [price, setPrice] = useState(item.price || 0);
+  const { setLoading, loading, token } = useAuth();
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [categories, setCategories] = useState([]);
   const maxDescriptionLength = 100;
 
   const delay = useCallback((duration) => {
     return new Promise((resolve) => setTimeout(resolve, duration));
-  }, []);
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await axios.get(`${baseUrl}/category?type=Product`, {
-          headers: {
-            Authorization: `${token}`,
-          },
-        }); // Adjust the endpoint based on your API
-        const fetchedCategories = response.data.results;
-        setCategories(fetchedCategories);
-      } catch (error) {
-        console.log(error?.response.data.message);
-      }
-    };
-    fetchCategories();
   }, []);
 
   const pickProductImages = async () => {
@@ -88,7 +77,7 @@ const AddProduct = () => {
     }
   };
 
-  const createProduct = async () => {
+  const createService = async () => {
     if (
       !productName ||
       !location ||
@@ -96,7 +85,6 @@ const AddProduct = () => {
       !email ||
       !category ||
       !description ||
-      !price ||
       productImages.length === 0
     ) {
       await delay();
@@ -121,41 +109,47 @@ const AddProduct = () => {
     formData.append("name", productName);
     formData.append("description", description);
     formData.append("location", location);
-    formData.append("type", "Product");
+    formData.append("type", type);
     formData.append("email", email);
+    if (type === ADVERT_TYPE_SERVICE) {
+      formData.append("price", 0);
+    } else {
+      formData.append("price", +price);
+    }
+
     formData.append("phoneNumber", phoneNumber);
     formData.append("category", category);
     formData.append("companyName", companyName);
-    formData.append("price", price);
-    formData.append("stock", stock);
-    attributes.forEach((attribute, index) => {
-      formData.append(`attributes[${index}].name`, attribute.name);
-      formData.append(`attributes[${index}].value`, attribute.value);
-    });
-
-    console.log("form data", formData);
     try {
-      const response = await registerAds(formData);
+      const response = await axios.patch(
+        `${baseUrl}/adverts/${item.id}`,
+        formData,
+        {
+          headers: {
+            Authorization: token,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       if (response) {
         setLoading(false);
         setIsModalVisible(true);
         Toast.show({
           type: "success",
-          text1: "Product Created",
-          text2: "The product was created successfully.",
+          text1: "Advert Created",
+          text2: "The Advert was updated successfully.",
         });
         await delay(2000);
         setIsModalVisible(false);
-        resetForm();
+        router.push("/myAdverts");
       }
     } catch (error) {
-      console.error(error.response?.data);
       setLoading(false);
       setIsModalVisible(true);
       Toast.show({
         type: "error",
-        text1: "Error Creating Product",
-        text2: "An error occurred while creating product",
+        text1: "Error Creating Advert",
+        text2: error.response?.data?.message || "An error occurred",
       });
       await delay(4000);
       setIsModalVisible(false);
@@ -170,26 +164,25 @@ const AddProduct = () => {
     setLocation("");
     setProductImages([]);
     setProductName("");
-    setPrice("");
-    setStock("");
-    setAttributes([]);
   };
 
-  const handleAddAttribute = () => {
-    setAttributes([...attributes, { name: "", value: "" }]);
-  };
-
-  const handleRemoveAttribute = (index) => {
-    const newAttributes = [...attributes];
-    newAttributes.splice(index, 1);
-    setAttributes(newAttributes);
-  };
-
-  const handleAttributeChange = (index, field, value) => {
-    const newAttributes = [...attributes];
-    newAttributes[index][field] = value;
-    setAttributes(newAttributes);
-  };
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(`${baseUrl}/category?type=${type}`, {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }); // Adjust the endpoint based on your API
+        const fetchedCategories = response.data.results;
+        setCategories(fetchedCategories);
+      } catch (error) {
+        //  console.log(error?.response.data.message);
+        alert(error?.response.data.message);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   return (
     <ScrollView style={styles.cover}>
@@ -205,7 +198,7 @@ const AddProduct = () => {
         </TouchableOpacity>
       </Modal>
 
-      <Text style={styles.label}>Enter product name</Text>
+      <Text style={styles.label}>Enter Advert name</Text>
       <TextInput
         style={styles.input}
         value={productName}
@@ -234,13 +227,34 @@ const AddProduct = () => {
         onChangeText={setEmail}
         keyboardType="email-address"
       />
+      {type === ADVERT_TYPE_PRODUCT && (
+        <>
+          <Text style={styles.label}>Product Price</Text>
+          <TextInput
+            style={styles.input}
+            value={String(price)}
+            onChangeText={setPrice}
+            keyboardType="numeric"
+          />
+        </>
+      )}
       <Text style={styles.label}>Company Name</Text>
       <TextInput
         style={styles.input}
         value={companyName}
         onChangeText={setCompanyName}
       />
-      <Text style={styles.label}>Enter Category</Text>
+      <Text style={styles.label}>Advert Type</Text>
+      <Picker
+        style={styles.input}
+        selectedValue={type}
+        onValueChange={(itemValue) => setType(itemValue)}
+      >
+        <Picker.Item label={"Select Advert Type"} value={""} />
+        <Picker.Item label={ADVERT_TYPE_PRODUCT} value={ADVERT_TYPE_PRODUCT} />
+        <Picker.Item label={ADVERT_TYPE_SERVICE} value={ADVERT_TYPE_SERVICE} />
+      </Picker>
+      <Text style={styles.label}>Advert Category</Text>
       <Picker
         style={styles.input}
         selectedValue={category}
@@ -251,23 +265,8 @@ const AddProduct = () => {
           <Picker.Item key={index} label={item.title} value={item.id} />
         ))}
       </Picker>
-      <Text style={styles.label}>Price</Text>
-      <TextInput
-        style={styles.input}
-        value={String(price)}
-        onChangeText={(value) => setPrice(parseInt(value))}
-        keyboardType="numeric"
-      />
 
-      <Text style={styles.label}>Stock</Text>
-      <TextInput
-        style={styles.input}
-        value={String(stock)}
-        onChangeText={(value) => setStock(parseInt(value))}
-        keyboardType="numeric"
-      />
-
-      <Text style={styles.label}>Upload Quality product images</Text>
+      <Text style={styles.label}>Upload Quality service images</Text>
       <View style={styles.multipleImageContainer}>
         <TouchableOpacity onPress={pickProductImages}>
           <Icon name="upload" size={25} color="#aaa" />
@@ -280,7 +279,6 @@ const AddProduct = () => {
             <Image key={index} source={{ uri }} style={styles.uploadedImage} />
           ))}
       </View>
-      <Text style={styles.label}>Description</Text>
       <View style={styles.textAreaContainer}>
         <TextInput
           style={styles.textArea}
@@ -296,41 +294,6 @@ const AddProduct = () => {
           {description.length}/{maxDescriptionLength}
         </Text>
       </View>
-
-      <Text style={styles.label}>Attributes</Text>
-      {attributes.map((attribute, index) => (
-        <View key={index} style={styles.attributeGroup}>
-          <TextInput
-            style={styles.attributeInput}
-            placeholder="Attribute Name"
-            value={attribute.name}
-            onChangeText={(value) =>
-              handleAttributeChange(index, "name", value)
-            }
-          />
-          <TextInput
-            style={styles.attributeInput}
-            placeholder="Attribute Value"
-            value={attribute.value}
-            onChangeText={(value) =>
-              handleAttributeChange(index, "value", value)
-            }
-          />
-          <TouchableOpacity
-            style={styles.removeAttributeButton}
-            onPress={() => handleRemoveAttribute(index)}
-          >
-            <Icon name="trash" size={20} color="red" />
-          </TouchableOpacity>
-        </View>
-      ))}
-      <TouchableOpacity
-        style={styles.addAttributeButton}
-        onPress={handleAddAttribute}
-      >
-        <Text style={styles.addAttributeButtonText}>Add Attribute</Text>
-      </TouchableOpacity>
-
       {loading && (
         <View style={styles.progressContainer}>
           <LinearProgress color={COLORS.primary} />
@@ -340,7 +303,7 @@ const AddProduct = () => {
       <View style={{ alignItems: "center" }}>
         <TouchableOpacity
           style={[styles.button, loading && styles.buttonLoading]}
-          onPress={createProduct}
+          onPress={createService}
           disabled={loading}
         >
           <Text style={styles.buttonText}>Continue</Text>
@@ -350,7 +313,7 @@ const AddProduct = () => {
   );
 };
 
-export default AddProduct;
+export default UpdateAdvert;
 
 const styles = StyleSheet.create({
   container: {
@@ -495,36 +458,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   closeButtonText: {
-    color: "#fff",
-    fontSize: 16,
-  },
-  attributeGroup: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 10,
-    marginHorizontal: SIZES.width * 0.05,
-  },
-  attributeInput: {
-    flex: 1,
-    borderColor: "gray",
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 10,
-    backgroundColor: COLORS.gray,
-    marginRight: 10,
-  },
-  removeAttributeButton: {
-    padding: 10,
-  },
-  addAttributeButton: {
-    backgroundColor: COLORS.primary,
-    padding: 10,
-    borderRadius: 5,
-    alignItems: "center",
-    marginBottom: 20,
-    marginHorizontal: SIZES.width * 0.05,
-  },
-  addAttributeButtonText: {
     color: "#fff",
     fontSize: 16,
   },

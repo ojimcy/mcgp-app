@@ -12,7 +12,6 @@ const ListCard = ({itemList,itemValue}) => {
     <ScrollView style={styles.container}>
           {itemList.map((item, itemIndex) => (
              <Pressable onPress={()=>{
-              console.log(itemValue)
               if(itemValue==='digital'){
                 return alert('coming soon')
               }

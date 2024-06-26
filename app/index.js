@@ -19,7 +19,7 @@ const Dashboard = () => {
         });
       }
     } catch (e) {
-      console.log(e);
+      alert(e)
     }
   };
   useEffect(() => {

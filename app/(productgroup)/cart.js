@@ -50,7 +50,7 @@ const Cart = () => {
         return;
       }
     } catch (error) {
-      console.log(error.response?.data?.message);
+      alert(error.response?.data?.message)
       return;
     }
   };

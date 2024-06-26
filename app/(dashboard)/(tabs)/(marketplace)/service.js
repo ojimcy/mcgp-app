@@ -9,34 +9,32 @@ import axios from "axios";
 import { baseUrl } from "../../../../constants/api/apiClient";
 
 const services = () => {
-  const [categories,setCategories]=useState([]);
-const {token}=useAuth();
+  const [categories, setCategories] = useState([]);
+  const { token } = useAuth();
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(`${baseUrl}/category?type=Service`,{
+        const response = await axios.get(`${baseUrl}/category?type=Service`, {
           headers: {
             Authorization: `${token}`,
           },
-        })
+        });
         const fetchedCategories = response.data.results;
         setCategories(fetchedCategories);
       } catch (error) {
-        console.error('Error fetching categories:', error);
-        console.log(error?.response?.data?.message)
+        alert(error?.response?.data?.message);
       }
     };
     fetchCategories();
   }, []);
   return (
-    <View style={{ flex: 1,backgroundColor:COLORS.white }}>
-       <HeaderSearch />
-     <ListCard itemList={categories} itemValue='categoryservice'/>
+    <View style={{ flex: 1, backgroundColor: COLORS.white }}>
+      <HeaderSearch />
+      <ListCard itemList={categories} itemValue="categoryservice" />
     </View>
   );
 };
 
 export default services;
 
-export const styles = StyleSheet.create({
-});
+export const styles = StyleSheet.create({});

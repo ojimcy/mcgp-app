@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Text, ActivityIndicator } from "react-native";
+import { StyleSheet, View, Text, ActivityIndicator, Alert } from "react-native";
 import { Image } from "react-native-elements";
 import { useAuth } from "../../AuthContext/AuthContext";
-import { useRoute } from "expo-router";
+import { useLocalSearchParams, useRoute } from "expo-router";
 import axios from "axios";
 import { baseUrl } from "../../constants/api/apiClient";
 
@@ -10,9 +10,7 @@ const AdvertDetailScreen = () => {
   const { token } = useAuth();
   const [advert, setAdvert] = useState(null);
   const [loading, setLoading] = useState(true);
-  const route = useRoute();
-
-  const { advertId } = route.params;
+  const { id } = useLocalSearchParams();
 
   useEffect(() => {
     fetchAdvert();
@@ -20,15 +18,14 @@ const AdvertDetailScreen = () => {
 
   const fetchAdvert = async () => {
     try {
-      const response = await axios.get(`${baseUrl}/adverts/${advertId}`, {
+      const response = await axios.get(`${baseUrl}/adverts/${id}`, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `${token}`,
         },
       });
       setAdvert(response.data);
     } catch (error) {
-      console.error("Error fetching advert:", error);
       Alert.alert(
         "Error",
         "Failed to fetch advert details. Please try again later."
@@ -119,6 +116,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#666",
     marginVertical: 2,
+  },
+  image: {
+    width: "100%",
+    height: 200,
+    resizeMode: "cover",
+    borderRadius: 10,
   },
 });
 

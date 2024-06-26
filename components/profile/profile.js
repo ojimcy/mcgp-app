@@ -45,7 +45,9 @@ const ProfileScreen = () => {
           <Card containerStyle={styles.card}>
             <TouchableOpacity
               style={styles.editIcon}
-              onPress={() => router.push("/edit")}
+              onPress={() =>
+                router.push({ pathname: "/profile/edit", params: user })
+              }
             >
               <Icon name="edit" size={20} color="#9D6B38" />
             </TouchableOpacity>

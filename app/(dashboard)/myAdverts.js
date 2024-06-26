@@ -14,9 +14,10 @@ import { useAuth } from "../../AuthContext/AuthContext";
 import { router } from "expo-router";
 import axios from "axios";
 import { baseUrl } from "../../constants/api/apiClient";
+import { ADVERT_TYPE_PRODUCT } from "../../constants/constantValues";
 
 const MyAdvertsScreen = () => {
-  const { token,setCurrentUser } = useAuth();
+  const { token, setCurrentUser } = useAuth();
   const [adverts, setAdverts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -27,15 +28,16 @@ const MyAdvertsScreen = () => {
   const fetchAdverts = async () => {
     ///users/me
     try {
-      const {data} = await axios.get(`${baseUrl}/users/me`,
-        
+      const { data } = await axios.get(
+        `${baseUrl}/users/me`,
+
         {
           headers: {
             Authorization: `${token}`,
           },
         }
       );
-      setCurrentUser(data)
+      setCurrentUser(data);
       const response = await axios.get(
         `${baseUrl}/adverts?createdBy=${data.id}`,
         {
@@ -99,14 +101,19 @@ const MyAdvertsScreen = () => {
       />
       <View style={styles.infoContainer}>
         <Text style={styles.title}>{item.name}</Text>
-        <Text style={styles.amount}>{item.price}</Text>
+        {item.type === ADVERT_TYPE_PRODUCT && (
+          <Text style={styles.amount}>{item.price}</Text>
+        )}
         <Text style={styles.status}>{item.status}</Text>
+        <Text style={styles.status}>{item.type}</Text>
         <Text style={styles.date}>
           {new Date(item.createdAt).toLocaleDateString()}
         </Text>
         <View style={styles.actions}>
           <TouchableOpacity
-            onPress={() => router.push(`/edit-advert/${item.id}`)}
+            onPress={() =>
+              router.push({ pathname: `/profile/edit-advert`, params: item })
+            }
           >
             <Icon name="edit" size={20} color="#9D6B38" />
           </TouchableOpacity>
@@ -114,7 +121,12 @@ const MyAdvertsScreen = () => {
             <Icon name="delete" size={20} color="#9D6B38" />
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => router.push(`/advert-details/${item.id}`)}
+            onPress={() =>
+              router.push({
+                pathname: `/profile/advert-details`,
+                params: { id: item.id },
+              })
+            }
           >
             <Icon name="info" size={20} color="#9D6B38" />
           </TouchableOpacity>

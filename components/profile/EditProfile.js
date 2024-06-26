@@ -1,115 +1,167 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
   Text,
   TouchableOpacity,
   TextInput,
-} from 'react-native';
-import { Avatar, Icon, Card } from 'react-native-elements';
-import { useNavigation } from '@react-navigation/native';
-import { useAuth } from '../../AuthContext/AuthContext';
-import { countries } from '../../constants/api/statesConstants';
+  ScrollView,
+  Alert,
+} from "react-native";
+import { Avatar, Icon, Card } from "react-native-elements";
 import { Picker } from "@react-native-picker/picker";
+import { useRouter } from "expo-router";
+import { COLORS, SIZES } from "../../constants";
+import { countries } from "../../constants/api/statesConstants";
+import Toast from "react-native-toast-message";
+import PhoneNumber from "../country/phoneNumber";
+import axios from "axios";
+import { baseUrl } from "../../constants/api/apiClient";
+import { useAuth } from "../../AuthContext/AuthContext";
 
-const EditProfileScreen = () => {
-  const navigation = useNavigation();
-  const { currentUser } = useAuth();
+const EditProfileScreen = ({ user }) => {
+  const { token } = useAuth();
+  const [name, setName] = useState(user.name);
+  const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber);
+  const [country, setCountry] = useState(user.country);
+  const [countryList, setCountries] = useState(countries);
+  const [selectedCountry, setSelectedCountry] = useState();
 
-  const [firstName, setFirstName] = useState(currentUser?.firstName);
-  const [lastName, setLastName] = useState(currentUser?.lastName);
-  const [phoneNumber, setPhoneNumber] = useState(currentUser?.phoneNumber);
-  const [country, setCountry] = useState(currentUser?.country);
+  const router = useRouter();
 
-  const name = `${firstName} ${lastName}`;
+  const removeAllSpaces = (str) => str.replace(/\s+/g, "");
+
+  const handleUpdate = async () => {
+    ///users/me
+    const payLoad = {
+      name,
+      phoneNumber:
+        removeAllSpaces(selectedCountry?.callingCode + phoneNumber) ||
+        phoneNumber,
+      country,
+    };
+    try {
+      const { data } = await axios.patch(
+        `${baseUrl}/users/${user.id}`,
+        payLoad,
+        {
+          headers: {
+            Authorization: `${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      alert("Information Successfully changed");
+      router.push("/profile");
+    } catch (error) {
+      Alert.alert("Error", "Failed to update." + error?.response.data.message);
+    } finally {
+    }
+  };
   return (
-    <View style={styles.container}>
-      <Card containerStyle={styles.card}>
-        <TouchableOpacity
-          style={styles.editIcon}
-          onPress={() => navigation.goBack()}
-        >
-          <Icon name="arrow-back" size={20} color="#9D6B38" />
-        </TouchableOpacity>
+    <View style={styles.wrapper}>
+      <ScrollView style={styles.container}>
+        <Toast />
         <View style={styles.profileInfo}>
-          <Avatar
-            rounded
-            title={`${firstName[0]}${lastName[0]}`}
-            size="large"
-            overlayContainerStyle={{ backgroundColor: '#9D6B38' }}
-            titleStyle={{ color: '#fff' }}
-          />
+          {user?.profilePicture ? (
+            <Avatar
+              rounded
+              source={{ uri: user?.profilePicture }}
+              size="large"
+            />
+          ) : (
+            <Avatar
+              rounded
+              title={user.name[0]}
+              size="large"
+              overlayContainerStyle={{ backgroundColor: "#9D6B38" }}
+              titleStyle={{ color: "#fff" }}
+            />
+          )}
           <View style={styles.textInfo}>
-            <TextInput
-              style={styles.name}
-              value={name}
-              onChangeText={(text) => {
-                const [newFirstName, newLastName] = text.split(' ');
-                setFirstName(newFirstName);
-                setLastName(newLastName);
-              }}
-            />
-            <TextInput
-              style={styles.phoneNumber}
-              value={phoneNumber}
-              onChangeText={(text) => setPhoneNumber(text)}
-            />
-
-            <Text style={styles.label}>Enter Country</Text>
-            <Picker
-              style={styles.input}
-              selectedValue={country}
-              onValueChange={(itemValue) => {
-                postData({ country: itemValue });
-                setCountry(itemValue);
-              }}
-            >
-              <Picker.Item label={'Select Country'} value={''} />
-              {countries.map((item, index) => (
-                <Picker.Item key={index} label={item} value={item} />
-              ))}
-            </Picker>
+            <Text style={styles.fullName}>{user.email}</Text>
           </View>
         </View>
-      </Card>
+
+        <TextInput
+          placeholder="Your Name"
+          style={styles.input}
+          value={name}
+          onChangeText={setName}
+        />
+        <Picker
+          style={styles.input}
+          selectedValue={country}
+          onValueChange={(itemValue) => {
+            setCountry(itemValue);
+          }}
+        >
+          <Picker.Item label={"Select Country"} value={""} />
+          {countryList.map((item, index) => (
+            <Picker.Item key={index} label={item} value={item} />
+          ))}
+        </Picker>
+        <PhoneNumber
+          inputValue={phoneNumber}
+          setInputValue={setPhoneNumber}
+          selectedCountry={selectedCountry}
+          setSelectedCountry={setSelectedCountry}
+        />
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleUpdate}>
+            <Text style={styles.buttonText}>Update</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  wrapper: {
+    /*     flex: 1, */
+    backgroundColor: "#fff",
+  },
   container: {
-    flex: 1,
-    backgroundColor: '#f0f0f0',
-    padding: 10,
+    padding: 16,
   },
-  card: {
-    borderRadius: 10,
-    padding: 20,
-    width: '94%',
-    height: 217,
-    backgroundColor: '#F5FCFF',
+  input: {
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 10,
   },
-  editIcon: {
-    position: 'absolute',
-    top: 10,
-    left: 10,
+  label: {
+    fontSize: 16,
+    marginBottom: 5,
+    marginLeft: 5,
+  },
+  buttonContainer: {
+    alignItems: "center",
+    marginVertical: 20,
+  },
+  button: {
+    backgroundColor: COLORS.primary,
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    height: 45,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
   },
   profileInfo: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 15,
   },
   textInfo: {
     marginLeft: 15,
-  },
-  name: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  phoneNumber: {
-    fontSize: 14,
-    color: '#666',
   },
 });
 

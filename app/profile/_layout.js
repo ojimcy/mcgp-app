@@ -1,10 +1,27 @@
-import { Stack } from 'expo-router';
+import { Stack } from "expo-router";
 
 const ProfileLayout = () => {
   return (
-    <Stack screenOptions={{ headerShown: false }}>
+    <Stack>
       <Stack.Screen name="index" />
-      <Stack.Screen name="edit" />
+      <Stack.Screen
+        name="edit"
+        options={{
+          title: "Edit Profile",
+        }}
+      />
+      <Stack.Screen
+        name="edit-advert"
+        options={{
+          title: "Edit Advert",
+        }}
+      />
+      <Stack.Screen
+        name="advert-details"
+        options={{
+          title: "Advert Details",
+        }}
+      />
     </Stack>
   );
 };
