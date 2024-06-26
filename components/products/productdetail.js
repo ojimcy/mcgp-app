@@ -101,8 +101,7 @@ const ProductDetail = ({ item }) => {
                 <Text style={styles.price}>{item.price}</Text>
               </View>
               <View style={styles.feeContainer}>
-                <Text style={styles.shipping}>300 Bought in the past</Text>
-                <Text style={styles.shipping}>10k shipping fee to Abuja</Text>
+                <Text style={styles.shipping}>15 items sold</Text>
               </View>
             </View>
 

@@ -216,7 +216,7 @@ const AddService = () => {
         value={companyName}
         onChangeText={setCompanyName}
       />
-      <Text style={styles.label}>Enter Category</Text>
+      <Text style={styles.label}>Type of Service</Text>
       <Picker
         style={styles.input}
         selectedValue={category}
@@ -244,7 +244,7 @@ const AddService = () => {
       <View style={styles.textAreaContainer}>
         <TextInput
           style={styles.textArea}
-          placeholder="Please explain your service for more detail"
+          placeholder="Description"
           placeholderTextColor="grey"
           numberOfLines={10}
           multiline={true}

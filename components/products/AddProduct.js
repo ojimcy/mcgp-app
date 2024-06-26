@@ -284,7 +284,7 @@ const AddProduct = () => {
       <View style={styles.textAreaContainer}>
         <TextInput
           style={styles.textArea}
-          placeholder="Please explain your product for more detail"
+          placeholder="Description"
           placeholderTextColor="grey"
           numberOfLines={10}
           multiline={true}

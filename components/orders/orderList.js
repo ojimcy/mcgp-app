@@ -17,7 +17,7 @@ import OrderCard from "./ordercard";
 
 const OrderList = () => {
   const { items, setItems, token } = useAuth();
-  const [orders,setOrders]=useState();
+  const [orders, setOrders] = useState();
   const handleAdd = async (id, payLoad) => {
     try {
       const response = await axios.post(
@@ -45,8 +45,8 @@ const OrderList = () => {
           Authorization: `${token}`,
         },
       });
-      console.log('checking Ex',response.data.results)
-      setItems(response.data.results)
+      console.log("checking Ex", response.data.results);
+      setItems(response.data.results);
       if (response.status === 200) {
         setOrders(response.data.results);
         return;
@@ -96,7 +96,7 @@ const OrderList = () => {
   };
 
   const calculateTotal = () => {
-   // return items.reduce((total, item) => total + item.price * item.quantity, 0);
+    // return items.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
   /* const renderItem = ({ item }) => (
@@ -148,11 +148,11 @@ const OrderList = () => {
   return (
     <View style={styles.container}>
       <FlatList
-      data={orders}
-      keyExtractor={(item) => item.id}
-      renderItem={({ item }) => <OrderCard order={item} />}
-      contentContainerStyle={styles.container}
-    />
+        data={orders}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => <OrderCard order={item} />}
+        contentContainerStyle={styles.container}
+      />
       {/* <View style={styles.totalContainer}>
         <Text style={styles.totalText}>Total: ₦{calculateTotal()}</Text>
       </View>
@@ -174,7 +174,7 @@ const OrderList = () => {
 
 const styles = StyleSheet.create({
   container: {
-   /*  flex: 1, */
+    /*  flex: 1, */
     padding: 20,
     backgroundColor: "#f5f5f5",
   },
