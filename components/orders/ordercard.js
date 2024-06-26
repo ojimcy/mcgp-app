@@ -6,7 +6,6 @@ const orders = [
 ];
 
 const OrderCard = ({ order }) => {
-    console.log(order)
   return (
     <View style={styles.card}>
       <Text style={styles.title}>Order ID: {order.id}</Text>

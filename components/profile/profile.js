@@ -73,7 +73,7 @@ useEffect(()=>{
           <Icon name="description" size={20} color="#9D6B38" />
           <Text style={styles.linkText}>My Adverts</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.profileLink} onPress={() => router.push('/dashboard/order')}>
+        <TouchableOpacity style={styles.profileLink} onPress={() => router.push('/orderlist')}>
           <Icon name="list" size={20} color="#9D6B38" />
           <Text style={styles.linkText}>Orders</Text>
         </TouchableOpacity>

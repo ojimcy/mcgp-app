@@ -1,43 +1,20 @@
 import React, { useEffect, useState } from "react";
 import {
   View,
-  Text,
   StyleSheet,
-  Image,
-  Button,
   FlatList,
-  TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { useAuth } from "../../AuthContext/AuthContext";
-import { COLORS } from "../../constants";
-import { router } from "expo-router";
+
 import axios from "axios";
 import { baseUrl } from "../../constants/api/apiClient";
 import OrderCard from "./ordercard";
 
 const OrderList = () => {
-  const { items, setItems, token } = useAuth();
+  const { setItems, token } = useAuth();
   const [orders, setOrders] = useState();
-  const handleAdd = async (id, payLoad) => {
-    try {
-      const response = await axios.post(
-        `${baseUrl}/cart/${id}/increase`,
-        payLoad,
-        {
-          headers: {
-            Authorization: `${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (response.status === 201) {
-      }
-
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  };
+ 
   const getItems = async () => {
     try {
       const response = await axios.get(`${baseUrl}/order/my-orders`, {
@@ -45,7 +22,6 @@ const OrderList = () => {
           Authorization: `${token}`,
         },
       });
-      console.log("checking Ex", response.data.results);
       setItems(response.data.results);
       if (response.status === 200) {
         setOrders(response.data.results);
@@ -54,120 +30,27 @@ const OrderList = () => {
         return;
       }
     } catch (error) {
-      console.log(error.response?.data?.message);
       return;
-    }
-  };
-  const handleRemoveCartItem = async (id) => {
-    try {
-      const response = await axios.post(`${baseUrl}/cart/${id}`, {
-        headers: {
-          Authorization: `${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      if (response.status === 201) {
-      }
-
-      return response.data;
-    } catch (error) {
-      throw error;
     }
   };
   useEffect(() => {
     getItems();
   }, []);
-  const handleSubtract = async (id, payLoad) => {
-    try {
-      const response = await axios.post(
-        `${baseUrl}/cart/${id}/decrease`,
-        payLoad,
-        {
-          headers: {
-            Authorization: `${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  };
 
-  const calculateTotal = () => {
-    // return items.reduce((total, item) => total + item.price * item.quantity, 0);
-  };
 
-  /* const renderItem = ({ item }) => (
-    <View style={styles.itemContainer}>
-      <Image source={{ uri: item.image }} style={styles.image} />
-      <View style={styles.details}>
-        <Text style={styles.name}>{item.name}</Text>
-        <Text style={styles.price}>₦{item.amount}</Text>
-        <View style={styles.quantityContainer}>
-          <TouchableOpacity
-            onPress={async () => {
-              if (item.quantity > 1) {
-                await handleSubtract(item.productId, { quantity: 1 });
-                await getItems();
-              } else {
-                alert(
-                  `you can't reduce again, you are at your limit, you can decide to remove the Item`
-                );
-              }
-            }}
-            style={styles.button}
-          >
-            <Text style={styles.buttonText}>-</Text>
-          </TouchableOpacity>
-          <Text style={styles.quantity}>{item.quantity}</Text>
-          <TouchableOpacity
-            onPress={async () => {
-              const response = await handleAdd(item.productId, { quantity: 1 });
-              const result = await getItems();
-            }}
-            style={styles.button}
-          >
-            <Text style={styles.buttonText}>+</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-      <TouchableOpacity
-        onPress={async () => {
-          await handleRemoveCartItem(item.productId);
-          await getItems();
-        }}
-        style={styles.removeButton}
-      >
-        <Text style={styles.removeButtonText}>Remove</Text>
-      </TouchableOpacity>
-    </View>
-  ); */
-
+  
   return (
     <View style={styles.container}>
-      <FlatList
+      {!orders?.length>0?(
+<ActivityIndicator size={24}/>
+      ):(
+        <FlatList
         data={orders}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <OrderCard order={item} />}
         contentContainerStyle={styles.container}
       />
-      {/* <View style={styles.totalContainer}>
-        <Text style={styles.totalText}>Total: ₦{calculateTotal()}</Text>
-      </View>
-      <View style={styles.checkoutContainer}>
-        <Button
-          title="Proceed"
-          onPress={() =>
-            router.push({
-              pathname: "/orderproduct",
-              params: { totalAmount: calculateTotal() },
-            })
-          }
-          color={COLORS.primary}
-        />
-      </View> */}
+      )}
     </View>
   );
 };
