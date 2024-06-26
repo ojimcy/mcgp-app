@@ -44,7 +44,7 @@ const ProfileScreen = () => {
       <View style={styles.linksContainer}>
         <TouchableOpacity
           style={styles.profileLink}
-          onPress={() => router.push('edit-profile')}
+          onPress={() => router.push('/profile/my-adverts')}
         >
           <Icon name="description" size={20} color="#9D6B38" />
           <Text style={styles.linkText}>My Adverts</Text>

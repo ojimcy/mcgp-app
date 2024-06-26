@@ -107,13 +107,6 @@ const Layout = () => {
           }}
         />
         <Drawer.Screen
-          name="myAdverts"
-          options={{
-            title: "My Adverts",
-            drawerActiveTintColor: COLORS.primary,
-          }}
-        />
-        <Drawer.Screen
           name="profile"
           options={{
             title: "Profile",

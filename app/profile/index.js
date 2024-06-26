@@ -5,7 +5,7 @@ import ProfileScreen from '../../components/profile/profile'
 const Profile = () => {
   return (
     <View>
-      <ProfileScreen/>
+      <ProfileScreen />
     </View>
   )
 }

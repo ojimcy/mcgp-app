@@ -103,7 +103,12 @@ const MyAdvertsScreen = () => {
             <Icon name="delete" size={20} color="#9D6B38" />
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => router.push(`/advert-details/${item.id}`)}
+            onPress={() =>
+              router.push({
+                pathname: "/profile/advert-detail",
+                params: { advert: item },
+              })
+            }
           >
             <Icon name="info" size={20} color="#9D6B38" />
           </TouchableOpacity>
