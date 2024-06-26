@@ -53,6 +53,7 @@ export const AppProvider = ({ children }) => {
         const jwtToken = 'Bearer ' + response.data.tokens.access.token;
         await AsyncStorage.setItem('token', jwtToken);
         setToken(jwtToken);
+        setCurrentUser(response.data.user);
         setUsername(username);
         setAuthenticated(true);
         apiClient.interceptors.request.use((config) => {
@@ -76,10 +77,10 @@ export const AppProvider = ({ children }) => {
       };
     }
   }
+
   const getItems = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
-      console.log(token);
       const response = await axios.get(`${baseUrl}/cart`, {
         headers: {
           Authorization: token,
@@ -137,6 +138,7 @@ export const AppProvider = ({ children }) => {
       return config;
     });
     await AsyncStorage.removeItem('token');
+    setCurrentUser(null);
     router.push('/login');
   }
   async function loggedInUser() {
