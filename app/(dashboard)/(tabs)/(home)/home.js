@@ -1,17 +1,15 @@
-import { StyleSheet} from 'react-native'
-import HomeScreen from '../../../../screens/Home'
-
+import { StyleSheet } from 'react-native';
+import HomeScreen from '../../../../screens/Home';
 
 const Home = () => {
-  
   return (
     <>
-<HomeScreen/>
-{/* <HomePage/> */}
-</>
-  )
-}
+      <HomeScreen />
+      {/* <HomePage/> */}
+    </>
+  );
+};
 
-export default Home
+export default Home;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});

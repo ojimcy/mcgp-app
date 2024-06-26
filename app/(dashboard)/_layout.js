@@ -20,6 +20,9 @@ const Layout = () => {
               case "profile":
                 iconName = "account-cog";
                 break;
+                case "myAdverts":
+                  iconName = "shopping";
+                  break;  
               case "Pending Reviews":
                 iconName = "comment-processing";
                 break;
@@ -100,6 +103,13 @@ const Layout = () => {
           name="orderlist"
           options={{
             title: "My Orders",
+            drawerActiveTintColor: COLORS.primary,
+          }}
+        />
+        <Drawer.Screen
+          name="myAdverts"
+          options={{
+            title: "My Adverts",
             drawerActiveTintColor: COLORS.primary,
           }}
         />
