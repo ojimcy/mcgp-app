@@ -92,13 +92,13 @@ const Layout = () => {
             /* drawerLabel:'Show' */
           })}
         />
-        <Drawer.Screen
+       {/*  <Drawer.Screen
           name="addcategory"
           options={{
             title: "Add Category",
             drawerActiveTintColor: COLORS.primary,
           }}
-        />
+        /> */}
         <Drawer.Screen
           name="orderlist"
           options={{
