@@ -1,14 +1,9 @@
 import { SafeAreaView, View } from "react-native";
 import { FocusedStatusBar, RectButton } from "../components/designs";
-import {  SIZES } from "../constants";
+import { SIZES } from "../constants";
 import { SHADOWS } from "../components/constants";
 
-const Details = ({data }) => {
-  console.log(`
-  --------------------------------------------------
-  ${data}
-  --------------------------------------------------
-  `);
+const Details = ({ data }) => {
   return (
     <SafeAreaView
       style={{
@@ -34,7 +29,6 @@ const Details = ({data }) => {
       >
         <RectButton minWidth={170} fontSize={SIZES.large} {...SHADOWS.dark} />
       </View>
-     
     </SafeAreaView>
   );
 };

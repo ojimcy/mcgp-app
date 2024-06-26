@@ -34,7 +34,6 @@ const PaymentSelection = ({
           "Content-Type": "application/json",
         },
       });
-      console.log(response.data);
       if (response.status === 201) {
         return { data: response.data, message: "success", success: true };
       }
@@ -171,7 +170,6 @@ const PaymentSelection = ({
                   },
                   paymentMethod: "crypto",
                 });
-                console.log(result);
                 if (result.success) {
                   router.push({
                     pathname: "/cryptodetails",

@@ -40,7 +40,6 @@ const EditProductCatalogue = () => {
         const fetchedCategories = response.data.results;
         setCategories(fetchedCategories);
       } catch (error) {
-        console.log(error?.response.data.message);
       }
   };
 

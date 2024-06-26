@@ -13,7 +13,6 @@ import axios from "axios";
 import { useAuth } from "../../AuthContext/AuthContext";
 
 const PaymentProof = ({id}) => {
-    console.log(id);
     const {token}=useAuth()
   const [image, setImage] = useState(null);
   const pickImageAsync = async () => {

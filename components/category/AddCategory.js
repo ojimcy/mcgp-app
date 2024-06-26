@@ -81,9 +81,7 @@ const AddCategory = () => {
     }
     formData.append("isFeatured", isFeatured);
     try {
-      console.log(formData);
       const response = await registerCategory(formData);
-      console.log(response.status);
       if (response.status === 201) {
         Toast.show({
           type: "success",
@@ -113,7 +111,6 @@ const AddCategory = () => {
     const fetchCategories = async () => {
       try {
         const response = await getCategories("Product"); // Adjust the endpoint based on your API
-        console.log(response.data);
         const fetchedCategories = response.data.results.map((category) => ({
           title: category.title,
           id: category.id,
@@ -131,8 +128,6 @@ const AddCategory = () => {
         }));
         setCategories(fetchedCategories);
       } catch (error) {
-        console.error("Error fetching categories:", error);
-        console.log(error?.response?.data?.message);
         await logOut();
       }
     };

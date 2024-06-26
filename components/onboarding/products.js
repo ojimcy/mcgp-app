@@ -11,7 +11,6 @@ const Products = () => {
   function handleSkip() {
     router.push("/login");
   }
-  //console.log(SIZES.height, SIZES.width);
   return (
     <View style={styles.container}>
       <View

@@ -54,7 +54,6 @@ const AddProduct = () => {
         const fetchedCategories = response.data.results;
         setCategories(fetchedCategories);
       } catch (error) {
-        console.log(error?.response.data.message);
       }
     };
     fetchCategories();
@@ -132,8 +131,6 @@ const AddProduct = () => {
       formData.append(`attributes[${index}].name`, attribute.name);
       formData.append(`attributes[${index}].value`, attribute.value);
     });
-
-    console.log("form data", formData);
     try {
       const response = await registerAds(formData);
       if (response) {

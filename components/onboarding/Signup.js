@@ -27,17 +27,14 @@ const Signup = () => {
     return str.replace(/\s+/g, '');
 }
   async function handleSignup() {
-  console.log(`${selectedCountry?.callingCode} ${phoneNumber}`)
     setLoading(true);
     const payLoad = { name, email:email.trim(), password, country, phoneNumber:removeAllSpaces(selectedCountry?.callingCode+phoneNumber)};
-    console.log(payLoad)
     if (password != confirmPassword) {
       setLoading(false);
       return alert("Password Mismatch");
     }
     try {
       const result = await signup(payLoad);
-      console.log(result)
       if (result.success) {
         setLoading(false);
         router.push("/home");

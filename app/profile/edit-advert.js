@@ -177,7 +177,7 @@ const UpdateAdvert = () => {
         const fetchedCategories = response.data.results;
         setCategories(fetchedCategories);
       } catch (error) {
-        //  console.log(error?.response.data.message);
+
         alert(error?.response.data.message);
       }
     };

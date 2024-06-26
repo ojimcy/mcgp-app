@@ -49,7 +49,7 @@ return (
           </Text>
           <View style={{justifyContent:'space-between',flexDirection:'row',alignItems:'center'}}>
          <Text onPress={()=>{
-            console.log('Pressed Catalogue')
+        
          }} style={{fontSize:11,fontWeight:'500'}}>See Catalogue</Text>
           <Button
             buttonStyle={{

@@ -52,7 +52,6 @@ const ProductList = () => {
 
         setCategories(categoriesWithChildren);
       } catch (error) {
-        console.log('Error From Product List', error?.response?.data?.message);
         setError('Failed to load categories. Please try again later.');
       } finally {
         setLoading(false);

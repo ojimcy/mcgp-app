@@ -5,7 +5,6 @@ import { COLORS } from '../../constants'
 
 const TabButton = ({link,buttonTitle,active}) => {
     function handleNavigation(){
-      console.log(link)
         router.push(`/${link}`)
     }
   return (

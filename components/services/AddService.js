@@ -161,7 +161,7 @@ const AddService = () => {
         const fetchedCategories = response.data.results;
         setCategories(fetchedCategories);
       } catch (error) {
-        console.log(error?.response.data.message);
+  
       }
     };
     fetchCategories();

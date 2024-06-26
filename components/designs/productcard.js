@@ -18,8 +18,7 @@ const ProductCard = ({ data }) => {
           Authorization: `${token}`,
           "Content-Type": "application/json",
         },
-      });
-      console.log(response.status);
+      })
       if (response.status === 201) {
       }
       return response.data;
@@ -49,7 +48,7 @@ const ProductCard = ({ data }) => {
         return;
       }
     } catch (error) {
-      console.log( error.response?.data?.message)
+  
       return ;
     }
   };
@@ -135,7 +134,6 @@ const ProductCard = ({ data }) => {
         >
           <Catalogue
             handlePress={() => {
-              console.log("viewing catalogue");
             }}
           />
           {!checkItemExist(data.name) ? (
@@ -156,15 +154,11 @@ const ProductCard = ({ data }) => {
                   }
                   const newItem = {
                     productId: data.id, // unique id
-                    /*  name:data.name,
-                  price: parseFloat(data.price),
-                  image:data.images[0], */
                     quantity: 1,
                   };
                   const response = await addItem(newItem);
              const result= await getItems();
-                  /*  const result=await addItem(newItem);
-           console.log(result) */
+
                 }
               }}
             />

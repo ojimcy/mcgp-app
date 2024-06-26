@@ -28,7 +28,6 @@ export default function CountryComponent({country,setCountry}) {
         show={show}
         // when picker button press you will get the country object with dial code
         pickerButtonOnPress={(item) => {
-            //console.log(item.name.en)
             setCountry(item.name.en)
           setShow(false);
         }}

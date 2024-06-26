@@ -28,8 +28,6 @@ const ServiceList = () => {
         const fetchedCategories = response.data.results.slice(0, 8);
         setCategories(fetchedCategories);
       } catch (error) {
-        console.error("Error fetching categories:", error);
-        console.log(error?.response?.data?.message);
       }
     };
     fetchCategories();

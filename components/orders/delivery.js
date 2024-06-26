@@ -49,7 +49,6 @@ const Delivery = ({ data }) => {
       }
 
       const jsonResponse = await response.json();
-      console.log(jsonResponse.data.states);
       setStates(jsonResponse.data.states);
       return jsonResponse;
     } catch (error) {
@@ -58,7 +57,6 @@ const Delivery = ({ data }) => {
     }
   };
   const getCity = async (data) => {
-    console.log(data);
     try {
       const response = await fetch(
         "https://countriesnow.space/api/v0.1/countries/state/cities",
@@ -75,7 +73,7 @@ const Delivery = ({ data }) => {
         throw new Error("Network response was not ok");
       }
       const jsonResponse = await response.json();
-      console.log("checking the response", jsonResponse.data);
+
       setCities(jsonResponse.data);
       return jsonResponse;
     } catch (error) {
