@@ -1,9 +1,9 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React, { useContext } from 'react'
+import { StyleSheet, Text, View } from "react-native";
+import React, { useContext } from "react";
 import { Stack } from "expo-router";
-import { AppContext } from '../../AuthContext/AuthContext';
+import { AppContext } from "../../AuthContext/AuthContext";
 const Layout = () => {
-    const {category}=useContext(AppContext)
+  const { category } = useContext(AppContext);
   return (
     <Stack>
       <Stack.Screen
@@ -37,6 +37,12 @@ const Layout = () => {
         }}
       />
       <Stack.Screen
+        name="paymentdetail"
+        options={{
+          headerTitle: `Payment Details`,
+        }}
+      />
+      <Stack.Screen
         name="confirmation"
         options={{
           headerTitle: `Confirmation Page`,
@@ -48,10 +54,10 @@ const Layout = () => {
           headerTitle: `Crypto Details`,
         }}
       />
-      </Stack>
-  )
-}
+    </Stack>
+  );
+};
 
-export default Layout
+export default Layout;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});

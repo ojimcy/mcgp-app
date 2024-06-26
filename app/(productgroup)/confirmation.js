@@ -6,8 +6,8 @@ import PaymentReceivedScreen from '../../components/orders/paymentsuccess'
 const confirmation = () => {
   return (
     <View>
-    {/*  <ConfirmationScreen/> */}
-     <PaymentReceivedScreen/>
+     <ConfirmationScreen/>
+     {/* <PaymentReceivedScreen/> */}
     </View>
   )
 }
