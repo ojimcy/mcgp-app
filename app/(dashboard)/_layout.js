@@ -89,16 +89,8 @@ const Layout = () => {
             },
             headerTintColor: navigation.isFocused() ? COLORS.primary : "black",
             drawerActiveTintColor: COLORS.primary,
-            /* drawerLabel:'Show' */
           })}
         />
-       {/*  <Drawer.Screen
-          name="addcategory"
-          options={{
-            title: "Add Category",
-            drawerActiveTintColor: COLORS.primary,
-          }}
-        /> */}
         <Drawer.Screen
           name="orderlist"
           options={{
