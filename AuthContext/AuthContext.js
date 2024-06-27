@@ -31,7 +31,6 @@ export const AppProvider = ({ children }) => {
         return { success: false, error: true, message: 'could not create' };
       }
     } catch (error) {
-      alert(error.response?.data?.message)
       return {
         success: false,
         error: true,

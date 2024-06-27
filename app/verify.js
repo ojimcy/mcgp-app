@@ -1,4 +1,3 @@
-import { View, Text } from 'react-native'
 import React, { useEffect } from 'react'
 import Verify from '../components/onboarding/Verify'
 import { router, useLocalSearchParams } from 'expo-router'

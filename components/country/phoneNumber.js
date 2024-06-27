@@ -20,16 +20,6 @@ export default function PhoneNumber({selectedCountry, setSelectedCountry,inputVa
         onChangeSelectedCountry={handleSelectedCountry}
         placeholder='7034567897'
       />
-      {/* <View style={{ marginTop: 10 }}>
-        <Text>
-          Country:{' '}
-          {`${selectedCountry?.name?.en} (${selectedCountry?.cca2})`}
-        </Text>
-        <Text>
-          Phone Number:{' '}
-          {`${selectedCountry?.callingCode} ${inputValue}`}
-        </Text>
-      </View> */}
     </View>
   );
 }

@@ -59,8 +59,8 @@ const EditProfileScreen = ({ user }) => {
     }
   };
   return (
-    <View style={styles.wrapper}>
-      <ScrollView style={styles.container}>
+    <View style={styles.container}>
+      <View style={styles.cover}>
         <Toast />
         <View style={styles.profileInfo}>
           {user?.profilePicture ? (
@@ -89,18 +89,21 @@ const EditProfileScreen = ({ user }) => {
           value={name}
           onChangeText={setName}
         />
-        <Picker
-          style={styles.input}
-          selectedValue={country}
-          onValueChange={(itemValue) => {
-            setCountry(itemValue);
-          }}
-        >
-          <Picker.Item label={"Select Country"} value={""} />
-          {countryList.map((item, index) => (
-            <Picker.Item key={index} label={item} value={item} />
-          ))}
-        </Picker>
+        <View style={styles.pickerContainer}>
+          <Picker
+            style={styles.picker}
+            selectedValue={country}
+            onValueChange={(itemValue) => {
+              setCountry(itemValue);
+            }}
+          >
+            <Picker.Item label={"Select Country"} value={""} />
+            {countryList.map((item, index) => (
+              <Picker.Item key={index} label={item} value={item} />
+            ))}
+          </Picker>
+        </View>
+
         <PhoneNumber
           inputValue={phoneNumber}
           setInputValue={setPhoneNumber}
@@ -113,26 +116,34 @@ const EditProfileScreen = ({ user }) => {
             <Text style={styles.buttonText}>Update</Text>
           </TouchableOpacity>
         </View>
-      </ScrollView>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  wrapper: {
-    /*     flex: 1, */
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    padding: 20,
     backgroundColor: "#fff",
   },
-  container: {
-    padding: 16,
+  loginText: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    left: "5%",
+    color: COLORS.primary,
   },
   input: {
-    height: 40,
+    width: SIZES.width * 0.9,
+    height: (6.2 / 100) * SIZES.height,
     borderColor: "gray",
     borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginBottom: 10,
+    marginTop: 10,
+    padding: 10,
+    borderRadius: 10,
+    marginHorizontal: SIZES.width * 0.05,
   },
   label: {
     fontSize: 16,
@@ -141,15 +152,15 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     alignItems: "center",
-    marginVertical: 20,
+    justifyContent: "center",
   },
   button: {
     backgroundColor: COLORS.primary,
-    width: "100%",
     alignItems: "center",
     justifyContent: "center",
     height: 45,
     borderRadius: 5,
+    width: SIZES.width * 0.9,
   },
   buttonText: {
     color: "#fff",
@@ -162,6 +173,27 @@ const styles = StyleSheet.create({
   },
   textInfo: {
     marginLeft: 15,
+  },
+  pickerContainer: {
+    width: SIZES.width * 0.9,
+    height: (6.2 / 100) * SIZES.height,
+    borderColor: "gray",
+    borderWidth: 1,
+    marginTop: 10,
+    padding: 0,
+    borderRadius: 10,
+    marginHorizontal: SIZES.width * 0.05,
+    justifyContent: "center",
+  },
+  picker: {
+    width: "100%",
+    height: "100%",
+  },
+  cover: {
+    position: "absolute",
+    top: SIZES.height * 0.1212,
+    marginBottom: 15,
+    backgroundColor: "#FFF",
   },
 });
 

@@ -11,8 +11,8 @@ import { router } from "expo-router";
 import { LinearProgress } from "react-native-elements";
 import { useAuth } from "../../AuthContext/AuthContext";
 import PhoneNumber from "../country/phoneNumber";
-import CountryComponent from "../country/countrypicker";
-//import Country from './Country'
+import { Picker } from "@react-native-picker/picker";
+import { countries } from "../../constants/api/statesConstants";
 
 const Signup = () => {
   const [name, setName] = useState();
@@ -23,12 +23,25 @@ const Signup = () => {
   const [confirmPassword, setConfirmPassword] = useState();
   const { loading, setLoading, signup } = useAuth();
   const [selectedCountry, setSelectedCountry] = useState(null);
+  const [countryList, setCountryList] = useState(countries || []);
+
   function removeAllSpaces(str) {
-    return str.replace(/\s+/g, '');
-}
+    return str.replace(/\s+/g, "");
+  }
+
   async function handleSignup() {
+    if (!country || !password || !confirmPassword || !name || !phoneNumber) {
+      alert("All fields needed");
+      return;
+    }
     setLoading(true);
-    const payLoad = { name, email:email.trim(), password, country, phoneNumber:removeAllSpaces(selectedCountry?.callingCode+phoneNumber)};
+    const payLoad = {
+      name,
+      email: email.trim(),
+      password,
+      country,
+      phoneNumber: removeAllSpaces(selectedCountry?.callingCode + phoneNumber),
+    };
     if (password != confirmPassword) {
       setLoading(false);
       return alert("Password Mismatch");
@@ -39,8 +52,7 @@ const Signup = () => {
         setLoading(false);
         router.push("/home");
       } else {
-       //alert('Something went Wrong')
-       alert(result.message)
+        alert(result.message);
       }
     } catch (err) {
       alert(err);
@@ -49,6 +61,7 @@ const Signup = () => {
       setLoading(false);
     }
   }
+
   return (
     <View style={styles.container}>
       <View style={styles.cover}>
@@ -59,16 +72,26 @@ const Signup = () => {
           placeholder="Name"
           onChangeText={(text) => setName(text)}
         />
-        <PhoneNumber 
-        inputValue={phoneNumber} 
-        setInputValue={setPhoneNumber}
-        selectedCountry={selectedCountry}
-        setSelectedCountry={setSelectedCountry}
+        <PhoneNumber
+          inputValue={phoneNumber}
+          setInputValue={setPhoneNumber}
+          selectedCountry={selectedCountry}
+          setSelectedCountry={setSelectedCountry}
         />
-        <CountryComponent
-        country={country}
-        setCountry={setCountry}
-        />
+        <View style={styles.pickerContainer}>
+          <Picker
+            style={styles.picker}
+            selectedValue={country}
+            onValueChange={(itemValue) => {
+              setCountry(itemValue);
+            }}
+          >
+            <Picker.Item label={"Select Country"} value={""} />
+            {countryList.map((item, index) => (
+              <Picker.Item key={index} label={item} value={item} />
+            ))}
+          </Picker>
+        </View>
         <TextInput
           style={styles.input}
           value={email}
@@ -93,13 +116,12 @@ const Signup = () => {
         />
       </View>
       <View>
-      {loading && (
-        <View style={styles.progressContainer}>
-          <LinearProgress color={COLORS.primary} />
-          {/* <ActivityIndicator size="large" color={COLORS.primary} /> */}
-          <Text style={styles.loadingText}>Signing in...</Text>
-        </View>
-      )}
+        {loading && (
+          <View style={styles.progressContainer}>
+            <LinearProgress color={COLORS.primary} />
+            <Text style={styles.loadingText}>Signing in...</Text>
+          </View>
+        )}
         <TouchableOpacity onPress={handleSignup} style={styles.button}>
           <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>
@@ -144,6 +166,21 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginHorizontal: SIZES.width * 0.05,
   },
+  pickerContainer: {
+    width: SIZES.width * 0.9,
+    height: (6.2 / 100) * SIZES.height,
+    borderColor: "gray",
+    borderWidth: 1,
+    marginTop: 10,
+    padding: 0,
+    borderRadius: 10,
+    marginHorizontal: SIZES.width * 0.05,
+    justifyContent: "center",
+  },
+  picker: {
+    width: "100%",
+    height: "100%",
+  },
   button: {
     backgroundColor: COLORS.primary,
     width: SIZES.width * 0.9,
@@ -155,35 +192,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.primary,
   },
-  emailButton: {
-    backgroundColor: COLORS.white,
-    width: SIZES.width * 0.9,
-    padding: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 10,
-    height: 0.0687 * SIZES.height,
-    borderRadius: 10,
-    borderWidth: 1,
-  },
-  emailButtonText: {
-    fontWeight: "semibold",
-  },
   buttonText: {
     color: "#fff",
     fontSize: 16,
   },
-  forgotPassword: {
-    marginBottom: 15,
-    position: "relative",
-    color: COLORS.primary,
-    paddingLeft: "1%",
-  },
-  orText: {
-    marginVertical: 10,
-  },
   signUpText: {
-    marginTop: 10,
     color: COLORS.primary,
   },
   question: {
