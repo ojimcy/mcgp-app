@@ -1,4 +1,10 @@
-import { ActivityIndicator, FlatList, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import ProductCard from "../../components/designs/productcard";
@@ -33,7 +39,7 @@ const Products = () => {
   if (loading) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size={'large'} color="#0000ff" />
+        <ActivityIndicator size={"large"} color="#0000ff" />
       </View>
     );
   }
