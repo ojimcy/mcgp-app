@@ -13,55 +13,53 @@ import { useAuth } from "../../AuthContext/AuthContext";
 import { LinearProgress } from "react-native-elements";
 
 export default function Login() {
-  const {setLoading,login,loading}=useAuth();
-const [email,setEmail]=useState();
-const [password,setPassword]=useState();
-const [isError,setIsError]=useState(false)
-  function handlePasswordRecovery(){
-    router.push('/recovery')
+  const { setLoading, login, loading } = useAuth();
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+  const [isError, setIsError] = useState(false);
+  function handlePasswordRecovery() {
+    router.push("/recovery");
   }
-  function Signup(){
-    router.push('/signup')
+  function Signup() {
+    router.push("/signup");
   }
-  async function Login(){
-    if(!email||!password){
-return alert('All Credentials must be filled')
+  async function Login() {
+    if (!email || !password) {
+      return alert("All Credentials must be filled");
     }
     setLoading(true);
-  const result=await login(email.trim(),password.trim());
-        if(result.success){
-          setLoading(false)
-          router.push('/home')
-        }else{
-            setIsError(true)
-            alert(result.message)
-        }
+    const result = await login(email.trim(), password.trim());
+    if (result.success) {
+      setLoading(false);
+      router.push("/home");
+    } else {
+      setIsError(true);
+      alert(result.message);
+    }
   }
 
- 
   return (
     <View style={styles.container}>
-     
       <View style={styles.cover}>
-      <Text style={styles.loginText}>Login</Text>
-      <TextInput
-        style={styles.input}
-        value={email}
-        onChangeText={(text)=>setEmail(text)}
-        placeholder="Email"
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      <TextInput
-        style={styles.input}
-        value={password}
-        placeholder="password"
-        secureTextEntry={true}
-        autoCapitalize="none"
-        onChangeText={(text)=>setPassword(text)}
-      />
+        <Text style={styles.loginText}>Login</Text>
+        <TextInput
+          style={styles.input}
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+          placeholder="Email"
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+        <TextInput
+          style={styles.input}
+          value={password}
+          placeholder="password"
+          secureTextEntry={true}
+          autoCapitalize="none"
+          onChangeText={(text) => setPassword(text)}
+        />
       </View>
-      
+
       {loading && (
         <View style={styles.progressContainer}>
           <LinearProgress color={COLORS.primary} />
@@ -72,25 +70,28 @@ return alert('All Credentials must be filled')
       <TouchableOpacity onPress={handlePasswordRecovery}>
         <Text style={styles.forgotPassword}>Forgot Password</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={Login} style={[styles.button, loading && styles.buttonLoading]} disabled={loading}>
+      <TouchableOpacity
+        onPress={Login}
+        style={[styles.button, loading && styles.buttonLoading]}
+        disabled={loading}
+      >
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
       <View style={{ alignContent: "center", alignItems: "center" }}>
         <Text style={styles.orText}>Or</Text>
       </View>
 
-      <TouchableOpacity style={styles.emailButton}>
+      {/* <TouchableOpacity style={styles.emailButton}>
         <Text style={styles.emailButtonText}>Continue With Email</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <TouchableOpacity
-      onPress={Signup}
+        onPress={Signup}
         style={{ alignContent: "center", alignItems: "center" }}
       >
         <Text style={styles.question}>
           New To Tsa? <Text style={styles.signUpText}>Signup</Text>
         </Text>
       </TouchableOpacity>
-    
     </View>
   );
 }
@@ -117,13 +118,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
     padding: 10,
     borderRadius: 10,
-    marginHorizontal:SIZES.width * 0.05,
+    marginHorizontal: SIZES.width * 0.05,
   },
   button: {
     backgroundColor: COLORS.primary,
     width: SIZES.width * 0.9,
     alignItems: "center",
-    justifyContent:'center',
+    justifyContent: "center",
     marginTop: 10,
     height: 0.0687 * SIZES.height,
     borderRadius: 10,
@@ -135,24 +136,24 @@ const styles = StyleSheet.create({
     width: SIZES.width * 0.9,
     padding: 10,
     alignItems: "center",
-    justifyContent:'center',
+    justifyContent: "center",
     marginTop: 10,
     height: 0.0687 * SIZES.height,
     borderRadius: 10,
     borderWidth: 1,
   },
   emailButtonText: {
-    fontWeight:'semibold'
+    fontWeight: "semibold",
   },
   buttonText: {
     color: "#fff",
     fontSize: 16,
   },
   forgotPassword: {
-   marginBottom:15,
+    marginBottom: 15,
     position: "relative",
     color: COLORS.primary,
-    paddingLeft:"1%",
+    paddingLeft: "1%",
   },
   orText: {
     marginVertical: 10,
@@ -164,19 +165,19 @@ const styles = StyleSheet.create({
   question: {
     marginTop: 10,
   },
-  cover:{
-    position:'absolute',
-    top: SIZES.height*(0.1212),
+  cover: {
+    position: "absolute",
+    top: SIZES.height * 0.1212,
   },
   progressContainer: {
     marginTop: 20,
-    alignItems: 'center'
+    alignItems: "center",
   },
   loadingText: {
     marginTop: 10,
     fontSize: 16,
   },
   buttonLoading: {
-    backgroundColor: '#d4ba92', // Change to your desired color when loading
+    backgroundColor: "#d4ba92", // Change to your desired color when loading
   },
 });

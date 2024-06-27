@@ -9,7 +9,7 @@ import axios from "axios";
 import { baseUrl } from "../../constants/api/apiClient";
 
 const ProductCard = ({ data }) => {
-  const { items, token, setItems} = useAuth();
+  const { items, token, setItems } = useAuth();
   const cardWidth = Dimensions.get("window").width / 2 - 15;
   const addItem = async (newItem) => {
     try {
@@ -18,7 +18,7 @@ const ProductCard = ({ data }) => {
           Authorization: `${token}`,
           "Content-Type": "application/json",
         },
-      })
+      });
       if (response.status === 201) {
       }
       return response.data;
@@ -38,23 +38,22 @@ const ProductCard = ({ data }) => {
     try {
       const response = await axios.get(`${baseUrl}/cart`, {
         headers: {
-          Authorization: `${token}`
+          Authorization: `${token}`,
         },
       });
       if (response.status === 200) {
-        setItems(response.data)
-      return;
-      }else{
+        setItems(response.data);
+        return;
+      } else {
         return;
       }
     } catch (error) {
-  
-      return ;
+      return;
     }
   };
-  useEffect(()=>{
-    getItems()
-  },[])
+  useEffect(() => {
+    getItems();
+  }, []);
   return (
     <View
       style={{
@@ -76,7 +75,7 @@ const ProductCard = ({ data }) => {
           onPress={() => {
             router.push({
               pathname: "/productdetails",
-              params: data ,
+              params: data,
             });
           }}
         >
@@ -132,10 +131,7 @@ const ProductCard = ({ data }) => {
             alignItems: "center",
           }}
         >
-          <Catalogue
-            handlePress={() => {
-            }}
-          />
+          <Catalogue handlePress={() => {}} />
           {!checkItemExist(data.name) ? (
             <RectButton
               minWidth={50}
@@ -143,22 +139,12 @@ const ProductCard = ({ data }) => {
               title="Add to cart"
               handlePress={async () => {
                 if (data.name && data.price && data.images[0]) {
-                  const existingItem = items.find(
-                    (item) => item.name === data.name
-                  );
-                  if (existingItem) {
-                    return Alert.alert(
-                      "Item already in cart",
-                      "You have added this item to the cart. Proceed to add the quantity from the cart if you wish."
-                    );
-                  }
                   const newItem = {
                     productId: data.id, // unique id
                     quantity: 1,
                   };
                   const response = await addItem(newItem);
-             const result= await getItems();
-
+                  const result = await getItems();
                 }
               }}
             />

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -6,12 +6,61 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { COLORS } from '../../constants';
+} from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
+import { COLORS } from "../../constants";
+import { RectButton } from "../designs";
+import axios from "axios";
+import { baseUrl } from "../../constants/api/apiClient";
+import { useAuth } from "../../AuthContext/AuthContext";
+import { router } from "expo-router";
 
 const ProductDetail = ({ item }) => {
   const [isMore, setIsMore] = useState(false);
+  const { items, token, setItems } = useAuth();
+  const addItem = async (newItem) => {
+    try {
+      const response = await axios.post(`${baseUrl}/cart`, newItem, {
+        headers: {
+          Authorization: `${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.status === 201) {
+      }
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  function checkItemExist(name) {
+    const existingItem = items.find((item) => item.name === name);
+    if (existingItem) {
+      return true;
+    }
+    return false;
+  }
+  const getItems = async () => {
+    try {
+      const response = await axios.get(`${baseUrl}/cart`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+      if (response.status === 200) {
+        setItems(response.data);
+        return;
+      } else {
+        return;
+      }
+    } catch (error) {
+      return;
+    }
+  };
+  useEffect(() => {
+    getItems();
+  }, []);
 
   const renderStars = (rating) => {
     const stars = [];
@@ -21,7 +70,7 @@ const ProductDetail = ({ item }) => {
           key={i}
           name="star"
           size={20}
-          color={i <= rating ? 'gold' : 'lightgray'}
+          color={i <= rating ? "gold" : "lightgray"}
           style={styles.star}
         />
       );
@@ -31,35 +80,35 @@ const ProductDetail = ({ item }) => {
 
   const attributes = [
     {
-      values: ['50kg', '60kg'],
-      _id: '667af110f004bb6bb5222f6e',
-      name: 'weight',
+      values: ["50kg", "60kg"],
+      _id: "667af110f004bb6bb5222f6e",
+      name: "weight",
     },
     {
-      values: ['Red', 'Blue'],
-      _id: '667af110f004bb6bb5222f6e',
-      name: 'Color',
+      values: ["Red", "Blue"],
+      _id: "667af110f004bb6bb5222f6e",
+      name: "Color",
     },
   ];
 
   const reviews = [
     {
-      reviewedBy: 'Cynthia',
+      reviewedBy: "Cynthia",
       rating: 5.0,
-      reviewText: 'Very nice cake',
-      date: '18/6/2024',
+      reviewText: "Very nice cake",
+      date: "18/6/2024",
     },
     {
-      reviewedBy: 'Cynthia',
+      reviewedBy: "Cynthia",
       rating: 4.0,
-      reviewText: 'Thank you for wish me happy birthday',
-      date: '18/6/2024',
+      reviewText: "Thank you for wish me happy birthday",
+      date: "18/6/2024",
     },
     {
-      reviewedBy: 'Cynthia',
+      reviewedBy: "Cynthia",
       rating: 3.5,
-      reviewText: 'I had a nice wedding cake',
-      date: '18/6/2024',
+      reviewText: "I had a nice wedding cake",
+      date: "18/6/2024",
     },
   ];
 
@@ -68,7 +117,7 @@ const ProductDetail = ({ item }) => {
       {item && (
         <>
           <Image
-            source={{ uri: item.images.split(',')[0] }}
+            source={{ uri: item.images.split(",")[0] }}
             style={styles.image}
             accessibilityLabel="Product Image"
           />
@@ -130,10 +179,10 @@ const ProductDetail = ({ item }) => {
                   {attributes.map((attribute, index) => (
                     <View style={styles.productInfoRow} key={index}>
                       <Text style={styles.productInfoTitle}>
-                        {attribute.name}:{' '}
+                        {attribute.name}:{" "}
                       </Text>
                       <Text style={styles.productInfoValue}>
-                        {attribute.values.join(', ')}
+                        {attribute.values.join(", ")}
                       </Text>
                     </View>
                   ))}
@@ -153,7 +202,7 @@ const ProductDetail = ({ item }) => {
                 Verified Customer Feedback
               </Text>
               <Text style={styles.reviewTitle}>Product rating and review</Text>
-              <View style={{ flexDirection: 'row' }}>
+              <View style={{ flexDirection: "row" }}>
                 <Text style={styles.reviewScore}>{item.averageRating}/5</Text>
                 <Text style={styles.reviewCount}>
                   {reviews.length} ratings so far
@@ -163,7 +212,7 @@ const ProductDetail = ({ item }) => {
               {reviews.map((review, index) => (
                 <View key={index} style={styles.review}>
                   <View style={styles.reviewHeader}>
-                    <View style={{ flexDirection: 'row' }}>
+                    <View style={{ flexDirection: "row" }}>
                       {renderStars(review.rating)}
                     </View>
                     <Text style={styles.reviewDate}>{review.date}</Text>
@@ -172,6 +221,36 @@ const ProductDetail = ({ item }) => {
                   <Text style={styles.reviewText}>{review.reviewText}</Text>
                 </View>
               ))}
+            </View>
+            <View>
+              {!checkItemExist(item.name) ? (
+                <RectButton
+                  minWidth={50}
+                  fontSize={10}
+                  title="Add to cart"
+                  handlePress={async () => {
+                    if (item.name && item.price && item.images[0]) {
+                      const newItem = {
+                        productId: item.id, // unique id
+                        quantity: 1,
+                      };
+                      const response = await addItem(newItem);
+                      const result = await getItems();
+                    }
+                  }}
+                />
+              ) : (
+                <RectButton
+                  minWidth={50}
+                  fontSize={10}
+                  fontWeight="700"
+                  color="white"
+                  title="Checkout"
+                  handlePress={() => {
+                    router.push("/cart");
+                  }}
+                />
+              )}
             </View>
           </View>
         </>
@@ -187,35 +266,35 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
   },
   image: {
-    width: '100%',
+    width: "100%",
     height: 300,
-    resizeMode: 'cover',
+    resizeMode: "cover",
   },
   contentContainer: {
     padding: 20,
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     lineHeight: 22,
     marginBottom: 10,
   },
   locationContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 10,
-    flexWrap: 'wrap',
+    flexWrap: "wrap",
   },
   locationRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     flex: 1,
   },
   ratingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     flex: 1,
-    justifyContent: 'flex-end',
+    justifyContent: "flex-end",
   },
   locationIcon: {
     marginRight: 5,
@@ -231,47 +310,47 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   ratingCount: {
-    color: 'gray',
+    color: "gray",
   },
   priceContainer: {
     marginBottom: 10,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   price: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 5,
     lineHeight: 22,
-    color: '#9D6B38',
+    color: "#9D6B38",
   },
   feeContainer: {
     marginBottom: 10,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   shipping: {
     fontSize: 11,
     lineHeight: 22,
-    color: '#000',
+    color: "#000",
   },
   productInfoContainer: {
     marginBottom: 20,
   },
   productInfoRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 10,
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
   },
   productInfoTitle: {
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 5,
-    color: '#9C9C9C',
+    color: "#9C9C9C",
     letterSpacing: -0.41,
   },
   productInfoValue: {
@@ -279,20 +358,20 @@ const styles = StyleSheet.create({
     letterSpacing: -0.41,
   },
   viewMoreButton: {
-    alignItems: 'center',
+    alignItems: "center",
     marginVertical: 10,
   },
   viewLessButton: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 50,
   },
   viewMoreText: {
-    color: '#E8A14A',
+    color: "#E8A14A",
     fontSize: 12,
   },
   descriptionTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
   descriptionText: {
@@ -308,7 +387,7 @@ const styles = StyleSheet.create({
   },
   reviewTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 5,
   },
   reviewRating: {
@@ -317,8 +396,8 @@ const styles = StyleSheet.create({
   },
   reviewScore: {
     fontSize: 12,
-    color: '#E8A14A',
-    fontWeight: 'bold',
+    color: "#E8A14A",
+    fontWeight: "bold",
     marginBottom: 5,
   },
   reviewCount: {
@@ -328,23 +407,23 @@ const styles = StyleSheet.create({
   review: {
     marginBottom: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#d3d3d3',
+    borderBottomColor: "#d3d3d3",
     paddingBottom: 10,
   },
   reviewHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 5,
   },
   reviewAuthor: {
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 5,
   },
   reviewDate: {
     fontSize: 12,
-    color: 'gray',
+    color: "gray",
   },
   reviewText: {
     fontSize: 12,
@@ -352,7 +431,7 @@ const styles = StyleSheet.create({
   titleConteainer: {
     marginBottom: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#d3d3d3',
+    borderBottomColor: "#d3d3d3",
     paddingBottom: 10,
   },
 });

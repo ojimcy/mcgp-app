@@ -4,6 +4,7 @@ import {
   StyleSheet,
   FlatList,
   ActivityIndicator,
+  Text,
 } from "react-native";
 import { useAuth } from "../../AuthContext/AuthContext";
 
@@ -14,7 +15,7 @@ import OrderCard from "./ordercard";
 const OrderList = () => {
   const { setItems, token } = useAuth();
   const [orders, setOrders] = useState();
- 
+  const [loading, setLoading] = useState(true);
   const getItems = async () => {
     try {
       const response = await axios.get(`${baseUrl}/order/my-orders`, {
@@ -31,25 +32,33 @@ const OrderList = () => {
       }
     } catch (error) {
       return;
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {
     getItems();
   }, []);
 
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
-  
   return (
     <View style={styles.container}>
-      {!orders?.length>0?(
-<ActivityIndicator size={24}/>
-      ):(
+      {orders?.length == 0 ? (
+        <Text style={styles.noOrdersText}>You don't have any orders</Text>
+      ) : (
         <FlatList
-        data={orders}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <OrderCard order={item} />}
-        contentContainerStyle={styles.container}
-      />
+          data={orders}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <OrderCard order={item} />}
+          contentContainerStyle={styles.container}
+        />
       )}
     </View>
   );
@@ -133,6 +142,11 @@ const styles = StyleSheet.create({
   removeButtonText: {
     color: "#fff",
     fontWeight: "bold",
+  },
+  noOrdersText: {
+    fontSize: 18,
+    color: "#888",
+    textAlign: "center",
   },
 });
 
