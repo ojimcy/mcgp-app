@@ -121,8 +121,8 @@ const ProductDetail = ({ item }) => {
                   style={styles.image}
                   accessibilityLabel="Product Image"
                 />
-                <View style={{ marginBottom: 10 }}>
-                  <Text style={{ paddingBottom: 10 }}>Swipe ➡️</Text>
+                <View style={{ marginBottom: 10, flexDirection: "row" }}>
+                  <Text style={{ paddingBottom: 10 }}>➡️ ⬅️</Text>
                 </View>
               </View>
             ))}
