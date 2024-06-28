@@ -14,10 +14,12 @@ import axios from "axios";
 import { baseUrl } from "../../constants/api/apiClient";
 import { useAuth } from "../../AuthContext/AuthContext";
 import { router } from "expo-router";
+import PagerView from "react-native-pager-view";
 
 const ProductDetail = ({ item }) => {
   const [isMore, setIsMore] = useState(false);
   const { items, token, setItems } = useAuth();
+
   const addItem = async (newItem) => {
     try {
       const response = await axios.post(`${baseUrl}/cart`, newItem, {
@@ -27,20 +29,17 @@ const ProductDetail = ({ item }) => {
         },
       });
       if (response.status === 201) {
+        return response.data;
       }
-      return response.data;
     } catch (error) {
       throw error;
     }
   };
 
-  function checkItemExist(name) {
-    const existingItem = items.find((item) => item.name === name);
-    if (existingItem) {
-      return true;
-    }
-    return false;
-  }
+  const checkItemExist = (name) => {
+    return items.some((item) => item.name === name);
+  };
+
   const getItems = async () => {
     try {
       const response = await axios.get(`${baseUrl}/cart`, {
@@ -50,14 +49,12 @@ const ProductDetail = ({ item }) => {
       });
       if (response.status === 200) {
         setItems(response.data);
-        return;
-      } else {
-        return;
       }
     } catch (error) {
-      return;
+      console.error(error);
     }
   };
+
   useEffect(() => {
     getItems();
   }, []);
@@ -78,6 +75,7 @@ const ProductDetail = ({ item }) => {
     return stars;
   };
 
+  const images = item?.images?.split(",") || [];
   const attributes = [
     {
       values: ["50kg", "60kg"],
@@ -111,18 +109,27 @@ const ProductDetail = ({ item }) => {
       date: "18/6/2024",
     },
   ];
-
   return (
     <ScrollView style={styles.container}>
       {item && (
         <>
-          <Image
-            source={{ uri: item.images.split(",")[0] }}
-            style={styles.image}
-            accessibilityLabel="Product Image"
-          />
+          <PagerView style={styles.pagerView} initialPage={0}>
+            {images.map((image, index) => (
+              <View style={styles.page} key={index}>
+                <Image
+                  source={{ uri: image }}
+                  style={styles.image}
+                  accessibilityLabel="Product Image"
+                />
+                <View style={{ marginBottom: 10 }}>
+                  <Text style={{ paddingBottom: 10 }}>Swipe ➡️</Text>
+                </View>
+              </View>
+            ))}
+          </PagerView>
+
           <View style={styles.contentContainer}>
-            <View style={styles.titleConteainer}>
+            <View style={styles.titleContainer}>
               <Text style={styles.title}>
                 {item.companyName}
                 {"'s "}
@@ -136,13 +143,13 @@ const ProductDetail = ({ item }) => {
                     color="gray"
                     style={styles.locationIcon}
                   />
-                  <Text style={styles.location}> {item.location}</Text>
+                  <Text style={styles.location}>{item.location}</Text>
                 </View>
                 <View style={styles.ratingRow}>
                   {renderStars(item.averageRating)}
                   <Text style={styles.rating}>{item.averageRating}</Text>
                   <Text style={styles.ratingCount}>
-                    {item.reviews.length} ratings
+                    {item.reviews?.length || 0} ratings
                   </Text>
                 </View>
               </View>
@@ -157,11 +164,7 @@ const ProductDetail = ({ item }) => {
             <View style={styles.descriptionContainer}>
               <Text style={styles.descriptionTitle}>Description</Text>
               <Text style={styles.descriptionText}>
-                {
-                  isMore
-                    ? item.description
-                    : item.description /* getDescriptionSnippet(description) */
-                }
+                {isMore ? item.description : item.description.slice(0, 100)}
               </Text>
               {!isMore && (
                 <TouchableOpacity
@@ -176,7 +179,7 @@ const ProductDetail = ({ item }) => {
             {isMore && (
               <>
                 <View style={styles.productInfoContainer}>
-                  {attributes.map((attribute, index) => (
+                  {attributes?.map((attribute, index) => (
                     <View style={styles.productInfoRow} key={index}>
                       <Text style={styles.productInfoTitle}>
                         {attribute.name}:{" "}
@@ -205,7 +208,7 @@ const ProductDetail = ({ item }) => {
               <View style={{ flexDirection: "row" }}>
                 <Text style={styles.reviewScore}>{item.averageRating}/5</Text>
                 <Text style={styles.reviewCount}>
-                  {reviews.length} ratings so far
+                  {item.reviews?.length || 0} ratings so far
                 </Text>
               </View>
 
@@ -229,13 +232,13 @@ const ProductDetail = ({ item }) => {
                   fontSize={10}
                   title="Add to cart"
                   handlePress={async () => {
-                    if (item.name && item.price && item.images[0]) {
+                    if (item.name && item.price && images[0]) {
                       const newItem = {
                         productId: item.id, // unique id
                         quantity: 1,
                       };
                       const response = await addItem(newItem);
-                      const result = await getItems();
+                      await getItems();
                     }
                   }}
                 />
@@ -265,13 +268,26 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.white,
   },
+  pagerView: {
+    height: 300,
+  },
+  page: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
   image: {
     width: "100%",
     height: 300,
-    resizeMode: "cover",
+    resizeMode: "contain",
   },
   contentContainer: {
     padding: 20,
+  },
+  titleContainer: {
+    marginBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#d3d3d3",
+    paddingBottom: 10,
   },
   title: {
     fontSize: 18,
@@ -427,11 +443,5 @@ const styles = StyleSheet.create({
   },
   reviewText: {
     fontSize: 12,
-  },
-  titleConteainer: {
-    marginBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#d3d3d3",
-    paddingBottom: 10,
   },
 });
