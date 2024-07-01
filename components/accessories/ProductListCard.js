@@ -10,16 +10,25 @@ import {
 import { COLORS, SIZES } from "../../constants";
 import { Link, router } from "expo-router";
 import { AppContext } from "../../AuthContext/AuthContext";
-import NotFound from "../others/NotFound";
 
-const ListCard = ({ itemList, itemValue }) => {
+const ProductListCard = ({ itemList, itemValue }) => {
   const { setCategory } = useContext(AppContext);
   const [isDisabled, setIsDisabled] = useState(false);
 
   return (
     <ScrollView style={styles.container}>
       {itemList.length === 0 ? (
-        <NotFound message="No items found." />
+        <View style={styles.notFoundContainer}>
+          <Text style={styles.notFoundText}>
+            No registered avaliable vendor merchant at the moment.
+          </Text>
+          <Text style={styles.subText}>
+            Do you offer such product or service?
+          </Text>
+          <Link href="/register" style={styles.registerLink}>
+            Register
+          </Link>
+        </View>
       ) : (
         itemList.map((item, itemIndex) => (
           <Pressable
@@ -44,7 +53,7 @@ const ListCard = ({ itemList, itemValue }) => {
           >
             <View style={styles.itemContainer}>
               <Image
-                source={item.icon}
+                source={{ uri: item.image }}
                 style={styles.iconStyle}
                 resizeMode="contain"
               />
@@ -62,6 +71,26 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     backgroundColor: "#fff",
+  },
+  notFoundContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    height: SIZES.height * 0.7,
+  },
+  notFoundText: {
+    fontSize: 15,
+    color: COLORS.gray,
+  },
+  subText: {
+    fontSize: 15,
+    color: COLORS.gray,
+    marginTop: 10,
+  },
+  registerLink: {
+    fontSize: 16,
+    color: '#E8A14A',
+    marginTop: 20,
   },
   itemContainer: {
     flexDirection: "row",
@@ -83,4 +112,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ListCard;
+export default ProductListCard;

@@ -6,6 +6,7 @@ import HeaderSearch from "../../../../components/marketplace/header";
 import { useAuth } from "../../../../AuthContext/AuthContext";
 import axios from "axios";
 import { baseUrl } from "../../../../constants/api/apiClient";
+import ProductListCard from "../../../../components/accessories/ProductListCard";
 
 const services = () => {
   const [categories, setCategories] = useState([]);
@@ -31,7 +32,7 @@ const services = () => {
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.white }}>
       <HeaderSearch />
-      <ListCard itemList={categories} itemValue="categoryservice" />
+      <ProductListCard itemList={categories} itemValue="categoryservice" />
     </View>
   );
 };

@@ -7,7 +7,7 @@ import HeaderSearch from "../../../../components/marketplace/header";
 import { useAuth } from "../../../../AuthContext/AuthContext";
 import axios from "axios";
 import { baseUrl } from "../../../../constants/api/apiClient";
-import { router } from "expo-router";
+import ProductListCard from "../../../../components/accessories/ProductListCard";
 const products = () => {
   const [categories, setCategories] = useState([]);
   const { logOut, token } = useAuth();
@@ -22,8 +22,7 @@ const products = () => {
         const fetchedCategories = response.data.results;
         setCategories(fetchedCategories);
       } catch (error) {
-        alert('can not fetch Categories', error?.response.data.message);
-        router.push("/login");
+        alert(error?.response.data.message);
       }
     };
     if (token) {
@@ -36,7 +35,7 @@ const products = () => {
         <HeaderSearch />
       </View>
 
-      <ListCard itemList={categories} itemValue="categoryproducts" />
+      <ProductListCard itemList={categories} itemValue="categoryproducts" />
     </View>
   );
 };
