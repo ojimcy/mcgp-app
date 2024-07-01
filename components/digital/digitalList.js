@@ -10,8 +10,8 @@ const categories = [
       { title: 'MCGP', icon: require('../../assets/digital/mcgp.png') },
       { title: 'Deficonnect', icon: require('../../assets/digital/dfc.png') },
       { title: 'Binance', icon: require('../../assets/digital/binance.png') },
-      { title: 'Solana', icon: require('../../assets/digital/solane.png') },
-      { title: 'Dogecoin', icon: require('../../assets/digital/dodge.png') },
+      { title: 'Solana', icon: require('../../assets/digital/solana.png') },
+      { title: 'Dogecoin', icon: require('../../assets/digital/dogecoin.png') },
     ];
 
 const DigitalList = () => {

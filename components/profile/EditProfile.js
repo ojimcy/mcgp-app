@@ -5,10 +5,9 @@ import {
   Text,
   TouchableOpacity,
   TextInput,
-  ScrollView,
   Alert,
 } from "react-native";
-import { Avatar, Icon, Card } from "react-native-elements";
+import { Avatar } from "react-native-elements";
 import { Picker } from "@react-native-picker/picker";
 import { useRouter } from "expo-router";
 import { COLORS, SIZES } from "../../constants";
@@ -18,6 +17,9 @@ import PhoneNumber from "../country/phoneNumber";
 import axios from "axios";
 import { baseUrl } from "../../constants/api/apiClient";
 import { useAuth } from "../../AuthContext/AuthContext";
+import * as ImagePicker from "expo-image-picker";
+import { generateFileName } from "../../constants/api/filename";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const EditProfileScreen = ({ user }) => {
   const { token } = useAuth();
@@ -26,49 +28,84 @@ const EditProfileScreen = ({ user }) => {
   const [country, setCountry] = useState(user.country);
   const [countryList, setCountries] = useState(countries);
   const [selectedCountry, setSelectedCountry] = useState();
+  const [profileImage, setProfileImage] = useState(user.profilePicture);
+  const [imageUri, setImageUri] = useState(null);
 
   const router = useRouter();
 
   const removeAllSpaces = (str) => str.replace(/\s+/g, "");
 
+  const pickImageAsync = async () => {
+    try {
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        alert("Permission to access media library denied");
+        return;
+      }
+
+      let result = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: false,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      if (!result.canceled) {
+        setProfileImage(result.assets[0].uri);
+        setImageUri(result.assets[0].uri);
+      } else {
+        alert("You did not select any image.");
+      }
+    } catch (error) {
+      console.error("Error picking image:", error);
+    }
+  };
+
   const handleUpdate = async () => {
-    ///users/me
-    const payLoad = {
-      name,
-      phoneNumber:
-        removeAllSpaces(selectedCountry?.callingCode + phoneNumber) ||
-        phoneNumber,
-      country,
-    };
+    const formData = new FormData();
+    if (imageUri) {
+      formData.append("profilePicture", {
+        uri: imageUri,
+        type: "image/jpeg",
+        name: `image_${generateFileName()}.jpg`,
+      });
+    }
+
+    formData.append("name", name);
+    formData.append(
+      "phoneNumber",
+      removeAllSpaces(selectedCountry?.callingCode + phoneNumber) || phoneNumber
+    );
+    formData.append("country", country);
+
     try {
       const { data } = await axios.patch(
         `${baseUrl}/users/${user.id}`,
-        payLoad,
+        formData,
         {
           headers: {
             Authorization: `${token}`,
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
           },
         }
       );
       alert("Information Successfully changed");
       router.push("/profile");
     } catch (error) {
-      Alert.alert("Error", "Failed to update." + error?.response.data.message);
-    } finally {
+      Alert.alert(
+        "Error",
+        "Failed to update. " + error?.response?.data?.message || error.message
+      );
     }
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.cover}>
         <Toast />
         <View style={styles.profileInfo}>
-          {user?.profilePicture ? (
-            <Avatar
-              rounded
-              source={{ uri: user?.profilePicture }}
-              size="large"
-            />
+          {profileImage ? (
+            <Avatar rounded source={{ uri: profileImage }} size="large" />
           ) : (
             <Avatar
               rounded
@@ -78,9 +115,13 @@ const EditProfileScreen = ({ user }) => {
               titleStyle={{ color: "#fff" }}
             />
           )}
-          <View style={styles.textInfo}>
-            <Text style={styles.fullName}>{user.email}</Text>
-          </View>
+          <TouchableOpacity
+            style={styles.uploadContainer}
+            onPress={pickImageAsync}
+          >
+            <Icon name="upload" size={25} color="#aaa" />
+            <Text style={styles.uploadText}>Change Profile Image</Text>
+          </TouchableOpacity>
         </View>
 
         <TextInput
@@ -89,13 +130,12 @@ const EditProfileScreen = ({ user }) => {
           value={name}
           onChangeText={setName}
         />
+
         <View style={styles.pickerContainer}>
           <Picker
             style={styles.picker}
             selectedValue={country}
-            onValueChange={(itemValue) => {
-              setCountry(itemValue);
-            }}
+            onValueChange={(itemValue) => setCountry(itemValue)}
           >
             <Picker.Item label={"Select Country"} value={""} />
             {countryList.map((item, index) => (
@@ -128,13 +168,6 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#fff",
   },
-  loginText: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    left: "5%",
-    color: COLORS.primary,
-  },
   input: {
     width: SIZES.width * 0.9,
     height: (6.2 / 100) * SIZES.height,
@@ -144,11 +177,6 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     marginHorizontal: SIZES.width * 0.05,
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 5,
-    marginLeft: 5,
   },
   buttonContainer: {
     alignItems: "center",
@@ -171,8 +199,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 15,
   },
-  textInfo: {
-    marginLeft: 15,
+  uploadContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 10,
+  },
+  uploadText: {
+    marginLeft: 10,
+    color: "#aaa",
   },
   pickerContainer: {
     width: SIZES.width * 0.9,
