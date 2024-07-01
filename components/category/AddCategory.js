@@ -96,7 +96,7 @@ const AddCategory = () => {
           text1: "Error Creating Category",
           text2: error.response.data.message || "An error occurred",
         });
-        alert(error.response.data.message);
+      //  alert(error.response.data.message);
       } else {
         alert("Could not create");
         Toast.show({

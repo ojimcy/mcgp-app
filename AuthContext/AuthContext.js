@@ -140,7 +140,7 @@ export const AppProvider = ({ children }) => {
       const response = await getCurrentUser();
       setCurrentUser(response.data);
     } catch (err) {
-      alert(err?.response.data.message)
+     // alert(err?.response.data.message)
     }
   }
   useEffect(() => {

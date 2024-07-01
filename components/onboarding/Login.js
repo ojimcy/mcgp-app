@@ -5,7 +5,6 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  ActivityIndicator,
 } from "react-native";
 import { COLORS, SIZES } from "../../constants/theme";
 import { router } from "expo-router";

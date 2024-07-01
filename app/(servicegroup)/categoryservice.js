@@ -4,14 +4,14 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from 'react-native';
-import React, { useState, useEffect } from 'react';
-import ServiceCard from '../../components/services/ServiceCard';
-import { useLocalSearchParams } from 'expo-router';
-import { getAdverts } from '../../constants/api/AuthenticationService';
-import { baseUrl } from '../../constants/api/apiClient';
-import axios from 'axios';
-import { useAuth } from '../../AuthContext/AuthContext';
+} from "react-native";
+import React, { useState, useEffect } from "react";
+import ServiceCard from "../../components/services/ServiceCard";
+import { useLocalSearchParams } from "expo-router";
+import { getAdverts } from "../../constants/api/AuthenticationService";
+import { baseUrl } from "../../constants/api/apiClient";
+import axios from "axios";
+import { useAuth } from "../../AuthContext/AuthContext";
 
 const Services = () => {
   const { value } = useLocalSearchParams();
@@ -31,13 +31,15 @@ const Services = () => {
         alert(error?.response.data.message);
       }
     };
-    fetchedServices();
+    if (token) {
+      fetchedServices();
+    }
   }, []);
 
   const filteredData = services.filter((item) => item.category === value);
 
   return (
-    <ScrollView style={{ backgroundColor: '#fff' }}>
+    <ScrollView style={{ backgroundColor: "#fff" }}>
       {filteredData.length > 0 ? (
         filteredData.map((item, index) => (
           <ServiceCard
@@ -63,12 +65,12 @@ export default Services;
 const styles = StyleSheet.create({
   noResultsContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 20,
   },
   noResultsText: {
     fontSize: 16,
-    color: '#555',
+    color: "#555",
   },
 });

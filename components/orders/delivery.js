@@ -16,6 +16,9 @@ import { Picker } from "@react-native-picker/picker";
 import { router } from "expo-router";
 import PhoneNumber from "../country/phoneNumber";
 import { countries } from "../../constants/api/statesConstants";
+import PickerWithSearch from "../country/dropdown";
+import DropDownState from "../country/statedropdown";
+import CityDropDown from "../country/citydropdown";
 const Delivery = ({ data }) => {
   const [address, setAddress] = useState("");
   const [location, setLocation] = useState();
@@ -27,7 +30,7 @@ const Delivery = ({ data }) => {
   const [selectedCountry, setSelectedCountry] = useState();
   const [fullName, setFullName] = useState();
   //const [homeDelivery, setHomeDelivery] = useState(true);
-  const [country, setCountry] = useState();
+  const [country, setCountry] = useState("Nigeria");
   function removeAllSpaces(str) {
     return str.replace(/\s+/g, "");
   }
@@ -104,21 +107,22 @@ const Delivery = ({ data }) => {
           numberOfLines={5}
         />
         <Text style={styles.label}>Enter Country</Text>
-        <Picker
-          style={styles.input}
-          selectedValue={country}
-          onValueChange={(itemValue) => {
-            postData({ country: itemValue });
-            setCountry(itemValue);
-          }}
-        >
-          <Picker.Item label={"Select Country"} value={""} />
-          {countryList.map((item, index) => (
-            <Picker.Item key={index} label={item} value={item} />
-          ))}
-        </Picker>
+        <PickerWithSearch
+          data={countryList}
+          selectedItem={country}
+          setSelectedItem={setCountry}
+          postData={postData}
+        />
+
         <Text style={styles.label}>Enter State</Text>
-        <Picker
+        <DropDownState
+          data={states}
+          selectedItem={state}
+          setSelectedItem={setState}
+          country={country}
+          getCity={getCity}
+        />
+        {/* <Picker
           style={styles.input}
           selectedValue={state}
           onValueChange={(itemValue) => {
@@ -130,9 +134,14 @@ const Delivery = ({ data }) => {
           {states.map((item, index) => (
             <Picker.Item key={index} label={item.name} value={item.name} />
           ))}
-        </Picker>
+        </Picker> */}
         <Text style={styles.label}>Enter City</Text>
-        <Picker
+        <CityDropDown
+          data={cities}
+          selectedItem={location}
+          setSelectedItem={setLocation}
+        />
+       {/*  <Picker
           style={styles.input}
           selectedValue={location}
           onValueChange={(itemValue) => setLocation(itemValue)}
@@ -141,7 +150,7 @@ const Delivery = ({ data }) => {
           {cities.map((item, index) => (
             <Picker.Item key={index} label={item} value={item} />
           ))}
-        </Picker>
+        </Picker> */}
         <Text style={styles.label}>Enter Delivery Address</Text>
         <TextInput
           placeholder="Your Address"

@@ -13,6 +13,7 @@ import { useAuth } from "../../AuthContext/AuthContext";
 import PhoneNumber from "../country/phoneNumber";
 import { Picker } from "@react-native-picker/picker";
 import { countries } from "../../constants/api/statesConstants";
+import CustomPickerWithSearch from "../country/dropdown";
 
 const Signup = () => {
   const [name, setName] = useState();
@@ -78,20 +79,15 @@ const Signup = () => {
           selectedCountry={selectedCountry}
           setSelectedCountry={setSelectedCountry}
         />
-        <View style={styles.pickerContainer}>
-          <Picker
-            style={styles.picker}
-            selectedValue={country}
-            onValueChange={(itemValue) => {
-              setCountry(itemValue);
-            }}
-          >
-            <Picker.Item label={"Select Country"} value={""} />
-            {countryList.map((item, index) => (
-              <Picker.Item key={index} label={item} value={item} />
-            ))}
-          </Picker>
-        </View>
+        <CustomPickerWithSearch
+          data={countryList}
+          selectedItem={country}
+          setSelectedItem={setCountry}
+          postData={() => {}}
+          backgroundColor={"#FFF"}
+          borderColor="gray"
+          borderWidth={1}
+        />
         <TextInput
           style={styles.input}
           value={email}

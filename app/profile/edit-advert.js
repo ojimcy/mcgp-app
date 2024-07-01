@@ -177,11 +177,12 @@ const UpdateAdvert = () => {
         const fetchedCategories = response.data.results;
         setCategories(fetchedCategories);
       } catch (error) {
-
         alert(error?.response.data.message);
       }
     };
-    fetchCategories();
+    if (token) {
+      fetchCategories();
+    }
   }, []);
 
   return (
