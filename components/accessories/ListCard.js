@@ -44,7 +44,7 @@ const ListCard = ({ itemList, itemValue }) => {
           >
             <View style={styles.itemContainer}>
               <Image
-                source={{ uri: item.image }}
+                source={item.icon}
                 style={styles.iconStyle}
                 resizeMode="contain"
               />

@@ -8,7 +8,7 @@ const favourites = [
   {
     id: 1,
     title: "MCGP",
-    icon: require("../../../../assets/digital/mcgp.png"),
+    icon: "../../../../assets/digital/mcgp.png",
   },
 ];
 
