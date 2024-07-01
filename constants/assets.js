@@ -11,6 +11,7 @@ import person03 from "../assets/images/person03.png";
 import person04 from "../assets/images/person04.png";
 import spin from "../assets/images/spin.png";
 import mining from "../assets/images/mining.png";
+import stake from "../assets/icons/stake.png";
 
 export default {
   badge,
@@ -25,5 +26,6 @@ export default {
   person03,
   person04,
   spin,
-  mining
+  mining,
+  stake,
 };

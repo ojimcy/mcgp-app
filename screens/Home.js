@@ -1,12 +1,12 @@
-import { StyleSheet, ScrollView, View, Text } from 'react-native';
-import React from 'react';
+import { StyleSheet, ScrollView, View, Text } from "react-native";
+import React from "react";
 //import HomeHeader from '../components/headers/HomeHeader'
-import { assets, COLORS, SIZES } from '../constants';
-import NavTab from '../components/buttons/NavTab';
-import Card from '../components/features/Card';
-import Products from '../components/products/Products';
-import Services from '../components/services/Services';
-import Digital from '../components/digital/digital';
+import { assets, COLORS, SIZES } from "../constants";
+import NavTab from "../components/buttons/NavTab";
+import Card from "../components/features/Card";
+import Products from "../components/products/Products";
+import Services from "../components/services/Services";
+import Digital from "../components/digital/digital";
 
 const HomeScreen = () => {
   return (
@@ -15,16 +15,16 @@ const HomeScreen = () => {
       <ScrollView style={styles.content}>
         <View
           style={{
-            flexDirection: 'row',
+            flexDirection: "row",
             height: SIZES.height * 0.05901,
-            justifyContent: 'space-between',
-            marginHorizontal: '4%',
-            width: '92%',
+            justifyContent: "space-between",
+            marginHorizontal: "4%",
+            width: "92%",
             marginTop: 10,
           }}
         >
-          <NavTab title={'Deposit'} />
-          <NavTab title={'Withdrawal'} />
+          <NavTab title={"Deposit"} />
+          <NavTab title={"Withdrawal"} />
         </View>
         <View style={styles.features}>
           <View>
@@ -79,6 +79,18 @@ product and service."
     mCgp assets"
               buttonTitle="Stake here"
             />
+            <Card
+              header="MCGP Stakin"
+              title="Stake your MCGP and Earn more MCGP"
+              buttonTitle="Join now"
+              backgroundColor="green"
+              color="white"
+            />
+            <Card
+              imageUrl={assets.stake}
+              title="Convert your Digital Assets on"
+              buttonTitle="Easy Swap"
+            />
           </View>
         </View>
         <Products />
@@ -98,10 +110,10 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
   },
   features: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginHorizontal: '4%',
-    width: '92%',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginHorizontal: "4%",
+    width: "92%",
     marginTop: 10,
   },
 });
