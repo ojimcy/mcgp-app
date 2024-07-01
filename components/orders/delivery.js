@@ -9,10 +9,8 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { COLORS, SIZES } from "../../constants/theme";
-import { useAuth } from "../../AuthContext/AuthContext";
 import Toast from "react-native-toast-message";
 import toastConfig from "../../toastConfig";
-import { Picker } from "@react-native-picker/picker";
 import { router } from "expo-router";
 import PhoneNumber from "../country/phoneNumber";
 import { countries } from "../../constants/api/statesConstants";
