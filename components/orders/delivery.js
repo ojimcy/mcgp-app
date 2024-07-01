@@ -112,6 +112,9 @@ const Delivery = ({ data }) => {
           selectedItem={country}
           setSelectedItem={setCountry}
           postData={postData}
+          backgroundColor={"gray"}
+          borderColor="gray"
+          borderWidth={1}
         />
 
         <Text style={styles.label}>Enter State</Text>
@@ -141,7 +144,7 @@ const Delivery = ({ data }) => {
           selectedItem={location}
           setSelectedItem={setLocation}
         />
-       {/*  <Picker
+        {/*  <Picker
           style={styles.input}
           selectedValue={location}
           onValueChange={(itemValue) => setLocation(itemValue)}
