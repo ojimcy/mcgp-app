@@ -33,7 +33,9 @@ const ProfileScreen = () => {
     }
   }
   useEffect(() => {
-    getLoggedInUser();
+    if (token) {
+      getLoggedInUser();
+    }
   }, []);
 
   return (

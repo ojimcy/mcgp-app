@@ -1,34 +1,55 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React, { useEffect } from 'react'
-import Login from '../components/onboarding/Login'
-import { useAuth } from '../AuthContext/AuthContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { router } from 'expo-router';
+import { StyleSheet, Text, View } from "react-native";
+import React, { useState } from "react";
+import Login from "../components/onboarding/Login";
+import { useAuth } from "../AuthContext/AuthContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from "expo-router";
+import { baseUrl } from "../constants/api/apiClient";
+import axios from "axios";
 
-const login = () => {
-  const {setToken,token}=useAuth();
-  const getData = async () => {
+const LoginScreen = () => {
+  const { setToken } = useAuth();
+  const [initialized, setInitialized] = useState(false);
+
+  const initialize = async () => {
+    if (initialized) return;
+    setInitialized(true);
     try {
-      const value = await AsyncStorage.getItem('token');
-      if (value !== null || value!=="") {
+      const value = await AsyncStorage.getItem("token");
+      if (value) {
         setToken(value);
+        await fetchCategories(value);
       }
     } catch (e) {
-
+      console.error("Failed to get token", e);
+    } finally {
+      setInitialized(true);
     }
   };
 
-  useEffect(()=>{
-   getData()
-    if(token){
-      router.push('/home')
-        }
-  },[])
-  return (
-    <Login/>
-  )
-}
+  const fetchCategories = async (token) => {
+    try {
+      const response = await axios.get(`${baseUrl}/category?type=Product`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+      router.push("/home");
+    } catch (error) {
+      if (error?.response?.data?.message === "Please authenticate") {
+        await AsyncStorage.removeItem("token");
+        router.push("/login");
+      }
+    }
+  };
 
-export default login
+  if (!initialized) {
+    initialize();
+  }
 
-const styles = StyleSheet.create({})
+  return <Login />;
+};
+
+export default LoginScreen;
+
+const styles = StyleSheet.create({});

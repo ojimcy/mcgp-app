@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { COLORS, SIZES } from "../../../../constants";
 import ListCard from "../../../../components/accessories/ListCard";
 import HeaderSearch from "../../../../components/marketplace/header";
-import { getCategories } from "../../../../constants/api/AuthenticationService";
 import { useAuth } from "../../../../AuthContext/AuthContext";
 import axios from "axios";
 import { baseUrl } from "../../../../constants/api/apiClient";
@@ -26,7 +25,9 @@ const services = () => {
         alert(error?.response?.data?.message);
       }
     };
-    fetchCategories();
+    if (token) {
+      fetchCategories();
+    }
   }, []);
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.white }}>
