@@ -83,8 +83,7 @@ product and service."
               header="MCGP Stakin"
               title="Stake your MCGP and Earn more MCGP"
               buttonTitle="Join now"
-              backgroundColor="green"
-              color="white"
+             
             />
             <Card
               imageUrl={assets.stake}

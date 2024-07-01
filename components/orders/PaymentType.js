@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { COLORS, SIZES } from "../../constants";
 import { baseUrl } from "../../constants/api/apiClient";
 import { useAuth } from "../../AuthContext/AuthContext";
@@ -23,8 +23,46 @@ const PaymentSelection = ({
   fullName,
 }) => {
   const [selectedPaymentType, setSelectedPaymentType] = useState("Fiat");
+  const [selectedPaymentDetail, setSelectedPaymentDetail] = useState(null);
   const [amount, setAmount] = useState(totalAmount);
   const { token, tTy } = useAuth();
+
+  const paymentdetails = [
+    {
+      type: "crypto",
+      icon: require("../../assets/digital/mcgp.png"),
+      walletAddress: "0xaF326D5D242C9A55590540f14658adDDd3586A8d",
+      symbol: "MCGP",
+      network: "Fantom",
+      id: "6682a0ece932930008cde674",
+    },
+    {
+      type: "crypto",
+      icon: require("../../assets/icons/usdt.png"),
+      walletAddress: "TEG9qJ1sLi38nwCqmu6mrpDKqebvd5464N",
+      symbol: "USDT",
+      network: "Trc20",
+      id: "6682a116e932930008cde677",
+    },
+    {
+      type: "fiat",
+      icon: require("../../assets/icons/bank.png"),
+      accountNumber: "1234567890",
+      bankName: "Monie Point",
+      accountName: "MCGP",
+      id: "6682a116e932930008cde677",
+    },
+  ];
+
+  const getSelectedPaymentDetails = () => {
+    return paymentdetails.filter((payment) => {
+      if (selectedPaymentType === "Fiat" && payment.type === "fiat")
+        return true;
+      if (selectedPaymentType === "Crypto" && payment.type === "crypto")
+        return true;
+      return false;
+    });
+  };
 
   const placeOrder = async (payLoad) => {
     try {
@@ -45,6 +83,7 @@ const PaymentSelection = ({
       };
     }
   };
+
   return (
     <View style={styles.cover}>
       <View style={{ marginTop: 40 }}>
@@ -69,7 +108,10 @@ const PaymentSelection = ({
                 styles.toggleButton,
                 selectedPaymentType === "Fiat" && styles.selectedToggleButton,
               ]}
-              onPress={() => setSelectedPaymentType("Fiat")}
+              onPress={() => {
+                setSelectedPaymentType("Fiat");
+                setSelectedPaymentDetail(null);
+              }}
             >
               <Text style={styles.toggleButtonText}>Fiat</Text>
             </TouchableOpacity>
@@ -78,120 +120,93 @@ const PaymentSelection = ({
                 styles.toggleButton,
                 selectedPaymentType === "Crypto" && styles.selectedToggleButton,
               ]}
-              onPress={() => setSelectedPaymentType("Crypto")}
+              onPress={() => {
+                setSelectedPaymentType("Crypto");
+                setSelectedPaymentDetail(null);
+              }}
             >
               <Text style={styles.toggleButtonText}>Crypto</Text>
             </TouchableOpacity>
           </View>
         </View>
-        {selectedPaymentType === "Fiat" && (
-          <>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter Amount"
-              value={amount}
-              onChangeText={setAmount}
-              keyboardType="numeric"
-              editable={false}
+        <TextInput
+          style={styles.input}
+          placeholder="Enter Amount"
+          value={amount}
+          onChangeText={setAmount}
+          keyboardType="numeric"
+          editable={false}
+        />
+        {getSelectedPaymentDetails().map((payment, index) => (
+          <TouchableOpacity
+            style={styles.itemContainer}
+            key={index}
+            onPress={() => setSelectedPaymentDetail(payment)}
+          >
+            <Image
+              source={payment.icon}
+              style={styles.iconStyle}
+              resizeMode="contain"
             />
-            <View style={styles.itemContainer}>
-              <Image
-                source={require("../../assets/icons/bank.png")}
-                style={styles.iconStyle}
-                resizeMode="contain"
-              />
-              <Text style={styles.itemText}>Bank Transfer</Text>
-            </View>
-            <TouchableOpacity
-              style={[styles.button]}
-              onPress={async () => {
-                const result = await placeOrder({
-                  deliveryAddress: {
-                    address,
-                    state,
-                    city,
-                    country,
-                    phoneNumber,
-                    fullName,
+            <Text style={styles.itemText}>
+              {selectedPaymentType === "Fiat"
+                ? `${payment.bankName} - ${payment.accountName}`
+                : `${payment.symbol} - ${payment.network}`}
+            </Text>
+          </TouchableOpacity>
+        ))}
+        <TouchableOpacity
+          style={[styles.button]}
+          onPress={async () => {
+            if (!selectedPaymentDetail) {
+              alert("Please select a payment method.");
+              return;
+            }
+            const result = await placeOrder({
+              deliveryAddress: {
+                address,
+                state,
+                city,
+                country,
+                phoneNumber,
+                fullName,
+              },
+              paymentMethod: selectedPaymentType.toLowerCase(),
+            });
+            console.log(selectedPaymentDetail);
+            if (result.success) {
+              if (selectedPaymentType === "Fiat") {
+                router.push({
+                  pathname: "/paymentdetail",
+                  params: {
+                    bankName: result.data.selectedPaymentDetail.bankName,
+                    accountName: result.data.selectedPaymentDetail.accountName,
+                    accountNumber:
+                      result.data.selectedPaymentDetail.accountNumber,
+                    id: result.data.id,
                   },
-                  paymentMethod: "fiat",
                 });
-                if (result.success) {
-                  router.push({
-                    pathname: "/paymentdetail",
-                    params: {
-                      bankName: result.data.paymentDetails.bankName,
-                      accountName: result.data.paymentDetails.accountName,
-                      accountNumber: result.data.paymentDetails.accountNumber,
-                      id: result.data.id,
-                    },
-                  });
-                } else {
-                  alert(result.message);
-                }
-              }}
-              /*  disabled={loading} */
-            >
-              <Text style={styles.buttonText}>
-                {tTy ? "Pay System Fee" : "Buy Product"}
-              </Text>
-            </TouchableOpacity>
-          </>
-        )}
-        {selectedPaymentType === "Crypto" && (
-          <>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter Amount"
-              value={amount}
-              onChangeText={setAmount}
-              keyboardType="numeric"
-              editable={false}
-            />
-            <View style={styles.itemContainer}>
-              <Image
-                source={require("../../assets/icons/usdt.png")}
-                style={styles.iconStyle}
-                resizeMode="contain"
-              />
-              <Text style={styles.itemText}>USDT</Text>
-            </View>
-            <TouchableOpacity
-              style={[styles.button]}
-              onPress={async () => {
-                const result = await placeOrder({
-                  deliveryAddress: {
-                    address,
-                    state,
-                    city,
-                    country,
-                    phoneNumber,
-                    fullName,
+              } else {
+                router.push({
+                  pathname: "/cryptodetails",
+                  params: {
+                    walletAddress: result.data.paymentDetails.walletAddress,
+                    network: result.data.paymentDetails.network,
+                    symbol: result.data.paymentDetails.symbol,
+                    id: result.data.id,
                   },
-                  paymentMethod: "crypto",
                 });
-                if (result.success) {
-                  router.push({
-                    pathname: "/cryptodetails",
-                    params: {
-                      walletAddress: result.data.paymentDetails.walletAddress,
-                      network: result.data.paymentDetails.network,
-                      symbol: result.data.paymentDetails.symbol,
-                      id: result.data.id,
-                    },
-                  });
-                } else {
-                  alert(result.message);
-                }
-              }}
-              /*  disabled={loading} */
-            >
-              <Text style={styles.buttonText}>
-                {tTy ? "Pay System Fee" : "Buy Product"}
-              </Text>
-            </TouchableOpacity>
-          </>
-        )}
+              }
+            } else {
+              alert(result.message);
+            }
+          }}
+          /*  disabled={loading} */
+        >
+          <Text style={styles.buttonText}>
+            {tTy ? "Pay System Fee" : "Buy Product"}
+          </Text>
+        </TouchableOpacity>
       </View>
       <View style={{ alignItems: "center" }}></View>
     </View>
@@ -244,7 +259,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 15,
   },
-
   toggleButton: {
     flex: 1,
     paddingVertical: 10,
