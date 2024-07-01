@@ -31,7 +31,7 @@ const Card = ({ iconName, title, buttonTitle, imageUrl, header, ...props }) => {
         </>
       ) : (
         <>
-          <Text style={styles.textStyleBold}>{header}</Text>
+          {header && <Text style={styles.textStyleBold}>{header}</Text>}
           <Text style={styles.textStyleBold}>{title}</Text>
         </>
       )}
