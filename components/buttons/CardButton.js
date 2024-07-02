@@ -29,6 +29,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 }, // Shadow position for iOS
     shadowOpacity: 0.25, // Shadow opacity for iOS
     shadowRadius: 3.84, // Shadow blur for iOS
-  //marginTop:10
+  marginTop:15
       }
 })

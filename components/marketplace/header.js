@@ -16,6 +16,7 @@ import { baseUrl } from "../../constants/api/apiClient";
 import { useAuth } from "../../AuthContext/AuthContext";
 import debounce from "lodash.debounce";
 import { COLORS } from "../constants";
+import { router } from "expo-router";
 
 const HeaderSearch = ({ type }) => {
   const { token } = useAuth();
@@ -84,7 +85,15 @@ const HeaderSearch = ({ type }) => {
             data={results}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item }) => (
-              <TouchableOpacity style={styles.dropdownItem}>
+              <TouchableOpacity
+                style={styles.dropdownItem}
+                onPress={() =>
+                  router.push({
+                    pathname: "/productdetails",
+                    params: { value: item },
+                  })
+                }
+              >
                 <Text>{item.name}</Text>
               </TouchableOpacity>
             )}
@@ -96,7 +105,12 @@ const HeaderSearch = ({ type }) => {
     return null;
   };
 
-  console.log("res", results);
+  const clearSearch = () => {
+    setSearch("");
+    setResults([]);
+    setIsFocused(false);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.searchBar}>
@@ -114,6 +128,16 @@ const HeaderSearch = ({ type }) => {
           onBlur={() => setIsFocused(false)}
           style={styles.searchInput}
         />
+        {search !== "" && (
+          <TouchableOpacity onPress={clearSearch}>
+            <Ionicons
+              name="close-circle"
+              size={20}
+              color="#666"
+              style={styles.clearIcon}
+            />
+          </TouchableOpacity>
+        )}
       </View>
       {renderSearchResults()}
     </View>
@@ -147,6 +171,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#333",
   },
+  clearIcon: {
+    marginLeft: 10,
+  },
   loadingContainer: {
     alignItems: "center",
     marginTop: 10,
@@ -175,7 +202,7 @@ const styles = StyleSheet.create({
     zIndex: 1000,
     paddingHorizontal: 15,
     paddingVertical: 8,
-    width: "98%"
+    width: "98%",
   },
   dropdownItem: {
     padding: 10,

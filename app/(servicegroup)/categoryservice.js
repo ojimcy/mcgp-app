@@ -4,11 +4,11 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import ServiceCard from "../../components/services/ServiceCard";
-import { useLocalSearchParams } from "expo-router";
-import { getAdverts } from "../../constants/api/AuthenticationService";
+import { Link, useLocalSearchParams } from "expo-router";
 import { baseUrl } from "../../constants/api/apiClient";
 import axios from "axios";
 import { useAuth } from "../../AuthContext/AuthContext";
@@ -16,7 +16,9 @@ import { useAuth } from "../../AuthContext/AuthContext";
 const Services = () => {
   const { value } = useLocalSearchParams();
   const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { token } = useAuth();
+
   useEffect(() => {
     const fetchedServices = async () => {
       try {
@@ -29,6 +31,8 @@ const Services = () => {
         setServices(fetchServices);
       } catch (error) {
         alert(error?.response.data.message);
+      } finally {
+        setLoading(false); // Set loading to false once data is fetched
       }
     };
     if (token) {
@@ -40,7 +44,11 @@ const Services = () => {
 
   return (
     <ScrollView style={{ backgroundColor: "#fff" }}>
-      {filteredData.length > 0 ? (
+      {loading ? ( // Show loading spinner when loading
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#E8A14A" />
+        </View>
+      ) : filteredData.length > 0 ? (
         filteredData.map((item, index) => (
           <ServiceCard
             key={index}
@@ -51,9 +59,17 @@ const Services = () => {
         ))
       ) : (
         <View style={styles.noResultsContainer}>
-          <Text style={styles.noResultsText}>
-            No services found for this category.
-          </Text>
+          <View style={styles.notFoundContainer}>
+            <Text style={styles.notFoundText}>
+              No registered available vendor merchant at the moment.
+            </Text>
+            <Text style={styles.subText}>
+              Do you offer such product or service?
+            </Text>
+            <Link href="/register" style={styles.registerLink}>
+              Register
+            </Link>
+          </View>
         </View>
       )}
     </ScrollView>
@@ -63,8 +79,14 @@ const Services = () => {
 export default Services;
 
 const styles = StyleSheet.create({
-  noResultsContainer: {
+  loadingContainer: {
     flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    height: '100%',
+  },
+  noResultsContainer: {
+    display: "flex",
     justifyContent: "center",
     alignItems: "center",
     marginTop: 20,
@@ -72,5 +94,25 @@ const styles = StyleSheet.create({
   noResultsText: {
     fontSize: 16,
     color: "#555",
+  },
+  container: {
+    flex: 1,
+    alignItems: "center",
+  },
+  notFoundContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  notFoundText: {
+    fontSize: 14,
+  },
+  subText: {
+    fontSize: 14,
+  },
+  registerLink: {
+    fontSize: 16,
+    color: "#E8A14A",
+    marginTop: 20,
   },
 });
