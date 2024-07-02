@@ -71,11 +71,12 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     height: SIZES.height * 0.07081545,
     backgroundColor: "#FFF4E8",
+    padding: 10
   },
   iconStyle: {
     width: 40,
-    height: "96%",
-    marginRight: 5,
+    height: 40,
+    marginRight: 10,
     borderRadius: 60,
   },
   itemText: {

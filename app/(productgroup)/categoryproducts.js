@@ -6,11 +6,12 @@ import {
   View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { useLocalSearchParams } from "expo-router";
+import { Link, useLocalSearchParams } from "expo-router";
 import ProductCard from "../../components/designs/productcard";
 import { useAuth } from "../../AuthContext/AuthContext";
 import axios from "axios";
 import { baseUrl } from "../../constants/api/apiClient";
+import { COLORS } from "../../constants";
 
 const Products = () => {
   const { token } = useAuth();
@@ -53,10 +54,16 @@ const Products = () => {
           numColumns={2}
         />
       ) : (
-        <View style={styles.noResultsContainer}>
-          <Text style={styles.noResultsText}>
-            No Product found for this category.
+        <View style={styles.notFoundContainer}>
+          <Text style={styles.notFoundText}>
+            No registered avaliable vendor merchant at the moment.
           </Text>
+          <Text style={styles.subText}>
+            Do you offer such product or service?
+          </Text>
+          <Link href="/register" style={styles.registerLink}>
+            Register
+          </Link>
         </View>
       )}
     </View>
@@ -77,5 +84,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
+  },
+  notFoundContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  notFoundText: {
+    fontSize: 14,
+  },
+  subText: {
+    fontSize: 14,
+  },
+  registerLink: {
+    fontSize: 16,
+    color: '#E8A14A',
+    marginTop: 20,
   },
 });

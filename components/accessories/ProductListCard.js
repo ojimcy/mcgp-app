@@ -79,13 +79,10 @@ const styles = StyleSheet.create({
     height: SIZES.height * 0.7,
   },
   notFoundText: {
-    fontSize: 15,
-    color: COLORS.gray,
+    fontSize: 14,
   },
   subText: {
-    fontSize: 15,
-    color: COLORS.gray,
-    marginTop: 10,
+    fontSize: 14,
   },
   registerLink: {
     fontSize: 16,

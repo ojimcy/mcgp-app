@@ -8,14 +8,14 @@ const favourites = [
   {
     id: 1,
     title: "MCGP",
-    icon: "../../../../assets/digital/mcgp.png",
+    icon: require("../../../../assets/digital/mcgp.png"),
   },
 ];
 
 const MarketPlace = () => {
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.white }}>
-      <HeaderSearch />
+      {/* <HeaderSearch /> */}
       <ListCard itemList={favourites} itemValue="favourites" />
     </View>
   );

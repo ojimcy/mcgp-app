@@ -31,7 +31,7 @@ const services = () => {
   }, []);
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.white }}>
-      <HeaderSearch />
+      <HeaderSearch type="Service"/>
       <ProductListCard itemList={categories} itemValue="categoryservice" />
     </View>
   );
