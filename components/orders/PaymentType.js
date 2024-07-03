@@ -1,5 +1,6 @@
 import {
   Image,
+  Pressable,
   StyleSheet,
   Text,
   TextInput,
@@ -25,6 +26,9 @@ const PaymentSelection = ({
   const [selectedPaymentType, setSelectedPaymentType] = useState("Fiat");
   const [amount, setAmount] = useState(totalAmount);
   const { token, tTy } = useAuth();
+  const [currency, setCurrency] = useState("");
+  const [countUSDT, setCountUSDT] = useState(0);
+  const [countMCGP, setCountMCGP] = useState(0);
 
   const placeOrder = async (payLoad) => {
     try {
@@ -35,6 +39,24 @@ const PaymentSelection = ({
         },
       });
       if (response.status === 201) {
+        return { data: response.data, message: "success", success: true };
+      }
+    } catch (error) {
+      return {
+        data: "",
+        message: error.response?.data?.message,
+        success: false,
+      };
+    }
+  };
+  const paymentMethods = async () => {
+    try {
+      const response = await axios.get(`${baseUrl}/payment-methods`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+      if (response.status === 200) {
         return { data: response.data, message: "success", success: true };
       }
     } catch (error) {
@@ -148,17 +170,68 @@ const PaymentSelection = ({
               keyboardType="numeric"
               editable={false}
             />
-            <View style={styles.itemContainer}>
-              <Image
-                source={require("../../assets/icons/usdt.png")}
-                style={styles.iconStyle}
-                resizeMode="contain"
-              />
-              <Text style={styles.itemText}>USDT</Text>
-            </View>
+            <Pressable
+              onPress={() => {
+                if (countUSDT > 0) {
+                  setCurrency("");
+                  setCountUSDT(0);
+                  setCountMCGP(0);
+                } else {
+                  setCountUSDT(1);
+                  setCurrency("USDT");
+                }
+              }}
+            >
+              <View style={styles.itemContainer}>
+                <Image
+                  source={require("../../assets/icons/usdt.png")}
+                  style={styles.iconStyle}
+                  resizeMode="contain"
+                />
+                <Text style={styles.itemText}>USDT</Text>
+                {currency === "USDT" && (
+                  <Text
+                    style={{ position: "absolute", right: 10, color: "green" }}
+                  >
+                    ✔️
+                  </Text>
+                )}
+              </View>
+            </Pressable>
+            <Pressable
+              onPress={() => {
+                if (countMCGP > 0) {
+                  setCurrency("");
+                  setCountMCGP(0);
+                  setCountUSDT(0);
+                } else {
+                  setCountMCGP(1);
+                  setCurrency("MCGP");
+                }
+              }}
+            >
+              <View style={styles.itemContainer}>
+                <Image
+                  source={require("../../assets/digital/mcgp.png")}
+                  style={styles.iconStyle}
+                  resizeMode="contain"
+                />
+                <Text style={styles.itemText}>MCGP</Text>
+                {currency === "MCGP" && (
+                  <Text
+                    style={{ position: "absolute", right: 10, color: "green" }}
+                  >
+                    ✔️
+                  </Text>
+                )}
+              </View>
+            </Pressable>
             <TouchableOpacity
               style={[styles.button]}
               onPress={async () => {
+                console.log("clicked");
+                const response = await paymentMethods();
+                console.log(response);
                 const result = await placeOrder({
                   deliveryAddress: {
                     address,
@@ -171,20 +244,24 @@ const PaymentSelection = ({
                   paymentMethod: "crypto",
                 });
                 if (result.success) {
-                  router.push({
-                    pathname: "/cryptodetails",
-                    params: {
-                      walletAddress: result.data.paymentDetails.walletAddress,
-                      network: result.data.paymentDetails.network,
-                      symbol: result.data.paymentDetails.symbol,
-                      id: result.data.id,
-                    },
-                  });
+                  if (response.success && response.data.length > 0) {
+                    const paymentDetails = response.data.find(
+                      (method) => method.symbol === currency
+                    );
+                    router.push({
+                      pathname: "/cryptodetails",
+                      params: {
+                        walletAddress: paymentDetails.walletAddress,
+                        network: paymentDetails.network,
+                        symbol: paymentDetails.symbol,
+                        id: data.id,
+                      },
+                    });
+                  }
                 } else {
                   alert(result.message);
                 }
               }}
-              /*  disabled={loading} */
             >
               <Text style={styles.buttonText}>
                 {tTy ? "Pay System Fee" : "Buy Product"}
@@ -273,6 +350,7 @@ const styles = StyleSheet.create({
     marginHorizontal: SIZES.width * 0.05,
     borderRadius: 5,
   },
+
   iconStyle: {
     margin: 10,
     resizeMode: "contain",
