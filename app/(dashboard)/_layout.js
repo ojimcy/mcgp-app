@@ -5,7 +5,10 @@ import { COLORS } from "../../constants";
 import Toast from "react-native-toast-message";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { router } from "expo-router";
+import { useAuth } from "../../AuthContext/AuthContext";
+import { Avatar } from "react-native-elements";
 const Layout = () => {
+  const { currentUser } = useAuth();
   return (
     <>
       <Toast />
@@ -20,9 +23,9 @@ const Layout = () => {
               case "profile":
                 iconName = "account-cog";
                 break;
-                case "myAdverts":
-                  iconName = "shopping";
-                  break;  
+              case "myAdverts":
+                iconName = "shopping";
+                break;
               case "Pending Reviews":
                 iconName = "comment-processing";
                 break;
@@ -44,40 +47,56 @@ const Layout = () => {
               default:
                 break;
             }
-            return <Icon name={iconName} size={25} color={color} style={{marginVertical:-5}}/>;
+            return (
+              <Icon
+                name={iconName}
+                size={25}
+                color={color}
+                style={{ marginVertical: -5 }}
+              />
+            );
           },
           headerTintColor: navigation.isFocused() ? COLORS.primary : "black",
-        /*  drawerPosition:'right', */
+          /*  drawerPosition:'right', */
           drawerLabelStyle: {
-            marginHorizontal:-20,
-            fontSize:16,
-            padding:-20
+            marginHorizontal: -20,
+            fontSize: 16,
+            padding: -20,
           },
           itemStyle: {
             marginVertical: 0, // Adjust the vertical margin here
           },
-          drawerContentContainerStyle:{
-            justifyContent:'center'
-          }
+          drawerContentContainerStyle: {
+            justifyContent: "center",
+          },
         })}
-      
       >
         <Drawer.Screen
           name="(tabs)"
           options={({ navigation, route }) => ({
             headerRight: () => (
-              <Pressable onPress={()=>{
-                router.push('/profile')
-              }}>
-              <Image
-                source={require("../../assets/images/person01.png")}
-                style={{
-                  width: 30,
-                  height: 30,
-                  resizeMode: "contain",
-                  marginRight: 10,
+              <Pressable
+                onPress={() => {
+                  router.push("/profile");
                 }}
-              />
+                style={styles.avatarContainer}
+              >
+                {currentUser && currentUser?.profilePicture ? (
+                  <Avatar
+                    rounded
+                    source={{ uri: currentUser?.profilePicture }}
+                    size="small"
+                    containerStyle={styles.avatar}
+                  />
+                ) : (
+                  <Avatar
+                    rounded
+                    title={currentUser?.name[0]}
+                    size="small"
+                    overlayContainerStyle={{ backgroundColor: "#9D6B38" }}
+                    containerStyle={styles.avatar}
+                  />
+                )}
               </Pressable>
             ),
             headerTitle: "TSA Connect",
@@ -119,4 +138,12 @@ const Layout = () => {
 
 export default Layout;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  avatar: {
+    marginRight: 10,
+  },
+  avatarContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+});

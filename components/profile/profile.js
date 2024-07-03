@@ -5,12 +5,15 @@ import {
   Text,
   TouchableOpacity,
   ActivityIndicator,
+  Clipboard,
+  Alert,
 } from "react-native";
 import { Avatar, Icon, Card } from "react-native-elements";
 import { useAuth } from "../../AuthContext/AuthContext";
 import { router } from "expo-router";
 import axios from "axios";
 import { baseUrl } from "../../constants/api/apiClient";
+import Toast from "react-native-toast-message";
 
 const ProfileScreen = () => {
   const { logOut, token } = useAuth();
@@ -18,25 +21,49 @@ const ProfileScreen = () => {
 
   async function getLoggedInUser() {
     try {
-      const { data } = await axios.get(
-        `${baseUrl}/users/me`,
+      const { data } = await axios.get(`${baseUrl}/users/me`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+      setUser(data);
+    } catch (error) {
+      alert(error?.response.data.message);
+    }
+  }
 
+  useEffect(() => {
+    if (token) {
+      getLoggedInUser();
+    }
+  }, [token]);
+
+  const copyToClipboard = () => {
+    Clipboard.setString(user?.referralCode);
+    Alert.alert("Copied to clipboard", "Referral code copied to clipboard!");
+  };
+
+  const handleVerifyEmail = async () => {
+    try {
+      await axios.post(
+        `${baseUrl}/auth/send-verification-email`,
+        {},
         {
           headers: {
             Authorization: `${token}`,
           },
         }
       );
-      setUser(data);
+      router.push("/profile/verify-email");
     } catch (error) {
-      alert(error?.response.data.message);
+      console.log(error?.response?.data?.message);
+      Alert.alert("An error occurred while sending verification email.");
     }
-  }
-  useEffect(() => {
-    if (token) {
-      getLoggedInUser();
-    }
-  }, []);
+  };
+
+  const handleKycVerification = () => {
+    router.push("/profile/kyc");
+  };
 
   return (
     <View style={styles.container}>
@@ -74,6 +101,31 @@ const ProfileScreen = () => {
                 <Text style={styles.phoneNumber}>{user?.phoneNumber}</Text>
               </View>
             </View>
+
+            {!user.isEmailVerified ? (
+              <TouchableOpacity
+                style={styles.verificationButton}
+                onPress={handleVerifyEmail}
+              >
+                <Icon name="mail" size={20} color="#FFFFFF" />
+                <Text style={styles.verificationText}>Verify Email</Text>
+              </TouchableOpacity>
+            ) : !user.isKycVerified ? (
+              <TouchableOpacity
+                style={styles.verificationButton}
+                onPress={handleKycVerification}
+              >
+                <Icon name="account-box" size={20} color="#FFFFFF" />
+                <Text style={styles.verificationText}>
+                  Complete KYC Verification
+                </Text>
+              </TouchableOpacity>
+            ) : (
+              <View style={styles.verifiedContainer}>
+                <Icon name="verified" size={20} color="green" />
+                <Text style={styles.verifiedText}>Verified</Text>
+              </View>
+            )}
           </Card>
           <View style={styles.linksContainer}>
             <TouchableOpacity
@@ -99,6 +151,18 @@ const ProfileScreen = () => {
               <View style={styles.balanceRow}>
                 <Text style={styles.balance}>{user?.balance} USD</Text>
                 <Text style={styles.balanceText}>My Balance</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.profileLink}>
+              <Icon name="share" size={20} color="#9D6B38" />
+              <View style={styles.referralRow}>
+                <Text style={styles.referralCode}>{user?.referralCode}</Text>
+                <TouchableOpacity
+                  style={styles.copyButton}
+                  onPress={copyToClipboard}
+                >
+                  <Text style={styles.copyButtonText}>Copy</Text>
+                </TouchableOpacity>
               </View>
             </TouchableOpacity>
             <TouchableOpacity style={styles.profileLink} onPress={logOut}>
@@ -173,6 +237,56 @@ const styles = StyleSheet.create({
   },
   balanceText: {
     fontSize: 14,
+  },
+  referralCode: {
+    fontSize: 16,
+    marginLeft: 15,
+  },
+  referralRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+  copyButton: {
+    marginLeft: 10,
+    backgroundColor: "#9D6B38",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    marginRight: 10,
+  },
+  copyButtonText: {
+    color: "#fff",
+    fontSize: 14,
+  },
+  verificationButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#9D6B38",
+    padding: 15,
+    borderRadius: 10,
+    marginVertical: 10,
+  },
+  verificationText: {
+    color: "#fff",
+    marginLeft: 10,
+    fontSize: 16,
+  },
+  verifiedContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 15,
+    borderRadius: 10,
+    marginVertical: 10,
+    backgroundColor: "#e0ffe0",
+  },
+  verifiedText: {
+    color: "green",
+    marginLeft: 10,
+    fontSize: 16,
   },
 });
 
