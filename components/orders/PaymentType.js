@@ -248,6 +248,9 @@ const PaymentSelection = ({
                     const paymentDetails = response.data.find(
                       (method) => method.symbol === currency
                     );
+                    if (!paymentDetails) {
+                      return alert("Please select currency");
+                    }
                     router.push({
                       pathname: "/cryptodetails",
                       params: {
