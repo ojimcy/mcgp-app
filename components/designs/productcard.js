@@ -8,7 +8,7 @@ import { useAuth } from "../../AuthContext/AuthContext";
 import axios from "axios";
 import { baseUrl } from "../../constants/api/apiClient";
 
-const ProductCard = ({ data }) => {
+const ProductCard = ({ item }) => {
   const { items, token, setItems } = useAuth();
   const cardWidth = Dimensions.get("window").width / 2 - 15;
   const addItem = async (newItem) => {
@@ -75,12 +75,12 @@ const ProductCard = ({ data }) => {
           onPress={() => {
             router.push({
               pathname: "/productdetails",
-              params: data,
+              params: item,
             });
           }}
         >
           <Image
-            source={{ uri: data.images[0] }}
+            source={{ uri: item.images[0] }}
             resizeMode="cover"
             style={{
               width: "100%",
@@ -102,14 +102,14 @@ const ProductCard = ({ data }) => {
         }}
       >
         <ProductTitle
-          title={data.name}
-          companyName={data.companyName}
+          title={item.name}
+          companyName={item.companyName}
           titleSize={SIZES.small}
         />
         <View style={{ zIndex: 2, flexDirection: "row", marginTop: 5 }}>
           <Image source={assets.location} resizeMode="contain" />
           <Text style={{ paddingLeft: 5, fontSize: 11, fontWeight: "500" }}>
-            {data.location}
+            {item.location}
           </Text>
         </View>
         <View style={{ zIndex: 2, flexDirection: "row", marginTop: 5 }}>
@@ -121,7 +121,7 @@ const ProductCard = ({ data }) => {
               color: COLORS.primary,
             }}
           >
-            {data.price}K
+            {item.price}K
           </Text>
         </View>
         <View
@@ -132,15 +132,15 @@ const ProductCard = ({ data }) => {
           }}
         >
           <Catalogue handlePress={() => {}} />
-          {!checkItemExist(data.name) ? (
+          {!checkItemExist(item.name) ? (
             <RectButton
               minWidth={50}
               fontSize={10}
               title="Add to cart"
               handlePress={async () => {
-                if (data.name && data.price && data.images[0]) {
+                if (item.name && item.price && item.images[0]) {
                   const newItem = {
-                    productId: data.id, // unique id
+                    productId: item.id, // unique id
                     quantity: 1,
                   };
                   const response = await addItem(newItem);

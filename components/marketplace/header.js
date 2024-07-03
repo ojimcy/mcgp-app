@@ -87,12 +87,13 @@ const HeaderSearch = ({ type }) => {
             renderItem={({ item }) => (
               <TouchableOpacity
                 style={styles.dropdownItem}
-                onPress={() =>
+                onPress={() => {
+                  console.log("clicked!!");
                   router.push({
                     pathname: "/productdetails",
-                    params: { value: item },
-                  })
-                }
+                    params: item,
+                  });
+                }}
               >
                 <Text>{item.name}</Text>
               </TouchableOpacity>

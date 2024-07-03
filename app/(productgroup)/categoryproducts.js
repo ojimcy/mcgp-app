@@ -49,7 +49,7 @@ const Products = () => {
       {filteredData.length > 0 ? (
         <FlatList
           data={filteredData}
-          renderItem={({ item }) => <ProductCard data={item} />}
+          renderItem={({ item }) => <ProductCard item={item} />}
           keyExtractor={(item) => item.id}
           numColumns={2}
         />
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   },
   registerLink: {
     fontSize: 16,
-    color: '#E8A14A',
+    color: "#E8A14A",
     marginTop: 20,
   },
 });
