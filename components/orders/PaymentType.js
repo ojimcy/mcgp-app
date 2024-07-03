@@ -254,7 +254,7 @@ const PaymentSelection = ({
                         walletAddress: paymentDetails.walletAddress,
                         network: paymentDetails.network,
                         symbol: paymentDetails.symbol,
-                        id: data.id,
+                        id: result.data.id,
                       },
                     });
                   }
