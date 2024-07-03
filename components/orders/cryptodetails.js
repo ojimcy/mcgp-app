@@ -41,7 +41,7 @@ const CryptoDetails = ({ walletAddress, symbol, network, id }) => {
         </View>
 
         <Text style={{ position: "absolute", padding: 50 }}>
-          Sent only {symbol}-{network} network to the wallet address above
+          Send only {symbol}-{network} network to the wallet address above
         </Text>
         <TouchableOpacity
           style={[styles.button]}
