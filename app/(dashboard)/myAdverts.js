@@ -149,9 +149,17 @@ const MyAdvertsScreen = () => {
         data={adverts}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderItem}
-        ListEmptyComponent={<Text>No adverts found. <Link href="/register" style={styles.registerLink}>
-        Register
-      </Link></Text>}
+        ListEmptyComponent={
+          <Text>
+            No adverts found.{" "}
+            <Link
+              href={{ pathname: "/serviceaction", params: { index: 0 } }}
+              style={styles.registerLink}
+            >
+              Register
+            </Link>
+          </Text>
+        }
       />
     </View>
   );
