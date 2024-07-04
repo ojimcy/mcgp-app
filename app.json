@@ -13,7 +13,8 @@
       "backgroundColor": "#fff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mcgp.Tsa"
     },
     "android": {
       "adaptiveIcon": {
