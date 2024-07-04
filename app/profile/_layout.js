@@ -22,6 +22,12 @@ const ProfileLayout = () => {
           title: "Advert Details",
         }}
       />
+      <Stack.Screen
+        name="verify-email"
+        options={{
+          title: "Verify Email",
+        }}
+      />
     </Stack>
   );
 };

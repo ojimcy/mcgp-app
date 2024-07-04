@@ -1,5 +1,5 @@
 
-import { Image, Platform, StatusBar, StyleSheet, Text, View } from "react-native";
+import {  Platform, StatusBar, StyleSheet } from "react-native";
 import React, { useEffect } from "react";
 import { Stack } from "expo-router";
 import * as NavigationBar from "expo-navigation-bar";

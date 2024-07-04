@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { Card, Icon } from "react-native-elements";
 import { useAuth } from "../../AuthContext/AuthContext";
-import { router } from "expo-router";
+import { Link, router } from "expo-router";
 import axios from "axios";
 import { baseUrl } from "../../constants/api/apiClient";
 import { ADVERT_TYPE_PRODUCT } from "../../constants/constantValues";
@@ -149,7 +149,9 @@ const MyAdvertsScreen = () => {
         data={adverts}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderItem}
-        ListEmptyComponent={<Text>No adverts found.</Text>}
+        ListEmptyComponent={<Text>No adverts found. <Link href="/register" style={styles.registerLink}>
+        Register
+      </Link></Text>}
       />
     </View>
   );
@@ -200,6 +202,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  registerLink: {
+    fontSize: 16,
+    color: "#E8A14A",
+    marginTop: 20,
   },
 });
 
