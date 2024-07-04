@@ -229,9 +229,10 @@ const PaymentSelection = ({
             <TouchableOpacity
               style={[styles.button]}
               onPress={async () => {
-                console.log("clicked");
+                if (!currency) {
+                  return alert("Please select currency");
+                }
                 const response = await paymentMethods();
-                console.log(response);
                 const result = await placeOrder({
                   deliveryAddress: {
                     address,
@@ -248,9 +249,7 @@ const PaymentSelection = ({
                     const paymentDetails = response.data.find(
                       (method) => method.symbol === currency
                     );
-                    if (!paymentDetails) {
-                      return alert("Please select currency");
-                    }
+
                     router.push({
                       pathname: "/cryptodetails",
                       params: {

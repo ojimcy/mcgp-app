@@ -84,7 +84,14 @@ const Delivery = ({ data }) => {
       throw error;
     }
   };
-
+  useEffect(() => {
+    if (country) {
+      postData({ country });
+    }
+    if (country && state) {
+      getCity({ country, state });
+    }
+  }, [country, state]);
   return (
     <View style={{ backgroundColor: "#fff", flex: 1 }}>
       <ScrollView style={styles.cover}>
@@ -112,6 +119,9 @@ const Delivery = ({ data }) => {
           selectedItem={country}
           setSelectedItem={setCountry}
           postData={postData}
+          backgroundColor={COLORS.gray}
+          borderColor={COLORS.gray}
+          borderWidth={1}
         />
 
         <Text style={styles.label}>Enter State</Text>
@@ -141,7 +151,7 @@ const Delivery = ({ data }) => {
           selectedItem={location}
           setSelectedItem={setLocation}
         />
-       {/*  <Picker
+        {/*  <Picker
           style={styles.input}
           selectedValue={location}
           onValueChange={(itemValue) => setLocation(itemValue)}
