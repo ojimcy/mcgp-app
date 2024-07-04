@@ -10,12 +10,15 @@ import { COLORS, SIZES } from "../../constants/theme";
 import { router } from "expo-router";
 import { useAuth } from "../../AuthContext/AuthContext";
 import { LinearProgress } from "react-native-elements";
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // Make sure to install this library
 
 export default function Login() {
   const { setLoading, login, loading } = useAuth();
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isError, setIsError] = useState(false);
+
   function handlePasswordRecovery() {
     router.push("/recovery");
   }
@@ -49,20 +52,27 @@ export default function Login() {
           keyboardType="email-address"
           autoCapitalize="none"
         />
-        <TextInput
-          style={styles.input}
-          value={password}
-          placeholder="password"
-          secureTextEntry={true}
-          autoCapitalize="none"
-          onChangeText={(text) => setPassword(text)}
-        />
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={styles.passwordInput}
+            value={password}
+            placeholder="Password"
+            secureTextEntry={!isPasswordVisible}
+            autoCapitalize="none"
+            onChangeText={(text) => setPassword(text)}
+          />
+          <TouchableOpacity
+            style={styles.icon}
+            onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+          >
+            <Icon name={isPasswordVisible ? "eye-off" : "eye"} size={24} color="gray" />
+          </TouchableOpacity>
+        </View>
       </View>
 
       {loading && (
         <View style={styles.progressContainer}>
           <LinearProgress color={COLORS.primary} />
-          {/* <ActivityIndicator size="large" color={COLORS.primary} /> */}
           <Text style={styles.loadingText}>Signing in...</Text>
         </View>
       )}
@@ -80,9 +90,6 @@ export default function Login() {
         <Text style={styles.orText}>Or</Text>
       </View>
 
-      {/* <TouchableOpacity style={styles.emailButton}>
-        <Text style={styles.emailButtonText}>Continue With Email</Text>
-      </TouchableOpacity> */}
       <TouchableOpacity
         onPress={Signup}
         style={{ alignContent: "center", alignItems: "center" }}
@@ -118,6 +125,24 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     marginHorizontal: SIZES.width * 0.05,
+  },
+  passwordContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: SIZES.width * 0.9,
+    height: (7.7 / 100) * SIZES.height,
+    borderColor: "gray",
+    borderWidth: 1,
+    marginTop: 10,
+    borderRadius: 10,
+    padding: 10,
+    marginHorizontal: SIZES.width * 0.05,
+  },
+  passwordInput: {
+    flex: 1,
+  },
+  icon: {
+    padding: 10,
   },
   button: {
     backgroundColor: COLORS.primary,

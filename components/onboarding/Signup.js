@@ -14,9 +14,11 @@ import PhoneNumber from "../country/phoneNumber";
 import { Picker } from "@react-native-picker/picker";
 import { countries } from "../../constants/api/statesConstants";
 import CustomPickerWithSearch from "../country/dropdown";
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const Signup = () => {
   const [name, setName] = useState();
+  const [referralCode, setReferralCode] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [country, setCountry] = useState();
@@ -25,6 +27,9 @@ const Signup = () => {
   const { loading, setLoading, signup } = useAuth();
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [countryList, setCountryList] = useState(countries || []);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   function removeAllSpaces(str) {
     return str.replace(/\s+/g, "");
@@ -38,6 +43,7 @@ const Signup = () => {
     setLoading(true);
     const payLoad = {
       name,
+      referralCode,
       email: email.trim(),
       password,
       country,
@@ -96,19 +102,35 @@ const Signup = () => {
           autoCapitalize="none"
           onChangeText={(e) => setEmail(e)}
         />
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={styles.input}
+            value={password}
+            placeholder="Password"
+            secureTextEntry={!showPassword}
+            onChangeText={(e) => setPassword(e)}
+          />
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.icon}>
+            <Icon name={showPassword ? "eye" : "eye-slash"} size={20} color="gray" />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.passwordContainer}>
+          <TextInput
+            value={confirmPassword}
+            style={styles.input}
+            placeholder="Confirm password"
+            secureTextEntry={!showConfirmPassword}
+            onChangeText={(e) => setConfirmPassword(e)}
+          />
+          <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={styles.icon}>
+            <Icon name={showConfirmPassword ? "eye" : "eye-slash"} size={20} color="gray" />
+          </TouchableOpacity>
+        </View>
         <TextInput
+          value={referralCode}
           style={styles.input}
-          value={password}
-          placeholder="Password"
-          secureTextEntry={true}
-          onChangeText={(e) => setPassword(e)}
-        />
-        <TextInput
-          value={confirmPassword}
-          style={styles.input}
-          placeholder="Confirm password"
-          secureTextEntry={true}
-          onChangeText={(e) => setConfirmPassword(e)}
+          placeholder="Referral Code"
+          onChangeText={(text) => setReferralCode(text)}
         />
       </View>
       <View>
@@ -162,6 +184,16 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginHorizontal: SIZES.width * 0.05,
   },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    position: 'relative',
+    borderRadius: 10,
+  },
+  icon: {
+    position: 'absolute',
+    right: 30,
+  },
   pickerContainer: {
     width: SIZES.width * 0.9,
     height: (6.2 / 100) * SIZES.height,
@@ -182,7 +214,7 @@ const styles = StyleSheet.create({
     width: SIZES.width * 0.9,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: SIZES.height / 1.9,
+    marginTop: SIZES.height / 1.7,
     height: 0.0687 * SIZES.height,
     borderRadius: 10,
     borderWidth: 1,

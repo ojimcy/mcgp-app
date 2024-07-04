@@ -66,7 +66,7 @@ const Services = () => {
             <Text style={styles.subText}>
               Do you offer such product or service?
             </Text>
-            <Link href="/register" style={styles.registerLink}>
+            <Link href="/serviceaction" style={styles.registerLink}>
               Register
             </Link>
           </View>
