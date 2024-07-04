@@ -152,12 +152,17 @@ const MyAdvertsScreen = () => {
         ListEmptyComponent={
           <Text>
             No adverts found.{" "}
-            <Link
-              href={{ pathname: "/serviceaction", params: { index: 0 } }}
+            <TouchableOpacity
+              onPress={() => {
+                router.push({
+                  pathname: "/serviceaction",
+                  params: { index: 0 },
+                });
+              }}
               style={styles.registerLink}
             >
               Register
-            </Link>
+            </TouchableOpacity>
           </Text>
         }
       />
