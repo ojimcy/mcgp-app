@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "TSA Connect",
-    "slug": "TSA Connect",
+    "slug": "tsaconnect",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -29,16 +29,19 @@
     "runtimeVersion": {
       "policy": "appVersion"
     },
-    "extra": {
-      "eas": {
-        "projectId": "b073c316-bed7-4552-bdde-fe3ddebec310"
-      }
-    },
     "updates": {
-      "url": "https://u.expo.dev/b073c316-bed7-4552-bdde-fe3ddebec310"
+      "url": "https://u.expo.dev/1ba4fc7f-c22b-486d-9ab9-0b93109e8f46"
     },
     "plugins": [
       "expo-router"
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "1ba4fc7f-c22b-486d-9ab9-0b93109e8f46"
+      }
+    }
   }
 }
