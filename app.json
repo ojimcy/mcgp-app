@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Tsa",
-    "slug": "Tsa",
+    "name": "TSA Connect",
+    "slug": "TSA Connect",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
