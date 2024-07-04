@@ -1,8 +1,14 @@
-import React from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { COLORS } from '../../constants'; // Adjust the path according to your project structure
-import { router } from 'expo-router';
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  TouchableOpacity,
+} from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
+import { COLORS } from "../../constants"; // Adjust the path according to your project structure
+import { router } from "expo-router";
 
 const ConfirmationScreen = () => {
   return (
@@ -14,7 +20,21 @@ const ConfirmationScreen = () => {
             Hang Tight, confirmation of payment in progress
           </Text>
         </View>
-        <ActivityIndicator size="large" color={COLORS.primary} style={styles.spinner} />
+        <ActivityIndicator
+          size="large"
+          color={COLORS.primary}
+          style={styles.spinner}
+        />
+        <TouchableOpacity
+          onPress={() => {
+            router.push("/products");
+          }}
+          style={styles.back}
+        >
+          <Text style={{ padding: 10, color: COLORS.white }}>
+            Return to dashboard
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -25,33 +45,33 @@ export default ConfirmationScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
-    justifyContent:'center',
-    alignContent:'center',
-    alignItems:'center'
+    backgroundColor: "white",
+    justifyContent: "center",
+    alignContent: "center",
+    alignItems: "center",
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: 15,
-    position:'absolute',
-    top:10
+    position: "absolute",
+    top: 10,
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginLeft: 10,
   },
   content: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    position:'absolute',
-    top:10
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    top: 10,
   },
   messageContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFF5E5', // Adjust the background color to match the image
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FFF5E5", // Adjust the background color to match the image
     padding: 15,
     borderRadius: 10,
     marginBottom: 200,
@@ -59,9 +79,15 @@ const styles = StyleSheet.create({
   messageText: {
     marginLeft: 10,
     fontSize: 14,
-    color: 'black',
+    color: "black",
   },
   spinner: {
     marginTop: 20,
+  },
+  back: {
+    marginTop: 20,
+    borderRadius: 10,
+    backgroundColor: COLORS.primary,
+    alignItems: "center",
   },
 });
