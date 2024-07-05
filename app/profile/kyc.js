@@ -15,6 +15,7 @@ import { baseUrl } from "../../constants/api/apiClient";
 import { Picker } from "@react-native-picker/picker";
 import * as ImagePicker from "expo-image-picker";
 import CustomDatePicker from "../../components/others/CustomDatePicker";
+import { COLORS } from "../../constants";
 
 const KycVerificationScreen = () => {
   const { token, currentUser } = useAuth();
@@ -36,7 +37,10 @@ const KycVerificationScreen = () => {
     expiryDate: "",
   });
   const [loading, setLoading] = useState(false);
-
+  const [stepOne, setStepOne] = useState(true);
+  const [stepTwo, setStepTwo] = useState(false);
+  const [stepThree, setStepThree] = useState(false);
+  const [stepFour, setStepFour] = useState(false);
   const handleImagePicker = async (field) => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -45,7 +49,7 @@ const KycVerificationScreen = () => {
       quality: 1,
     });
 
-    if (!result.cancelled) {
+    if (!result.canceled) {
       setForm({ ...form, [field]: result.uri });
     }
   };
@@ -57,7 +61,7 @@ const KycVerificationScreen = () => {
       quality: 1,
     });
 
-    if (!result.cancelled) {
+    if (!result.canceled) {
       setForm({ ...form, [field]: result.uri });
     }
   };
@@ -113,155 +117,204 @@ const KycVerificationScreen = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>KYC Verification</Text>
+      {stepOne && (
+        <View>
+          <TextInput
+            style={styles.input}
+            placeholder="First Name"
+            value={form.firstName}
+            onChangeText={(value) => setForm({ ...form, firstName: value })}
+          />
 
-      <TextInput
-        style={styles.input}
-        placeholder="First Name"
-        value={form.firstName}
-        onChangeText={(value) => setForm({ ...form, firstName: value })}
-      />
+          <TextInput
+            style={styles.input}
+            placeholder="Middle Name"
+            value={form.middleName}
+            onChangeText={(value) => setForm({ ...form, middleName: value })}
+          />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Middle Name"
-        value={form.middleName}
-        onChangeText={(value) => setForm({ ...form, middleName: value })}
-      />
+          <TextInput
+            style={styles.input}
+            placeholder="Last Name"
+            value={form.lastName}
+            onChangeText={(value) => setForm({ ...form, lastName: value })}
+          />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Last Name"
-        value={form.lastName}
-        onChangeText={(value) => setForm({ ...form, lastName: value })}
-      />
-
-      <CustomDatePicker
-        date={form.dob}
-        placeholder="Date of Birth"
-        onDateChange={(date) => setForm({ ...form, dob: date })}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Residential Country"
-        value={form.resCountry}
-        onChangeText={(value) => setForm({ ...form, resCountry: value })}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="State"
-        value={form.resState}
-        onChangeText={(value) => setForm({ ...form, resState: value })}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="City"
-        value={form.resCity}
-        onChangeText={(value) => setForm({ ...form, resCity: value })}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Address"
-        value={form.resAddress}
-        onChangeText={(value) => setForm({ ...form, resAddress: value })}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Postal Code"
-        value={form.resPostalCode}
-        onChangeText={(value) => setForm({ ...form, resPostalCode: value })}
-      />
-
-      <Picker
-        selectedValue={form.idType}
-        style={styles.input}
-        onValueChange={(itemValue) => setForm({ ...form, idType: itemValue })}
-      >
-        <Picker.Item label="Select ID Type" value="" />
-        {idTypes.map((type) => (
-          <Picker.Item key={type.value} label={type.label} value={type.value} />
-        ))}
-      </Picker>
-
-      <TextInput
-        style={styles.input}
-        placeholder="ID Number"
-        value={form.idNumber}
-        onChangeText={(value) => setForm({ ...form, idNumber: value })}
-      />
-
-      <CustomDatePicker
-        date={form.issueDate}
-        placeholder="Issue Date"
-        onDateChange={(date) => setForm({ ...form, issueDate: date })}
-      />
-
-      <CustomDatePicker
-        date={form.expiryDate}
-        placeholder="Expiry Date"
-        onDateChange={(date) => setForm({ ...form, expiryDate: date })}
-      />
-
-      <View style={styles.imagePickerContainer}>
-        <Text style={styles.label}>Selfie Photo</Text>
-        <View style={styles.imagePickerButtons}>
+          <CustomDatePicker
+            date={form.dob}
+            placeholder="Date of Birth"
+            onDateChange={(date) => setForm({ ...form, dob: date })}
+          />
           <TouchableOpacity
-            style={styles.button}
-            onPress={() => handleImagePicker("selfiePhotoFile")}
+            onPress={() => {
+              setStepOne(false);
+              setStepTwo(true);
+            }}
+            style={styles.nextButton}
           >
-            <Text style={styles.buttonText}>Upload</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => handleCamera("selfiePhotoFile")}
-          >
-            <Text style={styles.buttonText}>Snap</Text>
+            <Text style={{ padding: 10, fontWeight: "600" }}>Next</Text>
           </TouchableOpacity>
         </View>
-        {form.selfiePhotoFile && (
-          <Image
-            source={{ uri: form.selfiePhotoFile }}
-            style={styles.imagePreview}
+      )}
+      {stepTwo && (
+        <View>
+          <TextInput
+            style={styles.input}
+            placeholder="Residential Country"
+            value={form.resCountry}
+            onChangeText={(value) => setForm({ ...form, resCountry: value })}
           />
-        )}
-      </View>
 
-      <View style={styles.imagePickerContainer}>
-        <Text style={styles.label}>ID Photo</Text>
-        <View style={styles.imagePickerButtons}>
+          <TextInput
+            style={styles.input}
+            placeholder="State"
+            value={form.resState}
+            onChangeText={(value) => setForm({ ...form, resState: value })}
+          />
+
+          <TextInput
+            style={styles.input}
+            placeholder="City"
+            value={form.resCity}
+            onChangeText={(value) => setForm({ ...form, resCity: value })}
+          />
+
+          <TextInput
+            style={styles.input}
+            placeholder="Address"
+            value={form.resAddress}
+            onChangeText={(value) => setForm({ ...form, resAddress: value })}
+          />
+
+          <TextInput
+            style={styles.input}
+            placeholder="Postal Code"
+            value={form.resPostalCode}
+            onChangeText={(value) => setForm({ ...form, resPostalCode: value })}
+          />
           <TouchableOpacity
-            style={styles.button}
-            onPress={() => handleImagePicker("idPhotoFile")}
+            onPress={() => {
+              setStepOne(false);
+              setStepTwo(false);
+              setStepThree(true);
+            }}
+            style={styles.nextButton}
           >
-            <Text style={styles.buttonText}>Upload</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => handleCamera("idPhotoFile")}
-          >
-            <Text style={styles.buttonText}>Snap</Text>
+            <Text style={{ padding: 10, fontWeight: "600" }}>Next</Text>
           </TouchableOpacity>
         </View>
-        {form.idPhotoFile && (
-          <Image
-            source={{ uri: form.idPhotoFile }}
-            style={styles.imagePreview}
-          />
-        )}
-      </View>
+      )}
+      {stepThree && (
+        <View>
+          <Picker
+            selectedValue={form.idType}
+            style={styles.input}
+            onValueChange={(itemValue) =>
+              setForm({ ...form, idType: itemValue })
+            }
+          >
+            <Picker.Item label="Select ID Type" value="" />
+            {idTypes.map((type) => (
+              <Picker.Item
+                key={type.value}
+                label={type.label}
+                value={type.value}
+              />
+            ))}
+          </Picker>
 
-      <TouchableOpacity
-        style={styles.submitButton}
-        onPress={handleSubmit}
-        disabled={loading}
-      >
-        <Text style={styles.submitButtonText}>
-          {loading ? "Submitting..." : "Submit"}
-        </Text>
-      </TouchableOpacity>
+          <TextInput
+            style={styles.input}
+            placeholder="ID Number"
+            value={form.idNumber}
+            onChangeText={(value) => setForm({ ...form, idNumber: value })}
+          />
+
+          <CustomDatePicker
+            date={form.issueDate}
+            placeholder="Issue Date"
+            onDateChange={(date) => setForm({ ...form, issueDate: date })}
+          />
+
+          <CustomDatePicker
+            date={form.expiryDate}
+            placeholder="Expiry Date"
+            onDateChange={(date) => setForm({ ...form, expiryDate: date })}
+          />
+          <TouchableOpacity
+            onPress={() => {
+              setStepOne(false);
+              setStepTwo(false);
+              setStepThree(false);
+              setStepFour(true);
+            }}
+            style={styles.nextButton}
+          >
+            <Text style={{ padding: 10, fontWeight: "600" }}>Next</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+      {stepFour && (
+        <>
+          <View style={styles.imagePickerContainer}>
+            <Text style={styles.label}>Selfie Photo</Text>
+            <View style={styles.imagePickerButtons}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => handleImagePicker("selfiePhotoFile")}
+              >
+                <Text style={styles.buttonText}>Upload</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => handleCamera("selfiePhotoFile")}
+              >
+                <Text style={styles.buttonText}>Snap</Text>
+              </TouchableOpacity>
+            </View>
+            {form.selfiePhotoFile && (
+              <Image
+                source={{ uri: form.selfiePhotoFile }}
+                style={styles.imagePreview}
+              />
+            )}
+          </View>
+
+          <View style={styles.imagePickerContainer}>
+            <Text style={styles.label}>ID Photo</Text>
+            <View style={styles.imagePickerButtons}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => handleImagePicker("idPhotoFile")}
+              >
+                <Text style={styles.buttonText}>Upload</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => handleCamera("idPhotoFile")}
+              >
+                <Text style={styles.buttonText}>Snap</Text>
+              </TouchableOpacity>
+            </View>
+            {form.idPhotoFile && (
+              <Image
+                source={{ uri: form.idPhotoFile }}
+                style={styles.imagePreview}
+              />
+            )}
+          </View>
+
+          <TouchableOpacity
+            style={styles.submitButton}
+            onPress={handleSubmit}
+            disabled={loading}
+          >
+            <Text style={styles.submitButtonText}>
+              {loading ? "Submitting..." : "Submit"}
+            </Text>
+          </TouchableOpacity>
+        </>
+      )}
     </ScrollView>
   );
 };
@@ -327,6 +380,11 @@ const styles = StyleSheet.create({
   submitButtonText: {
     color: "#fff",
     fontSize: 16,
+  },
+  nextButton: {
+    backgroundColor: COLORS.lightButton,
+    borderRadius: 10,
+    alignItems: "center",
   },
 });
 
