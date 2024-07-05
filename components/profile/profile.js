@@ -5,7 +5,6 @@ import {
   Text,
   TouchableOpacity,
   ActivityIndicator,
-  Clipboard,
   Alert,
 } from "react-native";
 import { Avatar, Icon, Card } from "react-native-elements";
@@ -13,7 +12,7 @@ import { useAuth } from "../../AuthContext/AuthContext";
 import { router } from "expo-router";
 import axios from "axios";
 import { baseUrl } from "../../constants/api/apiClient";
-import Toast from "react-native-toast-message";
+import * as Clipboard from "expo-clipboard";
 
 const ProfileScreen = () => {
   const { logOut, token } = useAuth();
@@ -39,7 +38,7 @@ const ProfileScreen = () => {
   }, [token]);
 
   const copyToClipboard = () => {
-    Clipboard.setString(user?.referralCode);
+    Clipboard.setStringAsync(user?.referralCode);
     Alert.alert("Copied to clipboard", "Referral code copied to clipboard!");
   };
 

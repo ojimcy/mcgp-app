@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import ServiceCard from "../../components/services/ServiceCard";
-import { Link, useLocalSearchParams } from "expo-router";
+import { Link, router, useLocalSearchParams } from "expo-router";
 import { baseUrl } from "../../constants/api/apiClient";
 import axios from "axios";
 import { useAuth } from "../../AuthContext/AuthContext";
@@ -66,9 +66,17 @@ const Services = () => {
             <Text style={styles.subText}>
               Do you offer such product or service?
             </Text>
-            <Link href="/register" style={styles.registerLink}>
-              Register
-            </Link>
+            <TouchableOpacity
+              onPress={() => {
+                router.push({
+                  pathname: "/serviceaction",
+                  params: { index: 0 },
+                });
+              }}
+              style={styles.registerLink}
+            >
+              <Text style={styles.registerLink}>Register</Text>
+            </TouchableOpacity>
           </View>
         </View>
       )}
@@ -83,7 +91,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    height: '100%',
+    height: "100%",
   },
   noResultsContainer: {
     display: "flex",
@@ -113,6 +121,6 @@ const styles = StyleSheet.create({
   registerLink: {
     fontSize: 16,
     color: "#E8A14A",
-    marginTop: 20,
+    marginTop: 15,
   },
 });
