@@ -6,12 +6,12 @@ import {
   View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Link, useLocalSearchParams } from "expo-router";
+import { GestureHandlerRootView, TouchableOpacity } from "react-native-gesture-handler";
+import { router, useLocalSearchParams } from "expo-router";
 import ProductCard from "../../components/designs/productcard";
 import { useAuth } from "../../AuthContext/AuthContext";
 import axios from "axios";
 import { baseUrl } from "../../constants/api/apiClient";
-import { COLORS } from "../../constants";
 
 const Products = () => {
   const { token } = useAuth();
@@ -19,6 +19,7 @@ const Products = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const filteredData = products.filter((item) => item.category === value);
+
   useEffect(() => {
     const fetchedProducts = async () => {
       try {
@@ -37,15 +38,17 @@ const Products = () => {
     };
     fetchedProducts();
   }, []);
+
   if (loading) {
     return (
-      <View style={styles.container}>
+      <GestureHandlerRootView style={styles.container}>
         <ActivityIndicator size={"large"} color="#0000ff" />
-      </View>
+      </GestureHandlerRootView>
     );
   }
+
   return (
-    <View style={styles.container}>
+    <GestureHandlerRootView style={styles.container}>
       {filteredData.length > 0 ? (
         <FlatList
           data={filteredData}
@@ -56,21 +59,30 @@ const Products = () => {
       ) : (
         <View style={styles.notFoundContainer}>
           <Text style={styles.notFoundText}>
-            No registered avaliable vendor merchant at the moment.
+            No registered available vendor merchant at the moment.
           </Text>
           <Text style={styles.subText}>
             Do you offer such product or service?
           </Text>
-          <Link href="/serviceaction" style={styles.registerLink}>
-            Register
-          </Link>
+          <TouchableOpacity
+            onPress={() => {
+              router.push({
+                pathname: "/serviceaction",
+                params: { index: 0 },
+              });
+            }}
+            style={styles.registerLink}
+          >
+            <Text style={styles.registerLinkText}>Register</Text>
+          </TouchableOpacity>
         </View>
       )}
-    </View>
+    </GestureHandlerRootView>
   );
 };
 
 export default Products;
+
 const styles = StyleSheet.create({
   noResultsContainer: {
     justifyContent: "center",
@@ -100,5 +112,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#E8A14A",
     marginTop: 20,
+  },
+  registerLinkText: {
+    fontSize: 16,
+    color: "#E8A14A",
   },
 });

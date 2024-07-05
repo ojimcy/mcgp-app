@@ -150,7 +150,7 @@ const MyAdvertsScreen = () => {
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderItem}
         ListEmptyComponent={
-          <Text>
+          <Text style={styles.info}>
             No adverts found.{" "}
             <TouchableOpacity
               onPress={() => {
@@ -159,9 +159,8 @@ const MyAdvertsScreen = () => {
                   params: { index: 0 },
                 });
               }}
-              style={styles.registerLink}
             >
-              Register
+              <Text style={styles.registerLink}>Register</Text>
             </TouchableOpacity>
           </Text>
         }
@@ -220,6 +219,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#E8A14A",
     marginTop: 20,
+  },
+  registerLinkText: {
+    marginTop: 15,
+    fontSize: 16,
+    color: "#E8A14A",
   },
 });
 
