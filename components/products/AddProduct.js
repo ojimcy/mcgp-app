@@ -53,8 +53,7 @@ const AddProduct = () => {
         }); // Adjust the endpoint based on your API
         const fetchedCategories = response.data.results;
         setCategories(fetchedCategories);
-      } catch (error) {
-      }
+      } catch (error) {}
     };
     fetchCategories();
   }, []);
@@ -125,8 +124,8 @@ const AddProduct = () => {
     formData.append("phoneNumber", phoneNumber);
     formData.append("category", category);
     formData.append("companyName", companyName);
-    formData.append("price", price);
-    formData.append("stock", stock);
+    formData.append("price", parseInt(price));
+    formData.append("stock", parseInt(stock));
     attributes.forEach((attribute, index) => {
       formData.append(`attributes[${index}].name`, attribute.name);
       formData.append(`attributes[${index}].value`, attribute.value);
@@ -146,7 +145,7 @@ const AddProduct = () => {
         resetForm();
       }
     } catch (error) {
-      console.error(error.response?.data);
+      alert(error.response?.data.message);
       setLoading(false);
       setIsModalVisible(true);
       Toast.show({
@@ -252,7 +251,7 @@ const AddProduct = () => {
       <TextInput
         style={styles.input}
         value={String(price)}
-        onChangeText={(value) => setPrice(parseInt(value))}
+        onChangeText={(value) => setPrice(value)}
         keyboardType="numeric"
       />
 
@@ -260,7 +259,7 @@ const AddProduct = () => {
       <TextInput
         style={styles.input}
         value={String(stock)}
-        onChangeText={(value) => setStock(parseInt(value))}
+        onChangeText={(value) => setStock(value)}
         keyboardType="numeric"
       />
 

@@ -82,21 +82,24 @@ const AddCategory = () => {
     formData.append("isFeatured", isFeatured);
     try {
       const response = await registerCategory(formData);
-      if (response.status === 201) {
+      console.log(response);
+      if (response.status === 200) {
         Toast.show({
           type: "success",
           text1: "Category Created",
           text2: "The category was created successfully.",
         });
       }
+      alert("Category created");
     } catch (error) {
+      alert(error?.response.data.message);
       if (error.response) {
         Toast.show({
           type: "error",
           text1: "Error Creating Category",
-          text2: error.response.data.message || "An error occurred",
+          text2: error?.response.data.message || "An error occurred",
         });
-      //  alert(error.response.data.message);
+        //  alert(error.response.data.message);
       } else {
         alert("Could not create");
         Toast.show({
@@ -135,7 +138,7 @@ const AddCategory = () => {
   }, []);
 
   return (
-    <View style={{ backgroundColor: "#fff", flex: 1 }}>
+    <View style={{ backgroundColor: "#fff" /* , flex: 1  */ }}>
       <ScrollView style={styles.cover}>
         <Toast config={toastConfig} />
         <Text style={styles.label}>Enter Category</Text>

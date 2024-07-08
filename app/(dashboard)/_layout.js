@@ -9,6 +9,7 @@ import { useAuth } from "../../AuthContext/AuthContext";
 import { Avatar } from "react-native-elements";
 const Layout = () => {
   const { currentUser } = useAuth();
+ 
   return (
     <>
       <Toast />
@@ -131,6 +132,14 @@ const Layout = () => {
             drawerActiveTintColor: COLORS.primary,
           }}
         />
+          <Drawer.Screen
+            name="addcategory"
+            options={{
+              title: "Add Category",
+              drawerActiveTintColor: COLORS.primary,
+            }}
+          />
+       
       </Drawer>
     </>
   );
