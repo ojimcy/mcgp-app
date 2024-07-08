@@ -6,15 +6,20 @@ import {
   View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { GestureHandlerRootView, TouchableOpacity } from "react-native-gesture-handler";
+import {
+  GestureHandlerRootView,
+  TouchableOpacity,
+} from "react-native-gesture-handler";
 import { router, useLocalSearchParams } from "expo-router";
 import ProductCard from "../../components/designs/productcard";
 import { useAuth } from "../../AuthContext/AuthContext";
 import axios from "axios";
 import { baseUrl } from "../../constants/api/apiClient";
+import { COLORS } from "../../constants";
 
 const Products = () => {
-  const { token } = useAuth();
+  const { token, setAppService } = useAuth();
+  //const { setAppService } = useAuth();
   const { value } = useLocalSearchParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -61,7 +66,7 @@ const Products = () => {
           <Text style={styles.notFoundText}>
             No registered available vendor merchant at the moment.
           </Text>
-          <Text style={styles.subText}>
+          {/*  <Text style={styles.subText}>
             Do you offer such product or service?
           </Text>
           <TouchableOpacity
@@ -74,9 +79,20 @@ const Products = () => {
             style={styles.registerLink}
           >
             <Text style={styles.registerLinkText}>Register</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       )}
+      <View style={{ position: "absolute", alignItems: "center", bottom: 5 }}>
+        <Text
+          onPress={() => {
+            setAppService("Register your product");
+            router.push({ pathname: "/serviceaction", params: { index: 0 } });
+          }}
+          style={{ color: COLORS.primary }}
+        >
+          Click here to register as a vendor
+        </Text>
+      </View>
     </GestureHandlerRootView>
   );
 };

@@ -61,8 +61,8 @@ const ProfileScreen = () => {
   };
 
   const handleKycVerification = () => {
-    // router.push("/profile/kyc");
-      Alert.alert("Coming Soon!!!");
+    router.push("/profile/kyc");
+    //  Alert.alert("Coming Soon!!!");
   };
 
   return (

@@ -18,7 +18,7 @@ import CustomDatePicker from "../../components/others/CustomDatePicker";
 import { COLORS } from "../../constants";
 
 const KycVerificationScreen = () => {
-  const { token, currentUser } = useAuth();
+  const { token } = useAuth();
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -36,6 +36,21 @@ const KycVerificationScreen = () => {
     issueDate: "",
     expiryDate: "",
   });
+
+  const [firstName, setFirstName] = useState();
+
+  const [middleName, setMiddleName] = useState();
+  const [lastName, setLastName] = useState();
+  const [dob, setDob] = useState();
+  const [resCountry, setResCountry] = useState();
+  const [resState, setResState] = useState();
+  const [resCity, setResCity] = useState();
+  const [resAddress, setResAddress] = useState();
+  const [idPhoto, setIdPhoto] = useState();
+  const [posterCode, setPosterCode] = useState();
+  const [selfiePhoto, setSelfiePhote] = useState();
+  const [idtType, setIdType] = useState();
+
   const [loading, setLoading] = useState(false);
   const [stepOne, setStepOne] = useState(true);
   const [stepTwo, setStepTwo] = useState(false);

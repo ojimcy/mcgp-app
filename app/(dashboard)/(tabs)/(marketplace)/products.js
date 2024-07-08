@@ -23,6 +23,9 @@ const Products = () => {
         setCategories(fetchedCategories);
       } catch (error) {
         alert(error?.response.data.message);
+        if(error?.response.data.message==='Please authenticate'){
+          
+        }
       }
     };
     if (token) {

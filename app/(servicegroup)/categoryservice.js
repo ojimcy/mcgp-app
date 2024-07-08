@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   View,
   ActivityIndicator,
+  GestureHandlerRootView
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import ServiceCard from "../../components/services/ServiceCard";
@@ -14,7 +15,7 @@ import axios from "axios";
 import { useAuth } from "../../AuthContext/AuthContext";
 
 const Services = () => {
-  const { value } = useLocalSearchParams();
+  const { value, setAppService } = useLocalSearchParams();
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const { token } = useAuth();
@@ -43,7 +44,7 @@ const Services = () => {
   const filteredData = services.filter((item) => item.category === value);
 
   return (
-    <ScrollView style={{ backgroundColor: "#fff" }}>
+    <GestureHandlerRootView style={{ backgroundColor: "#fff", flex: 1 }}>
       {loading ? ( // Show loading spinner when loading
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#E8A14A" />
@@ -63,7 +64,7 @@ const Services = () => {
             <Text style={styles.notFoundText}>
               No registered available vendor merchant at the moment.
             </Text>
-            <Text style={styles.subText}>
+            {/* <Text style={styles.subText}>
               Do you offer such product or service?
             </Text>
             <TouchableOpacity
@@ -76,11 +77,21 @@ const Services = () => {
               style={styles.registerLink}
             >
               <Text style={styles.registerLink}>Register</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
       )}
-    </ScrollView>
+      <View style={{ position: "absolute", alignItems: "center"}}>
+        <Text
+          onPress={() => {
+            setAppService("Register your service");
+            router.push({ pathname: "/serviceaction", params: { index: 1 } });
+          }}
+        >
+          click here to register as a vendor
+        </Text>
+      </View>
+    </GestureHandlerRootView>
   );
 };
 
