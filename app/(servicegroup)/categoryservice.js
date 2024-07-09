@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   View,
   ActivityIndicator,
-  GestureHandlerRootView
+  GestureHandlerRootView,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import ServiceCard from "../../components/services/ServiceCard";
@@ -13,12 +13,13 @@ import { Link, router, useLocalSearchParams } from "expo-router";
 import { baseUrl } from "../../constants/api/apiClient";
 import axios from "axios";
 import { useAuth } from "../../AuthContext/AuthContext";
+import { COLORS } from "../../constants";
 
 const Services = () => {
-  const { value, setAppService } = useLocalSearchParams();
+  const { value } = useLocalSearchParams();
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { token } = useAuth();
+  const { token, setAppService } = useAuth();
 
   useEffect(() => {
     const fetchedServices = async () => {
@@ -44,54 +45,50 @@ const Services = () => {
   const filteredData = services.filter((item) => item.category === value);
 
   return (
-    <GestureHandlerRootView style={{ backgroundColor: "#fff", flex: 1 }}>
-      {loading ? ( // Show loading spinner when loading
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#E8A14A" />
-        </View>
-      ) : filteredData.length > 0 ? (
-        filteredData.map((item, index) => (
-          <ServiceCard
-            key={index}
-            title={item.name}
-            description={item.description}
-            image={item.images[0]}
-          />
-        ))
-      ) : (
-        <View style={styles.noResultsContainer}>
-          <View style={styles.notFoundContainer}>
-            <Text style={styles.notFoundText}>
-              No registered available vendor merchant at the moment.
-            </Text>
-            {/* <Text style={styles.subText}>
-              Do you offer such product or service?
-            </Text>
-            <TouchableOpacity
-              onPress={() => {
-                router.push({
-                  pathname: "/serviceaction",
-                  params: { index: 0 },
-                });
-              }}
-              style={styles.registerLink}
-            >
-              <Text style={styles.registerLink}>Register</Text>
-            </TouchableOpacity> */}
+    <View style={{ backgroundColor: "#fff", flex: 1, alignItems: "center" }}>
+      <ScrollView>
+        {loading ? ( // Show loading spinner when loading
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#E8A14A" />
           </View>
-        </View>
-      )}
-      <View style={{ position: "absolute", alignItems: "center"}}>
+        ) : filteredData.length > 0 ? (
+          filteredData.map((item, index) => (
+            <ServiceCard
+              key={index}
+              title={item.name}
+              description={item.description}
+              image={item.images[0]}
+            />
+          ))
+        ) : (
+          <View style={styles.noResultsContainer}>
+            <View style={styles.notFoundContainer}>
+              <Text style={styles.notFoundText}>
+                No registered available vendor merchant at the moment.
+              </Text>
+            </View>
+          </View>
+        )}
+      </ScrollView>
+      <View
+        style={{
+          position: "absolute",
+          bottom: 5,
+          justifyContent: "center",
+          alignContent: "center",
+        }}
+      >
         <Text
           onPress={() => {
             setAppService("Register your service");
             router.push({ pathname: "/serviceaction", params: { index: 1 } });
           }}
+          style={{ color: COLORS.primary, fontWeight: "500" }}
         >
-          click here to register as a vendor
+          Click here to register as a vendor
         </Text>
       </View>
-    </GestureHandlerRootView>
+    </View>
   );
 };
 
