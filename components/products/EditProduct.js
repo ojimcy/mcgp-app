@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,12 +7,12 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-} from 'react-native';
-import { useForm, Controller, useFieldArray } from 'react-hook-form';
-import axios from 'axios';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { showMessage } from 'react-native-flash-message';
-import { baseUrl } from '../../constants/api/apiClient';
+} from "react-native";
+import { useForm, Controller, useFieldArray } from "react-hook-form";
+import axios from "axios";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { showMessage } from "react-native-flash-message";
+import { baseUrl } from "../../constants/api/apiClient";
 
 const EditProductCatalogue = () => {
   const navigation = useNavigation();
@@ -23,28 +23,31 @@ const EditProductCatalogue = () => {
   const [product, setProduct] = useState({});
   const [initialProduct, setInitialProduct] = useState({});
 
-  const { control, handleSubmit, formState: { isSubmitting } } = useForm();
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm();
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: 'variations',
+    name: "variations",
   });
 
   const fetchProductsCategories = async () => {
     try {
-        const response = await axios.get(`${baseUrl}/category?type=Product`, {
-          headers: {
-            Authorization: `${token}`,
-          },
-        }); // Adjust the endpoint based on your API
-        const fetchedCategories = response.data.results;
-        setCategories(fetchedCategories);
-      } catch (error) {
-      }
+      const response = await axios.get(`${baseUrl}/category?type=Product`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      }); // Adjust the endpoint based on your API
+      const fetchedCategories = response.data.results;
+      setCategories(fetchedCategories);
+    } catch (error) {}
   };
 
   const fetchProductsBrands = async () => {
-    const response = await axios.get('/stores/brands');
+    const response = await axios.get("/stores/brands");
     setBrands(response.data);
   };
 
@@ -68,7 +71,7 @@ const EditProductCatalogue = () => {
   }, [id]);
 
   const updateField = (field, value) => {
-    setProduct(prev => ({ ...prev, [field]: value }));
+    setProduct((prev) => ({ ...prev, [field]: value }));
   };
 
   const submitHandler = async (productData) => {
@@ -80,22 +83,26 @@ const EditProductCatalogue = () => {
           return obj;
         }, {});
 
-      await axios.patch(`/products/catalogue/${id}`, changedValues);
+      await axios.patch(`${baseUrl}/products/catalogue/${id}`, changedValues);
       showMessage({
-        message: 'Product catalogue updated successfully!',
-        type: 'success',
+        message: "Product catalogue updated successfully!",
+        type: "success",
       });
-      navigation.navigate('CatalogueDetails', { id });
+      navigation.navigate("CatalogueDetails", { id });
     } catch (error) {
-      if (error.response && error.response.data && error.response.data.message) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
         showMessage({
           message: error.response.data.message,
-          type: 'danger',
+          type: "danger",
         });
       } else {
         showMessage({
-          message: 'Something went wrong. Please try again later.',
-          type: 'danger',
+          message: "Something went wrong. Please try again later.",
+          type: "danger",
         });
       }
     }
@@ -110,7 +117,7 @@ const EditProductCatalogue = () => {
         <Controller
           control={control}
           name="name"
-          defaultValue={product.name || ''}
+          defaultValue={product.name || ""}
           render={({ field: { onChange, value } }) => (
             <View style={styles.formControl}>
               <Text style={styles.label}>Name</Text>
@@ -127,7 +134,7 @@ const EditProductCatalogue = () => {
         <Controller
           control={control}
           name="description"
-          defaultValue={product.description || ''}
+          defaultValue={product.description || ""}
           render={({ field: { onChange, value } }) => (
             <View style={styles.formControl}>
               <Text style={styles.label}>Description</Text>
@@ -147,7 +154,7 @@ const EditProductCatalogue = () => {
             <Controller
               control={control}
               name={`variations[${index}].name`}
-              defaultValue={field.name || ''}
+              defaultValue={field.name || ""}
               render={({ field: { onChange, value } }) => (
                 <TextInput
                   style={styles.input}
@@ -160,7 +167,7 @@ const EditProductCatalogue = () => {
             <Controller
               control={control}
               name={`variations[${index}].value`}
-              defaultValue={field.value || ''}
+              defaultValue={field.value || ""}
               render={({ field: { onChange, value } }) => (
                 <TextInput
                   style={styles.input}
@@ -174,22 +181,29 @@ const EditProductCatalogue = () => {
           </View>
         ))}
 
-        <Button title="Add Variation" onPress={() => append({ name: '', value: '' })} />
+        <Button
+          title="Add Variation"
+          onPress={() => append({ name: "", value: "" })}
+        />
 
         <View style={styles.formControl}>
           <Text style={styles.label}>Brand</Text>
           <Controller
             control={control}
             name="brand"
-            defaultValue={product.brand || ''}
+            defaultValue={product.brand || ""}
             render={({ field: { onChange, value } }) => (
               <Picker
                 selectedValue={value}
                 onValueChange={(itemValue) => onChange(itemValue)}
               >
                 <Picker.Item label="Select Product Brand" value="" />
-                {brands.map(brand => (
-                  <Picker.Item key={brand.id} label={brand.name} value={brand.id} />
+                {brands.map((brand) => (
+                  <Picker.Item
+                    key={brand.id}
+                    label={brand.name}
+                    value={brand.id}
+                  />
                 ))}
               </Picker>
             )}
@@ -201,15 +215,19 @@ const EditProductCatalogue = () => {
           <Controller
             control={control}
             name="categoryId"
-            defaultValue={product.category || ''}
+            defaultValue={product.category || ""}
             render={({ field: { onChange, value } }) => (
               <Picker
                 selectedValue={value}
                 onValueChange={(itemValue) => onChange(itemValue)}
               >
                 <Picker.Item label="Select Product Category" value="" />
-                {categories.map(category => (
-                  <Picker.Item key={category.id} label={category.title} value={category.id} />
+                {categories.map((category) => (
+                  <Picker.Item
+                    key={category.id}
+                    label={category.title}
+                    value={category.id}
+                  />
                 ))}
               </Picker>
             )}
@@ -219,7 +237,7 @@ const EditProductCatalogue = () => {
         <Controller
           control={control}
           name="costPrice"
-          defaultValue={product.costPrice || ''}
+          defaultValue={product.costPrice || ""}
           render={({ field: { onChange, value } }) => (
             <View style={styles.formControl}>
               <Text style={styles.label}>Cost Price</Text>
@@ -237,7 +255,7 @@ const EditProductCatalogue = () => {
         <Controller
           control={control}
           name="sellingPrice"
-          defaultValue={product.sellingPrice || ''}
+          defaultValue={product.sellingPrice || ""}
           render={({ field: { onChange, value } }) => (
             <View style={styles.formControl}>
               <Text style={styles.label}>Selling Price</Text>
@@ -255,7 +273,7 @@ const EditProductCatalogue = () => {
         <Controller
           control={control}
           name="discount"
-          defaultValue={product.discount || ''}
+          defaultValue={product.discount || ""}
           render={({ field: { onChange, value } }) => (
             <View style={styles.formControl}>
               <Text style={styles.label}>Discount Price</Text>
@@ -273,7 +291,7 @@ const EditProductCatalogue = () => {
         <Controller
           control={control}
           name="quantity"
-          defaultValue={product.quantity || ''}
+          defaultValue={product.quantity || ""}
           render={({ field: { onChange, value } }) => (
             <View style={styles.formControl}>
               <Text style={styles.label}>Quantity</Text>
@@ -302,31 +320,31 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   backButton: {
-    color: 'blue',
+    color: "blue",
     marginBottom: 16,
   },
   formContainer: {
-    width: '100%',
+    width: "100%",
   },
   formControl: {
     marginBottom: 16,
   },
   label: {
     marginBottom: 8,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     padding: 8,
     borderRadius: 4,
   },
   textarea: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     padding: 8,
     borderRadius: 4,
     height: 100,

@@ -24,6 +24,7 @@ const Products = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const filteredData = products.filter((item) => item.category === value);
+  console.log(filteredData);
 
   useEffect(() => {
     const fetchedProducts = async () => {

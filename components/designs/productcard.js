@@ -89,7 +89,7 @@ const ProductCard = ({ item }) => {
               borderTopRightRadius: SIZES.font,
             }}
           />
-          <RatingButton right={5} top={5} />
+          <RatingButton right={5} top={5} rating={item.averageRating} />
           <CircleButton imgUrl={assets.heart} right={5} bottom={5} />
           <SellerButton left={5} top={5} />
         </Pressable>

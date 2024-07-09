@@ -131,7 +131,12 @@ const AddProduct = () => {
       formData.append(`attributes[${index}].value`, attribute.value);
     });
     try {
-      const response = await registerAds(formData);
+      const response = await axios.post(`${baseUrl}/adverts`, formData, {
+        headers: {
+          Authorization: token,
+          "Content-Type": "multipart/form-data",
+        },
+      });
       if (response) {
         setLoading(false);
         setIsModalVisible(true);
@@ -145,6 +150,7 @@ const AddProduct = () => {
         resetForm();
       }
     } catch (error) {
+      console.log(error);
       alert(error.response?.data.message);
       setLoading(false);
       setIsModalVisible(true);

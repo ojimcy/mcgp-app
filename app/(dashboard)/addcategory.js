@@ -19,10 +19,12 @@ const addcategory = () => {
     }
   }, []);
   return (
-    <View>
+    <View style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
       {currentUser && currentUser.role === "admin" ? (
         <AddCategory />
-      ) : undefined}
+      ) : (
+        <Text>You are not permitted for this task</Text>
+      )}
     </View>
   );
 };

@@ -19,7 +19,7 @@ import PagerView from "react-native-pager-view";
 const ProductDetail = ({ item }) => {
   const [isMore, setIsMore] = useState(false);
   const { items, token, setItems } = useAuth();
-
+  console.log((item.attributes));
   const addItem = async (newItem) => {
     try {
       const response = await axios.post(`${baseUrl}/cart`, newItem, {
@@ -76,39 +76,7 @@ const ProductDetail = ({ item }) => {
   };
 
   const images = item?.images?.split(",") || [];
-  const attributes = [
-    {
-      values: ["50kg", "60kg"],
-      _id: "667af110f004bb6bb5222f6e",
-      name: "weight",
-    },
-    {
-      values: ["Red", "Blue"],
-      _id: "667af110f004bb6bb5222f6e",
-      name: "Color",
-    },
-  ];
 
-  const reviews = [
-    {
-      reviewedBy: "Cynthia",
-      rating: 5.0,
-      reviewText: "Very nice cake",
-      date: "18/6/2024",
-    },
-    {
-      reviewedBy: "Cynthia",
-      rating: 4.0,
-      reviewText: "Thank you for wish me happy birthday",
-      date: "18/6/2024",
-    },
-    {
-      reviewedBy: "Cynthia",
-      rating: 3.5,
-      reviewText: "I had a nice wedding cake",
-      date: "18/6/2024",
-    },
-  ];
   return (
     <ScrollView style={styles.container}>
       {item && (
@@ -179,13 +147,13 @@ const ProductDetail = ({ item }) => {
             {isMore && (
               <>
                 <View style={styles.productInfoContainer}>
-                  {attributes?.map((attribute, index) => (
+                  {item.attributes.split(",")?.map((attribute, index) => (
                     <View style={styles.productInfoRow} key={index}>
                       <Text style={styles.productInfoTitle}>
                         {attribute.name}:{" "}
                       </Text>
                       <Text style={styles.productInfoValue}>
-                        {attribute.values.join(", ")}
+                        {attribute.value}
                       </Text>
                     </View>
                   ))}
@@ -212,7 +180,7 @@ const ProductDetail = ({ item }) => {
                 </Text>
               </View>
 
-              {reviews.map((review, index) => (
+              {item.reviews.split(",").map((review, index) => (
                 <View key={index} style={styles.review}>
                   <View style={styles.reviewHeader}>
                     <View style={{ flexDirection: "row" }}>
