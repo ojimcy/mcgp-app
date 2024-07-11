@@ -123,6 +123,7 @@ export const AppProvider = ({ children }) => {
       setLoading(false);
     }
   }
+  
   async function logOut() {
     setToken(null);
     setAuthenticated(false);

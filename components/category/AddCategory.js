@@ -11,25 +11,51 @@ import React, { useEffect, useState } from "react";
 import { COLORS, SIZES } from "../../constants/theme";
 import Icon from "react-native-vector-icons/FontAwesome";
 import * as ImagePicker from "expo-image-picker";
-import {
-  getCategories,
-  registerCategory,
-} from "../../constants/api/AuthenticationService";
+import { registerCategory } from "../../constants/api/AuthenticationService";
 import { useAuth } from "../../AuthContext/AuthContext";
 import Toast from "react-native-toast-message";
 import toastConfig from "../../toastConfig";
 import { Picker } from "@react-native-picker/picker";
-import { RadioButton } from "react-native-paper";
 import { generateFileName } from "../../constants/api/filename";
+import { baseUrl } from "../../constants/api/apiClient";
+import { router } from "expo-router";
+import axios from "axios";
+
 const AddCategory = () => {
   const [description, setDescription] = useState("");
   const [title, setTitle] = useState("");
   const [type, setType] = useState("");
   const [featuredImage, setFeaturedImage] = useState(null);
   const [parentCategory, setParentCategory] = useState("");
-  const [categories, setCategories] = useState([]);
-  const [isFeatured, setIsFeatured] = useState(true);
-  const { logOut } = useAuth();
+  const [isFeatured, setIsFeatured] = useState(false);
+  const [isParent, setIsParent] = useState(false);
+  const [hasParent, setHasParent] = useState(false);
+  const [parentCategories, setParentCategories] = useState([]);
+  const { token, currentUser } = useAuth();
+
+  if (!currentUser) {
+    router.push("/login");
+  }
+
+  useEffect(() => {
+    const fetchParentCategories = async () => {
+      try {
+        const response = await axios.get(`${baseUrl}/category?isParent=true`, {
+          headers: {
+            Authorization: `${token}`,
+          },
+        });
+        setParentCategories(response.data.results);
+      } catch (error) {
+        console.error("Error fetching parent categories:", error);
+      }
+    };
+
+    if (isParent) {
+      fetchParentCategories();
+    }
+  }, [isParent]);
+
   const pickImageAsync = async () => {
     try {
       const { status } =
@@ -55,12 +81,11 @@ const AddCategory = () => {
     }
   };
 
-  async function createCategory() {
-    if (!title || !description || !type) {
-      //  alert("Please fill all fields and upload an image.");
+  const createCategory = async () => {
+    if (!title || !type) {
       Toast.show({
         type: "error",
-        text1: "Please fill all fields and upload an image",
+        text1: "Title and type are required",
       });
       return;
     }
@@ -69,79 +94,49 @@ const AddCategory = () => {
       formData.append("image", {
         uri: featuredImage,
         type: "image/jpeg",
-        name: `image_${generateFileName}.jpg`,
+        name: `image_${generateFileName()}.jpg`,
       });
     }
 
     formData.append("title", title);
     formData.append("description", description);
     formData.append("type", type);
+    formData.append("isFeatured", isFeatured);
+    formData.append("isParent", isParent);
     if (parentCategory) {
       formData.append("parentCategory", parentCategory);
     }
-    formData.append("isFeatured", isFeatured);
+
     try {
       const response = await registerCategory(formData);
-      console.log(response);
-      if (response.status === 200) {
+      if (response.status === 201) {
         Toast.show({
           type: "success",
           text1: "Category Created",
           text2: "The category was created successfully.",
         });
+        setTitle("");
+        setDescription("");
+        setType("");
+        setFeaturedImage(null);
+        setParentCategory("");
+        setIsFeatured(false);
+        setIsParent(false);
       }
-      alert("Category created");
     } catch (error) {
-      alert(error?.response.data.message);
-      if (error.response) {
-        Toast.show({
-          type: "error",
-          text1: "Error Creating Category",
-          text2: error?.response.data.message || "An error occurred",
-        });
-        //  alert(error.response.data.message);
-      } else {
-        alert("Could not create");
-        Toast.show({
-          type: "error",
-          text1: "Network Error",
-          text2: error.message,
-        });
-      }
+      console.error("Error Creating Category", error.response.data.message);
+      Toast.show({
+        type: "error",
+        text1: "Error Creating Category",
+      });
     }
-  }
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await getCategories("Product"); // Adjust the endpoint based on your API
-        const fetchedCategories = response.data.results.map((category) => ({
-          title: category.title,
-          id: category.id,
-          icon: () =>
-            category.featuredImage ? (
-              <Image
-                source={{ uri: category.featuredImage }}
-                style={styles.icon}
-              />
-            ) : (
-              <View style={styles.placeholderIcon}>
-                <Text>📷</Text>
-              </View>
-            ),
-        }));
-        setCategories(fetchedCategories);
-      } catch (error) {
-        await logOut();
-      }
-    };
-    fetchCategories();
-  }, []);
+  };
 
   return (
-    <View style={{ backgroundColor: "#fff" /* , flex: 1  */ }}>
+    <View style={{ backgroundColor: "#fff" }}>
       <ScrollView style={styles.cover}>
         <Toast config={toastConfig} />
-        <Text style={styles.label}>Enter Category</Text>
+        <Text style={styles.label}>Title</Text>
         <TextInput
           style={styles.input}
           value={title}
@@ -181,32 +176,57 @@ const AddCategory = () => {
           </View>
         )}
 
-        <Text style={styles.label}>Enter Category</Text>
-        <Picker
-          style={styles.input}
-          selectedValue={parentCategory}
-          onValueChange={(itemValue) => setParentCategory(itemValue)}
+        <Text style={styles.label}></Text>
+        <TouchableOpacity
+          style={styles.checkboxContainer}
+          onPress={() => setHasParent(!hasParent)}
         >
-          <Picker.Item label={"Select Parent Category"} value={""} />
-          {categories.map((item, index) => (
-            <Picker.Item key={index} label={item.title} value={item.id} />
-          ))}
-        </Picker>
+          <Icon
+            name={hasParent ? "check-square-o" : "square-o"}
+            size={25}
+            color="#000"
+          />
+          <Text style={styles.checkboxLabel}>Select Parent Category</Text>
+        </TouchableOpacity>
+        {hasParent && (
+          <Picker
+            style={styles.input}
+            selectedValue={parentCategory}
+            onValueChange={(itemValue) => setParentCategory(itemValue)}
+          >
+            <Picker.Item label={"Select Parent Category"} value={""} />
+            {parentCategories.map((item, index) => (
+              <Picker.Item key={index} label={item.title} value={item.id} />
+            ))}
+          </Picker>
+        )}
+
+        <Text style={styles.label}>Parent Category?</Text>
+        <TouchableOpacity
+          style={styles.checkboxContainer}
+          onPress={() => setIsParent(!isParent)}
+        >
+          <Icon
+            name={isParent ? "check-square-o" : "square-o"}
+            size={25}
+            color="#000"
+          />
+          <Text style={styles.checkboxLabel}>Is Parent</Text>
+        </TouchableOpacity>
+
         <Text style={styles.label}>Featured?</Text>
-        <View style={styles.radioContainer}>
-          <RadioButton
-            value={isFeatured}
-            status={isFeatured ? "checked" : "unchecked"}
-            onPress={() => setIsFeatured(true)}
+        <TouchableOpacity
+          style={styles.checkboxContainer}
+          onPress={() => setIsFeatured(!isFeatured)}
+        >
+          <Icon
+            name={isFeatured ? "check-square-o" : "square-o"}
+            size={25}
+            color="#000"
           />
-          <Text style={styles.radioText}>Yes</Text>
-          <RadioButton
-            value={isFeatured}
-            status={!isFeatured ? "checked" : "unchecked"}
-            onPress={() => setIsFeatured(false)}
-          />
-          <Text style={styles.radioText}>No</Text>
-        </View>
+          <Text style={styles.checkboxLabel}>Is Featured</Text>
+        </TouchableOpacity>
+
         <View style={{ alignItems: "center", marginBottom: 55 }}>
           <TouchableOpacity style={styles.button} onPress={createCategory}>
             <Text style={styles.buttonText}>Continue</Text>
@@ -279,13 +299,13 @@ const styles = StyleSheet.create({
   cover: {
     backgroundColor: COLORS.white,
   },
-  radioContainer: {
+  checkboxContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 20,
     marginHorizontal: SIZES.width * 0.05,
+    marginBottom: 10,
   },
-  radioText: {
-    marginRight: 20,
+  checkboxLabel: {
+    marginLeft: 10,
   },
 });

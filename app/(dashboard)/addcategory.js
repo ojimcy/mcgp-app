@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import AddCategory from "../../components/category/AddCategory";
 import { useAuth } from "../../AuthContext/AuthContext";
 import { router } from "expo-router";
+import withAuth from "../../utils/WithAuth";
 
 const addcategory = () => {
   const { currentUser } = useAuth();
@@ -29,6 +30,6 @@ const addcategory = () => {
   );
 };
 
-export default addcategory;
+export default withAuth(addcategory);
 
 const styles = StyleSheet.create({});
