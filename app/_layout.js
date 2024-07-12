@@ -68,6 +68,7 @@ const RootLayout = () => {
         <Stack.Screen name="(productgroup)" />
         <Stack.Screen name="(dashboard)" />
         <Stack.Screen name="profile" />
+        <Stack.Screen name="category" />
       </Stack>
     </AppProvider>
   );

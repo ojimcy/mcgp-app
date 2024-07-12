@@ -18,7 +18,7 @@ const Layout = () => {
           drawerIcon: ({ focused, color, size }) => {
             let iconName;
             switch (route.name) {
-              case "addcategory":
+              case "categories":
                 iconName = "clipboard-list";
                 break;
               case "profile":
@@ -132,13 +132,13 @@ const Layout = () => {
             drawerActiveTintColor: COLORS.primary,
           }}
         />
-          <Drawer.Screen
-            name="addcategory"
-            options={{
-              title: "Add Category",
-              drawerActiveTintColor: COLORS.primary,
-            }}
-          />
+        <Drawer.Screen
+          name="categories"
+          options={{
+            title: "Category",
+            drawerActiveTintColor: COLORS.primary,
+          }}
+        />
        
       </Drawer>
     </>

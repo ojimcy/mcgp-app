@@ -6,7 +6,6 @@ import { useAuth } from "../AuthContext/AuthContext";
 const withAuth = (WrappedComponent) => {
   return (props) => {
     const { isAuthenticated, loading } = useAuth();
-    console.log("with-auth", isAuthenticated);
     // While the auth state is loading, you might want to show a loader
     if (loading) {
       return <LoadingSpinner />;

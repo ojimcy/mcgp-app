@@ -1,37 +1,43 @@
+import React, { useState, useEffect } from "react";
 import {
-  Alert,
-  Image,
+  View,
+  Text,
   ScrollView,
   StyleSheet,
-  Text,
   TextInput,
   TouchableOpacity,
-  View,
+  Image,
+  Alert,
 } from "react-native";
-import React, { useEffect, useState } from "react";
 import { COLORS, SIZES } from "../../constants/theme";
 import Icon from "react-native-vector-icons/FontAwesome";
 import * as ImagePicker from "expo-image-picker";
-import { registerCategory } from "../../constants/api/AuthenticationService";
 import { useAuth } from "../../AuthContext/AuthContext";
+import { router, useLocalSearchParams } from "expo-router";
+import axios from "axios";
 import { Picker } from "@react-native-picker/picker";
 import { generateFileName } from "../../constants/api/filename";
 import { baseUrl } from "../../constants/api/apiClient";
-import { router, useRouter } from "expo-router";
-import axios from "axios";
 import LoadingSpinner from "../others/LoadingSpinner";
 
-const AddCategoryScreen = () => {
-  const [description, setDescription] = useState("");
-  const [title, setTitle] = useState("");
-  const [type, setType] = useState("");
-  const [featuredImage, setFeaturedImage] = useState(null);
-  const [parentCategory, setParentCategory] = useState("");
-  const [isFeatured, setIsFeatured] = useState(false);
-  const [isParent, setIsParent] = useState(false);
-  const [hasParent, setHasParent] = useState(false);
+const EditCategoryScreen = () => {
+  const { token } = useAuth();
+
+  const item = useLocalSearchParams();
+
+  const [description, setDescription] = useState(item.description || "");
+  const [title, setTitle] = useState(item.title || "");
+  const [type, setType] = useState(item.type || "");
+  const [featuredImage, setFeaturedImage] = useState(
+    item.featuredImage || null
+  );
+  const [parentCategory, setParentCategory] = useState(
+    item.parentCategory || ""
+  );
+  const [isFeatured, setIsFeatured] = useState(item.isFeatured || false);
+  const [isParent, setIsParent] = useState(item.isParent || false);
+  const [hasParent, setHasParent] = useState(item.hasParent || false);
   const [parentCategories, setParentCategories] = useState([]);
-  const { token, currentUser } = useAuth();
   const [loading, setLoading] = useState(false);
 
   const fetchParentCategories = async () => {
@@ -47,22 +53,16 @@ const AddCategoryScreen = () => {
     }
   };
 
-  console.log("current user", currentUser);
-
   useEffect(() => {
-    if (!currentUser) {
-      router.push("/login");
-    } else {
-      fetchParentCategories();
-    }
-  }, [currentUser]);
+    fetchParentCategories();
+  }, []);
 
   const pickImageAsync = async () => {
     try {
       const { status } =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== "granted") {
-        alert("Permission to access media library denied");
+        Alert.alert("Permission to access media library denied");
         return;
       }
 
@@ -75,20 +75,23 @@ const AddCategoryScreen = () => {
       if (!result.canceled) {
         setFeaturedImage(result.assets[0].uri);
       } else {
-        alert("You did not select any image.");
+        Alert.alert("You did not select any image.");
       }
     } catch (error) {
       console.error("Error picking image:", error);
     }
   };
 
-  const createCategory = async () => {
+  const updateCategory = async () => {
     if (!title || !type) {
-      Alert.alert("error", "Title and type are required");
+      Alert.alert({
+        type: "error",
+        text1: "Title and type are required",
+      });
       return;
     }
     const formData = new FormData();
-    if (featuredImage) {
+    if (featuredImage && featuredImage !== item.featuredImage) {
       formData.append("image", {
         uri: featuredImage,
         type: "image/jpeg",
@@ -107,22 +110,23 @@ const AddCategoryScreen = () => {
 
     try {
       setLoading(true);
-      const response = await registerCategory(formData);
-      if (response.status === 201) {
-        Alert.alert("success", "The category was created successfully.");
-        setTitle("");
-        setDescription("");
-        setType("");
-        setFeaturedImage(null);
-        setParentCategory("");
-        setIsFeatured(false);
-        setIsParent(false);
-        await fetchParentCategories();
-        setLoading(false);
+      const response = await axios.patch(
+        `${baseUrl}/category/${item.id}`,
+        formData,
+        {
+          headers: {
+            Authorization: token,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (response) {
+        Alert.alert("success", "The category was updated successfully.");
+        router.push("/category");
       }
     } catch (error) {
-      console.error("Error Creating Category", error.response.data.message);
-      Alert.alert("Error", "Error Creating Category");
+      console.error("Error Updating Category", error);
+      Alert.alert("error", "Error Updating Category");
     } finally {
       setLoading(false);
     }
@@ -171,7 +175,6 @@ const AddCategoryScreen = () => {
           </View>
         )}
 
-        <Text style={styles.label}></Text>
         <TouchableOpacity
           style={styles.checkboxContainer}
           onPress={() => setHasParent(!hasParent)}
@@ -225,13 +228,13 @@ const AddCategoryScreen = () => {
         <View style={{ alignItems: "center", marginBottom: 55 }}>
           <TouchableOpacity
             style={[styles.button, loading && styles.buttonDisabled]}
-            onPress={createCategory}
+            onPress={updateCategory}
             disabled={loading}
           >
             {loading ? (
               <LoadingSpinner />
             ) : (
-              <Text style={styles.buttonText}>Continue</Text>
+              <Text style={styles.buttonText}>Update Category</Text>
             )}
           </TouchableOpacity>
         </View>
@@ -240,7 +243,7 @@ const AddCategoryScreen = () => {
   );
 };
 
-export default AddCategoryScreen;
+export default EditCategoryScreen;
 
 const styles = StyleSheet.create({
   container: {
