@@ -28,6 +28,12 @@ const ProfileLayout = () => {
           title: "Verify Email",
         }}
       />
+      <Stack.Screen
+        name="admin/dashboard"
+        options={{
+          title: "Admin Dashboard",
+        }}
+      />
     </Stack>
   );
 };
