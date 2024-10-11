@@ -48,6 +48,7 @@
     "react-native-screens": "3.31.1",
     "react-native-tab-view": "^3.5.2",
     "react-native-toast-message": "^2.2.0",
+    "tsa": "file:",
     "typescript": "~5.3.3"
   },
   "devDependencies": {
